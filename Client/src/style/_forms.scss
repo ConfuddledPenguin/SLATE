@@ -1,0 +1,23 @@
+.form-control, .btn{
+	border-radius: 0;
+}
+
+label{
+	padding-bottom: 0.3rem;
+}
+
+.btn{
+	background: $color-light;
+	color: white;
+	transition: color 0.5s, background 0.5s;
+}
+
+.btn:hover, .btn:focus{
+	background: $color-dark;
+	color: white;
+}
+
+.btn:disabled{
+	background: $grey-light;
+	color: #292A2B;
+}

@@ -1,0 +1,20 @@
+/*
+ * This a partial for the SLATE SPA client
+ *
+ * This partial contains the typography
+ */
+
+@font-face {
+	font-family: 'icomoon';
+	src: url('../fonts/icomoon.eot');
+	src: url('../fonts/icomoon.eot') format('embedded-opentype'),
+	url('../fonts/icomoon.woff') format('woff'),
+	url('../fonts/icomoon.ttf') format('truetype'),
+	url('../fonts/icomoon.svg') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+html, body {
+	font-family: 'Open Sans', sans-serif;
+}

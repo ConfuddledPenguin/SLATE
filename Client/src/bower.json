@@ -1,0 +1,21 @@
+{
+  "name": "SLATE_SPA_CLIENT",
+  "version": "0.0.1",
+  "description": "The client side interface for SLATE",
+  "authors": [
+	"Thomas Maxwell hello@tom-maxwell.com"
+  ],
+  "ignore": [
+	"**/.*",
+	"node_modules",
+	"bower_components"
+  ],
+  "dependencies": {
+	"angular": "1.4.8",
+	"angular-ui-router": "0.2.15",
+	"angular-local-storage": "~0.2.3",
+	"angular-toastr": "~1.6.0",
+	"angular-animate": "~1.4.8",
+	"angular-bootstrap": "~0.14.3"
+  }
+}

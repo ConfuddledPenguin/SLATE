@@ -1,0 +1,14 @@
+{
+  "name": "SLATE - API",
+  "version": "0.0.1",
+  "title": "SLATE",
+  "description": "This is the API documentation for SLATE: expand,",
+  "header": {
+	"title": "Informations",
+	"filename": "apidoc_header.md"
+  },
+  "footer": {
+	"title": "Other Information",
+	"filename": "apidoc_footer.md"
+  }
+}

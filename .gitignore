@@ -1,0 +1,7 @@
+/Server/target
+/Client/build
+/Client/src/bower_components
+/Client/src/node_modules
+/.idea
+/Client/src/.htaccess
+*.iml

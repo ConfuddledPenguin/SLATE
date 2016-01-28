@@ -1,0 +1,35 @@
+
+.general-page{
+	background: $background-color;
+
+	.general-content-container{
+		width: 70%;
+		margin: auto;
+		height: 100%;
+		padding: 5rem 2rem;
+		color: white;
+
+		&>h1, &>h2, &>p{
+			text-align: center;
+		}
+
+		&>h1{
+        	border-bottom: 1px solid white;
+        	font-size: 3.5rem;
+        	padding-bottom: 1rem;
+        }
+
+        &>h2{
+            margin-top: 3rem;
+        }
+	}
+
+	.general-content-container-white{
+		background: white;
+		color: black;
+
+		&>h1{
+            border-bottom: 1px solid black;
+        }
+	}
+}

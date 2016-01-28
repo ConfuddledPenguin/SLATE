@@ -1,0 +1,98 @@
+/*
+ * This file is contains the awesome header stylings
+ */
+
+header{
+
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	background: white;
+	border-bottom: 1px solid #aaa;
+	height: $header-height;
+	z-index: 100;
+	line-height: 1;
+
+	#header-name{
+		display: none;
+	}
+
+	#header-back, #header-menu, #header-name{
+		//display: none;
+		width: $header-height;
+		height: calc( #{$header-height} - 1px);
+		font-size: 2rem;
+		padding: 0.7rem 0.7rem;
+		border-right: 1px solid #eee;
+	}
+
+	#header-back:before{
+		font-family: icomoon;
+		content: "\e904";
+	}
+
+	#header-menu:before{
+		font-family: icomoon;
+		content: "\e906";
+	}
+
+	#header-content{
+		position: absolute;
+		top: 0;
+		left: $header-height;
+		font-size: 1.5rem;
+		padding: 1rem 0.7rem;
+		width: calc(100% - 7rem);
+		border-left: 1px solid #ccc;
+	}
+
+	#header-user{
+		position: absolute;
+		top: 0;
+		left: calc(100% - #{$header-height});
+
+		img{
+			width: $header-height;
+			height: calc( #{$header-height} - 1px );
+		}
+	}
+
+	#header-user-menu{
+		position: absolute;
+		right: 0;
+		background: #1F1F1F;
+		color: white;
+		min-width: 100px;
+
+		li{
+			padding: 1rem;
+		}
+
+		li:hover{
+			background-color: $background-light;
+		}
+	}
+}
+
+@media screen and (min-width: 900px){
+
+	header{
+		#header-back, #header-menu{
+			display: none;
+		}
+
+		#header-name{
+			display: block;
+			width: calc(#{$nav-width} - 1px);
+			font-size: 1.5rem;
+			padding: 1rem 0.7rem;
+		}
+
+		#header-content{
+			left: calc(#{$nav-width} - 1px);
+			width: calc(100% - 3.5rem - #{$nav-width});
+		}
+	}
+
+}

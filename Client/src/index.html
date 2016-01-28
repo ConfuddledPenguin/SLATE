@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html  lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>SLATE -  Strathclyde Learning Analytics Test Environment</title>
+	<base href="/app/"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<!-- bower:css -->
+	<!-- endbower -->
+
+	<!--Some things are a pain to handle with bower-->
+	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.min.css" type="text/css">
+	<!-- inject:css -->
+	<!-- endinject -->
+
+</head>
+<body ng-app="SLATE">
+<div class="full-height" id="body-loaded">
+	<header ui-view="header" ng-if="app.showHeader">
+
+	</header>
+	<div id="body-wrapper" ng-class="{'full-height cancel-header' : !app.showNav, 'show-menu': app.showMenu}" >
+
+		<nav ui-view="nav" ng-if="app.showNav">
+
+
+		</nav>
+
+		<main ui-view="main" ng-class="{'full-height': !app.showHeader, 'cancel-header': !app.showNav}">
+
+		</main>
+	</div>
+</div>
+
+<div id="body-loading" class="full-height" ng-class="{'fadeout': app.loaded}">
+
+	<div id="body-loading-content" ng-class="{'fadeout-quick': app.loaded}">
+		<h1 class="border-underline-white">SLATE</h1>
+		<p>Alpha</p>
+		<!--<div class="loader">Loading...</div>-->
+		<div class='loader-container'>
+			<div class='loader-hide loader-left'></div>
+			<div class='loader-hide loader-right'></div>
+			<div class='loader-hide loader-bottom'></div>
+			<div class='loader-circle-container'>
+				<div class='loader-circle'></div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<!-- bower:js -->
+<!-- endbower -->
+
+<!-- inject:js -->
+<!-- endinject -->
+<script src="/app/app/app.js"></script>
+</body>
+</html>

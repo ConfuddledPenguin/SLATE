@@ -1,0 +1,42 @@
+/*
+ * This a partial for the SLATE SPA client
+ *
+ * This partial contains the global css
+ */
+
+.full-height {
+	height: 100%;
+}
+
+.no-display{
+	display: none;
+}
+
+.clickable {
+	cursor: pointer;
+}
+
+.bottom-white-border {
+	border-bottom: 1px solid white;
+}
+
+.bottom-gray-border{
+	border-bottom: 1px solid #aaa;
+}
+
+.bottom-black-border{
+	border-bottom: 1px solid black;
+}
+
+
+
+
+/*
+ * Bootstrap overides
+ */
+
+address, dl, ol, p, ul{
+	margin-bottom: 0;
+	list-style: none;
+	padding: 0;
+}

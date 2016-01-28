@@ -1,0 +1,32 @@
+
+.user-login-page{
+	background-color: $background-color;
+
+	.user-login-wrapper{
+		padding-top: 7.5rem;
+	}
+
+	.user-login-container{
+		width: 35%;
+		min-width: 600px;
+		margin: auto;
+		padding: 2rem;
+		background-color: white;
+
+		h1{
+			text-align: center;
+			padding-bottom: 2rem;
+			border-bottom: 1px solid #aaa;
+		}
+
+		form{
+			padding-top: 1rem;
+			padding-bottom: 1rem;
+		}
+
+		button{
+			width: 100%;
+			display: block;
+		}
+	}
+}

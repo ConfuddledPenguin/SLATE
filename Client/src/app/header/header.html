@@ -1,0 +1,21 @@
+<div id="header-back" class="clickable" ng-click="back()" ng-class="{'no-display': !app.displayBack }">
+
+</div>
+<div id="header-menu" class="clickable" ng-click="toggleGlobalMenu()" ng-class="{'no-display': app.displayBack }">
+
+</div>
+<div id="header-name">
+	<p>SLATE</p>
+</div>
+<div id="header-content">
+	<p>{{app.stateTitle}}</p>
+</div>
+<div id="header-user">
+	<img ng-src="{{imageurl}}" class="clickable" ng-click="toggleUserMenu()">
+</div>
+<div id="header-user-menu" ng-class="{'no-display': !showUserMenu}">
+	<ul class="clickable" ng-click="toggleUserMenu()">
+		<li ui-sref="page.userprofile">Profile</li>
+		<li ng-click="logout()">Logout</li>
+	</ul>
+</div>
