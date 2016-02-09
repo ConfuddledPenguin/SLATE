@@ -1,9 +1,15 @@
 package com.tom_maxwell.project.modules.users;
 
+import com.tom_maxwell.project.Views.View;
+import com.tom_maxwell.project.modules.auth.JWTvalidator;
+import com.tom_maxwell.project.modules.modules.ModuleModel;
+import com.tom_maxwell.project.modules.modules.ModuleStudentView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * the user service is responsible for handling user information
@@ -13,6 +19,9 @@ public class UserService {
 
 	@Autowired
 	private UserDAO userDAO;
+
+	@Autowired
+	private JWTvalidator jwTvalidator;
 
 	/**
 	 * Gets all of the users
@@ -28,10 +37,64 @@ public class UserService {
 	 *
 	 * @param username The users ID
 	 *
-	 * @return The user
+	 * @return The requested user view
 	 */
-	public UserModel getUser(String username) {
-		return userDAO.get(username);
+	public View getUser(String username){
+
+		return getUserPersonal(username);
+	}
+
+	/**
+	 * Get the user by the given ID
+	 *
+	 * @param username The users ID
+	 *
+	 * @return The users personal view
+	 */
+	private UserPersonalView getUserPersonal(String username) {
+
+		UserModel userModel =  userDAO.get(username);
+
+		UserPersonalView view = new UserPersonalView(
+				userModel.getUsername(),
+				userModel.getName(),
+				userModel.getEmail(),
+				userModel.getRole()
+		);
+
+		if(userModel.getRole() == UserModel.Role.STUDENT){
+
+			List<ModuleStudentView> moduleViews = view.getEnrolledClasses();
+
+			for(ModuleModel moduleModel: userModel.getEnrolledModules()){
+
+				moduleViews.add(new ModuleStudentView(
+						moduleModel.getId(),
+						moduleModel.getClassCode(),
+						moduleModel.getYear(),
+						moduleModel.getDescription(),
+						moduleModel.getName()));
+			}
+		}
+
+		if(userModel.getRole() == UserModel.Role.LECTURER){
+
+			List<ModuleStudentView> moduleViews = view.getTeachingClasses();
+
+			for(ModuleModel moduleModel: userModel.getTeachingModules()){
+
+				moduleViews.add(new ModuleStudentView(
+						moduleModel.getId(),
+						moduleModel.getClassCode(),
+						moduleModel.getYear(),
+						moduleModel.getDescription(),
+						moduleModel.getName()));
+			}
+
+		}
+
+		view.setDataExists(true);
+		return view;
 	}
 
 	/**
@@ -59,6 +122,20 @@ public class UserService {
 
 		//TODO actually perform a decent auth
 		return user.getPassword().equals(loginUserDTO.getPassword());
+
+	}
+
+	public String generateJWT(String username){
+
+		UserPersonalView userPersonalView = getUserPersonal(username);
+
+		Map<String, Object> claims = new HashMap<>();
+
+		claims.put("username", userPersonalView.getUsername());
+		claims.put("role", userPersonalView.getRole().toString());
+		claims.put("email", userPersonalView.getEmail());
+
+		return jwTvalidator.generate(claims);
 
 	}
 

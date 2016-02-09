@@ -89,11 +89,7 @@ angular.module('SLATE.user')
 
 			var sortGlobalUserInfo = function(){
 
-
-
 				$timeout(function(){
-
-					$rootScope.fuck = false;
 
 					$rootScope.app.nav = {
 						enrolledModules: []

@@ -22,6 +22,17 @@ public class ModuleStudentView extends AbstractView {
 	private String description;
 	private String name;
 
+	public ModuleStudentView() {
+	}
+
+	public ModuleStudentView(long id, String classCode, String year, String description, String name) {
+		this.id = id;
+		this.classCode = classCode;
+		this.year = year;
+		this.description = description;
+		this.name = name;
+	}
+
 	private Set<UserStudentView> teachingStaff = new HashSet<>();
 
 	private List<AssignmentStudentView> assignments = new ArrayList<>();

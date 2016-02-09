@@ -28,6 +28,13 @@ public class ModuleDAO {
 		String query = "SELECT m FROM ModuleModel m WHERE m.classCode=? AND m.year=?";
 		String[] queryParams = {classCode, year};
 
+		//below is the correct way to do it but Intellij freaks out with it and flags everything as an error
+//		return (ModuleModel) hibernateTemplate.getSessionFactory().getCurrentSession()
+//				.createQuery("SELECT m FROM ModuleModel m WHERE m.classCode= :classCode AND m.year= :year")
+//				.setString("classCode", classCode)
+//				.setString("year", year)
+//				.uniqueResult();
+
 		return (ModuleModel) hibernateTemplate.find(query, queryParams).get(0);
 	}
 }

@@ -1,9 +1,7 @@
 package com.tom_maxwell.project.controllers;
 
-import com.fasterxml.jackson.annotation.JsonView;
+import com.tom_maxwell.project.Views.View;
 import com.tom_maxwell.project.modules.users.LoginUserDTO;
-import com.tom_maxwell.project.modules.users.UserModel;
-import com.tom_maxwell.project.modules.auth.JWTvalidator;
 import com.tom_maxwell.project.modules.users.UserService;
 import com.tom_maxwell.project.response.JSONResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +9,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by Tom on 21/01/2016.
@@ -22,9 +18,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/users/")
 public class UserCtrl {
-
-	@Autowired
-	private JWTvalidator jwTvalidator;
 
 	@Autowired
 	private UserService userService;
@@ -83,9 +76,9 @@ public class UserCtrl {
 	 *  }
 	 */
 	@RequestMapping(value="login", method= RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody JSONResponse<Map<String, Object>> login(@RequestBody LoginUserDTO loginUserDTO, HttpServletResponse httpResponse){
+	public @ResponseBody JSONResponse<View> login(@RequestBody LoginUserDTO loginUserDTO, HttpServletResponse httpResponse){
 
-		JSONResponse<Map<String, Object>> response = new JSONResponse<>();
+		JSONResponse<View> response = new JSONResponse<>();
 
 		if(loginUserDTO.getUsername() == null || loginUserDTO.getPassword() == null){
 
@@ -105,28 +98,13 @@ public class UserCtrl {
 			return response;
 		}
 
-		UserModel user = userService.getUser(loginUserDTO.getUsername());
+		httpResponse.addHeader("x-access-token", userService.generateJWT(loginUserDTO.getUsername()));
 
-		Map<String, Object> claims = new HashMap<>();
-
-		claims.put("username", user.getUsername());
-		claims.put("role", user.getRole().toString());
-		claims.put("email", user.getEmail());
-
-		String jwt = jwTvalidator.generate(claims);
-		httpResponse.addHeader("x-access-token", jwt);
-
-		Map<String, Object> result = new HashMap<>();
-		result.put("username", user.getUsername());
-		result.put("role", user.getRole().toString());
-		result.put("email", user.getEmail());
-		result.put("enrolledModules", user.getEnrolledModules());
-
+		View view = userService.getUser(loginUserDTO.getUsername());
 		response.setSuccessful(true);
 		response.setMessage("User logged in");
-		response.setResult(result);
+		response.setResult(view);
 
 		return response;
 	}
-
 }
