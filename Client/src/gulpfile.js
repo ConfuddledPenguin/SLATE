@@ -8,7 +8,8 @@
 var gulp    = require('gulp'),
 	$       = require('gulp-load-plugins')({lazy: true}), //best plugin ever it lazy loads other plugins!
 	config  = require('./gulp-config')(),
-	del = require('del');
+	del = require('del'),
+	htmlreplace = require('gulp-html-replace');
 
 //////////////////////////////////////////////////
 //Clear Build folder
@@ -102,6 +103,26 @@ gulp.task('copyFonts', ['clearbuild'], function() {
 // Perform full build
 
 gulp.task('build',['clearbuild', 'sass', 'handleDep', 'copy'], function(){
+
+
+	gulp.src(config.build.indexfile)
+		.pipe(htmlreplace({
+			'base': '<base href="/app/" />'
+		}))
+		.pipe(gulp.dest(config.build.buildDir));
+
+	log($.util.colors.green('Build Complete'));
+});
+
+gulp.task('release',['clearbuild', 'sass', 'handleDep', 'copy'], function(){
+
+	gulp.src(config.build.indexfile)
+		.pipe(htmlreplace({
+			'base': '<base href="/" />'
+		}))
+		.pipe(gulp.dest(config.build.buildDir));
+
+
 	log($.util.colors.green('Build Complete'));
 });
 

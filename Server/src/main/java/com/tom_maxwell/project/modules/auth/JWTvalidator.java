@@ -1,5 +1,6 @@
 package com.tom_maxwell.project.modules.auth;
 
+import com.tom_maxwell.project.modules.users.UserModel;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -145,7 +146,7 @@ public class JWTvalidator {
 
 		//add claims to the request
 		httpServletRequest.setAttribute("username", claims.get("username"));
-		httpServletRequest.setAttribute("role", claims.get("role"));
+		httpServletRequest.setAttribute("role", UserModel.Role.valueOf( (String) claims.get("role")));
 
 
 

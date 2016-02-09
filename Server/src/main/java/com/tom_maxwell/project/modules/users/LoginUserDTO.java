@@ -1,9 +1,9 @@
-package com.tom_maxwell.project.models.incoming;
+package com.tom_maxwell.project.modules.users;
 
 /**
- * Created by Tom on 26/01/2016.
+ * Represents incoming user information
  */
-public class LoginUser {
+public class LoginUserDTO {
 
 	private String username;
 	private String password;

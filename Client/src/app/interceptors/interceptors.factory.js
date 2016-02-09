@@ -28,7 +28,7 @@ angular.module('SLATE.interceptors')
 				if(response.data.status === 1002){
 					localStorageService.remove('SLATE.user');
 					toastr.warn("You have an old auth token, please re-auth");
-					$location.path('/user/login');
+					$location.path('/users/login');
 				}
 
 				if(response.headers('x-access-token')){

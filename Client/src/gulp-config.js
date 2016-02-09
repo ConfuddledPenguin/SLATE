@@ -7,7 +7,8 @@ module.exports = function () {
 			buildDir: buildDir,
 			cssDir: buildDir + 'style/',
 			jsDir: buildDir + 'js/',
-			libDir: buildDir + 'lib/'
+			libDir: buildDir + 'lib/',
+			indexfile: buildDir + 'index.html'
 		},
 		sass:{
 			srcdir: './style/style.scss'
@@ -45,10 +46,12 @@ module.exports = function () {
 				html: {
 					replace: {
 						js: function(filePath) {
-							return '<script src="/app/' + filePath.replace('../build/', '') + '"></script>';
+							return '<script src="' + filePath.replace('../build/', '') + '"></script>';
+							//return '<script src="/app/' + filePath.replace('../build/', '') + '"></script>';
 						},
 						css: function(filePath) {
-							return '<link rel="stylesheet" href="/app/' + filePath.replace('../build/', '') + '"/>';
+							//return '<link rel="stylesheet" href="/app/' + filePath.replace('../build/', '') + '"/>';
+							return '<link rel="stylesheet" href="' + filePath.replace('../build/', '') + '"/>';
 						}
 					}
 				}
@@ -65,10 +68,12 @@ module.exports = function () {
 			transform: function(filePath, file, i, length) {
 
 				if(filePath.endsWith('.css')){
-					return '<link rel="stylesheet" type="text/css" href="/app/' + filePath.replace('../build/', '') + '">';
+					//return '<link rel="stylesheet" type="text/css" href="/app/' + filePath.replace('../build/', '') + '">';
+					return '<link rel="stylesheet" type="text/css" href="' + filePath.replace('../build/', '') + '">';
 				}
 
-				return '<script src="/app/' + filePath.replace('../build/', '') + '"></script>';
+				return '<script src="' + filePath.replace('../build/', '') + '"></script>';
+				//return '<script src="/app/' + filePath.replace('../build/', '') + '"></script>';
 			}
 		};
 

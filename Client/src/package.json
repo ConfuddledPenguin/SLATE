@@ -4,20 +4,21 @@
   "description": "The client side interface for SLATE",
   "author": "Thomas Maxwell hello@tom-maxwell.com",
   "repository": {
-	"type": "git",
-	"url": "https://github.com/ConfuddledPenguin/SLATE"
+    "type": "git",
+    "url": "https://github.com/ConfuddledPenguin/SLATE"
   },
   "bugs": {
-	"url": "https://github.com/ConfuddledPenguin/SLATE/issues"
+    "url": "https://github.com/ConfuddledPenguin/SLATE/issues"
   },
   "devDependencies": {
-	"del": "^2.0.2",
-	"gulp": "^3.9.0",
-	"gulp-inject": "^3.0.0",
-	"gulp-load-plugins": "^1.0.0",
-	"gulp-sass": "^2.0.4",
-	"gulp-util": "^3.0.7",
-	"wiredep": "^2.2.2"
+    "del": "^2.0.2",
+    "gulp": "^3.9.0",
+    "gulp-html-replace": "^1.5.5",
+    "gulp-inject": "^3.0.0",
+    "gulp-load-plugins": "^1.0.0",
+    "gulp-sass": "^2.0.4",
+    "gulp-util": "^3.0.7",
+    "wiredep": "^2.2.2"
   },
   "dependencies": {}
 }

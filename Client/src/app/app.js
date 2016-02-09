@@ -73,6 +73,11 @@ app.config(['$stateProvider', '$locationProvider', '$urlMatcherFactoryProvider',
 
 app.run(['$rootScope', '$state', '$location', '$timeout', 'SLATE.user.service', function($rootScope, $state, $location, $timeout, userService){
 
+	$rootScope.app = {
+		showNav: true,
+		showHeader: true
+	};
+
 	userService.loadUser();
 
 	$rootScope.$on("$stateChangeError", console.log.bind(console));
@@ -85,7 +90,7 @@ app.run(['$rootScope', '$state', '$location', '$timeout', 'SLATE.user.service', 
 	$rootScope.$on("$stateChangeStart", function(args){
 
 		if(!userService.getUser()){
-			$location.path('/user/login');
+			$location.path('/users/login');
 		}
 
 	});

@@ -1,6 +1,7 @@
 package com.tom_maxwell.project.interceptors;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -8,25 +9,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * This interceptors adds headers for Service identification
+ * This logs information about access requests
  */
-public class IDInterceptor implements HandlerInterceptor {
+public class UrlLogging implements HandlerInterceptor {
 
-	@Value("${SLATE.service_id}")
-	private String serviceId;
+	private static final Logger logger = LoggerFactory.getLogger(UrlLogging.class);
 
 	@Override
 	public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
-
-		httpServletResponse.addHeader("service-id", serviceId);
-
 		return true;
-
 	}
 
 	@Override
 	public void postHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, ModelAndView modelAndView) throws Exception {
-
+		logger.info("user: " + httpServletRequest.getAttribute("username") + "| accessed: " + httpServletRequest.getRequestURI() + "| with Permission: " + httpServletRequest.getAttribute("role"));
 	}
 
 	@Override

@@ -1,0 +1,158 @@
+html, body{
+	height: 100%;
+	background-color: #1A2E5A;
+	font-family: 'Open Sans', sans-serif;
+}
+
+.clearfix{
+	clear: both;
+}
+
+header{
+	padding: 5rem 0 3rem 0;
+}
+header h1{
+	color: white;
+	border-bottom: 1px solid white;
+	font-size: 3.5rem;
+	text-align: center;
+	padding-bottom: 1rem;
+	width: 70%;
+	margin: auto;
+	/*padding-top: 5rem;*/
+	max-width: 400px;
+}
+
+header h2{
+	text-align: center;
+	color: white;
+	margin-top: 1rem;
+}
+
+nav{
+	background-color: white;
+	width: 100%;
+}
+
+nav>div{
+	display: table;
+	margin: auto;
+}
+
+nav ul{
+	display: table-row;
+}
+
+nav li{
+	display: table-cell;
+	padding: 1rem;
+}
+nav a{
+	color: black;
+	font-weight: bold;
+}
+
+nav a:after{
+	backface-visibility: hidden;
+	border: 1px solid rgba(0,0,0, 0);
+	bottom: 0px;
+	content: " ";
+	display: block;
+	margin: 0 auto;
+	position: relative;
+	transition: all 280ms ease-in-out;
+	width: 0;
+}
+
+nav a:hover{
+	color: #1A2E5A;
+	text-decoration: none;
+}
+
+nav a:hover:after{
+	width: 100%;
+	border-color: #1A2E5A;
+	backface-visibility: hidden;
+	transition: all 350ms ease-in-out;
+
+}
+
+main{
+	padding: 3rem 0;
+	text-align: center;
+	width: 70%;
+	margin: auto;
+	color: white;
+}
+
+#launch{
+	padding-top: 4rem;
+}
+
+.btn{
+	max-width: 250px;
+	display: block;
+	margin: auto;
+	font-size: 1.5rem;
+	transition: all 0.5s;
+	border-radius: 0;
+
+	color: white;
+	background: transparent;
+	border: 1px solid white;
+}
+
+.btn:hover{
+	color: black;
+	background: white;
+	border: 1px solid white;
+	transition: all 0.5s;
+}
+
+
+#footer-fix{
+	height: calc(100% - 3.5rem);
+}
+
+footer{
+	width: 100%;
+	height: 3.5rem;
+	padding: 1rem 2rem;
+	border-top: 1px solid #eee;
+	background-color: #fff;
+}
+
+footer p{
+	margin-bottom: 0;
+}
+
+footer .copyright, footer li, footer p{
+	float: left;
+}
+
+footer #info {
+	float: right;
+}
+
+footer #copyright{
+	width: 75%;
+}
+
+footer #copyright li{
+	padding-left: 0.5rem;
+}
+
+footer #info li{
+	padding-right: 0.5rem;
+}
+
+footer a{
+	text-decoration: none;
+	color: #888;
+	transition: color 0.5s;
+}
+
+footer a:hover{
+	text-decoration: none;
+	color: #333;
+}

@@ -3,8 +3,8 @@
  */
 
 angular.module('SLATE.user')
-	.service('SLATE.user.service', ['SLATE.user.requestHelper', 'localStorageService','$location', 'toastr',
-		function(requestHelper, localStorageService, $location, toastr){
+	.service('SLATE.user.service', ['SLATE.user.requestHelper', 'localStorageService','$location', 'toastr', '$rootScope', '$timeout',
+		function(requestHelper, localStorageService, $location, toastr, $rootScope, $timeout){
 
 			var user = null;
 
@@ -21,6 +21,8 @@ angular.module('SLATE.user')
 
 							//generateGravatar();
 							saveUser();
+
+							sortGlobalUserInfo();
 
 							$location.path('/');
 
@@ -41,7 +43,7 @@ angular.module('SLATE.user')
 
 				localStorageService.remove('SLATE.user');
 
-				$location.path('/user/login');
+				$location.path('/users/login');
 			};
 
 			this.getUser = function(){
@@ -62,7 +64,9 @@ angular.module('SLATE.user')
 
 				user = localStorageService.get('SLATE.user');
 
-				console.log('user loaded');
+				if(user !== undefined){
+					sortGlobalUserInfo();
+				}
 
 				return user;
 			};
@@ -82,5 +86,32 @@ angular.module('SLATE.user')
 				user.imageurl = 'https://www.gravatar.com/avatar/' + hash + '.jpeg';
 				//to get own image add ?d= then url encoded path
 			};
+
+			var sortGlobalUserInfo = function(){
+
+
+
+				$timeout(function(){
+
+					$rootScope.fuck = false;
+
+					$rootScope.app.nav = {
+						enrolledModules: []
+					};
+
+					if(user.role === 'STUDENT'){
+						for(var i = 0; i < user.enrolledModules.length; i++){
+
+							var item = user.enrolledModules[i];
+
+							$rootScope.app.nav.enrolledModules.push({
+								classCode: item.classCode,
+								name: item.name
+							})
+						}
+					}
+
+				})
+			}
 
 		}]);

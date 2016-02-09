@@ -1,9 +1,10 @@
 package com.tom_maxwell.project.controllers;
 
-import com.tom_maxwell.project.models.incoming.LoginUser;
-import com.tom_maxwell.project.models.internal.User;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.tom_maxwell.project.modules.users.LoginUserDTO;
+import com.tom_maxwell.project.modules.users.UserModel;
 import com.tom_maxwell.project.modules.auth.JWTvalidator;
-import com.tom_maxwell.project.modules.auth.UserMgmt;
+import com.tom_maxwell.project.modules.users.UserService;
 import com.tom_maxwell.project.response.JSONResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -16,7 +17,7 @@ import java.util.Map;
 /**
  * Created by Tom on 21/01/2016.
  *
- * Handled the user requests, routing them to the correct place.
+ * Handled the users requests, routing them to the correct place.
  */
 @RestController
 @RequestMapping("/users/")
@@ -26,27 +27,27 @@ public class UserCtrl {
 	private JWTvalidator jwTvalidator;
 
 	@Autowired
-	private UserMgmt userMgmt;
+	private UserService userService;
 
 
 	/**
 	 * Handles log in requests
 	 *
-	 * @param loginUser The user login
+	 * @param loginUserDTO The users login
 	 * @param httpResponse The response we are sending
 	 *
 	 * @return The response JSON
 	 *
-	 * @api {post} /user/login.json Logs in a user
-	 * @apiName User Login
-	 * @apiGroup User
+	 * @api {post} /users/login.json Logs in a user
+	 * @apiName Users Login
+	 * @apiGroup Users
 	 *
 	 * @apiPermission none
 	 *
 	 * @apiParamExample {json} Example
 	 *
 	 *  {
-	 *      "username": "axample",
+	 *      "username": "example",
 	 *      "password": "super secure password"
 	 *  }
 	 *
@@ -82,11 +83,11 @@ public class UserCtrl {
 	 *  }
 	 */
 	@RequestMapping(value="login", method= RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody JSONResponse<Map<String, String>> login(@RequestBody LoginUser loginUser, HttpServletResponse httpResponse){
+	public @ResponseBody JSONResponse<Map<String, Object>> login(@RequestBody LoginUserDTO loginUserDTO, HttpServletResponse httpResponse){
 
-		JSONResponse<Map<String, String>> response = new JSONResponse<>();
+		JSONResponse<Map<String, Object>> response = new JSONResponse<>();
 
-		if(loginUser.getUsername() == null || loginUser.getPassword() == null){
+		if(loginUserDTO.getUsername() == null || loginUserDTO.getPassword() == null){
 
 			response.setSuccessful(false);
 			response.setStatus(4004);
@@ -95,16 +96,16 @@ public class UserCtrl {
 			return response;
 		}
 
-		//log user in
-		User user = userMgmt.login(loginUser.getUsername(), loginUser.getPassword());
-
-		if(user == null){
+		//log userModel in
+		if(!userService.authUser(loginUserDTO)){
 			response.setSuccessful(false);
 			response.setStatus(1004);
 			response.setMessage("Wrong Username or Password");
 
 			return response;
 		}
+
+		UserModel user = userService.getUser(loginUserDTO.getUsername());
 
 		Map<String, Object> claims = new HashMap<>();
 
@@ -115,10 +116,11 @@ public class UserCtrl {
 		String jwt = jwTvalidator.generate(claims);
 		httpResponse.addHeader("x-access-token", jwt);
 
-		Map<String, String> result = new HashMap<>();
+		Map<String, Object> result = new HashMap<>();
 		result.put("username", user.getUsername());
 		result.put("role", user.getRole().toString());
 		result.put("email", user.getEmail());
+		result.put("enrolledModules", user.getEnrolledModules());
 
 		response.setSuccessful(true);
 		response.setMessage("User logged in");

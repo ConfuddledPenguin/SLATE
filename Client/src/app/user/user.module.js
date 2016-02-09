@@ -7,7 +7,7 @@ angular.module('SLATE.user', [])
 
 		$stateProvider
 			.state('user', {
-				url: '/user',
+				url: '/users',
 				abstract: true,
 				views: {
 					'header': {
@@ -34,7 +34,7 @@ angular.module('SLATE.user', [])
 			})
 			.state('user.auth.login', {
 				url: '/login',
-				templateUrl: 'app/user/user.login.html',
+				templateUrl: 'app/users/users.login.html',
 				controller: 'SLATE.user.login.controller'
 			});
 

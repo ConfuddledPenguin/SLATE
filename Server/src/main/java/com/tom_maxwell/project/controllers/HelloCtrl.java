@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Created by Tom on 18/01/2016.
+ * The hello controller, exists for testing if the server is up
  */
 @RestController
 @RequestMapping("/hello/hello")
@@ -26,8 +26,7 @@ public class HelloCtrl {
 	 * @apiGroup Test
 	 */
 	@RequestMapping(method = RequestMethod.GET)
-	public @ResponseBody
-	JSONResponse<String> Hello(){
+	public @ResponseBody JSONResponse<String> Hello(){
 
 		logger.info("HELLO CALLED FOR SOME REASON");
 
