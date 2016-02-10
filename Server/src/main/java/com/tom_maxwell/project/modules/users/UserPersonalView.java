@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Tom on 09/02/2016.
+ * Represents a users personal view of themselves
  */
 public class UserPersonalView extends AbstractView {
 

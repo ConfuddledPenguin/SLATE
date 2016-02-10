@@ -19,10 +19,20 @@ public class UserDAO {
 	@Autowired
 	private HibernateTemplate hibernateTemplate;
 
+	/**
+	 * Fetches all the users
+	 * @return all the systems users
+	 */
 	public List<UserModel> getAllUsers(){
 		return hibernateTemplate.loadAll(UserModel.class);
 	}
 
+	/**
+	 * Saves the given user to the DB
+	 *
+	 * @param userModel the user to save
+	 * @return 
+	 */
 	public UserModel save(UserModel userModel){
 
 		UserModel mergeUserModel = hibernateTemplate.merge(userModel);

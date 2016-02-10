@@ -22,6 +22,37 @@ angular.module('SLATE.user')
 							//generateGravatar();
 							saveUser();
 
+							this.updateUserFromServer();
+
+							$location.path('/');
+
+						}else{
+							toastr.error(data.data.message, 'Error');
+						}
+
+					})
+					.catch(function(data){
+
+						toastr.error('Couldn\'t reach server sorry about that', 'Error');
+
+					});
+
+			};
+
+			this.updateUserFromServer = function(){
+
+				requestHelper.getUser(user.username)
+					.then(function(data){
+
+						if(data.data.successful === true){
+
+							var response = data.data;
+
+							localStorageService.get('SLATE.user');
+							user = response.result;
+
+							//generateGravatar();
+							saveUser();
 							sortGlobalUserInfo();
 
 							$location.path('/');
@@ -36,6 +67,7 @@ angular.module('SLATE.user')
 						toastr.error('Couldn\'t reach server sorry about that', 'Error');
 
 					});
+
 
 			};
 
@@ -64,8 +96,8 @@ angular.module('SLATE.user')
 
 				user = localStorageService.get('SLATE.user');
 
-				if(user !== undefined){
-					sortGlobalUserInfo();
+				if(user !== undefined && user !== null){
+					this.updateUserFromServer();
 				}
 
 				return user;
@@ -91,8 +123,9 @@ angular.module('SLATE.user')
 
 				$timeout(function(){
 
-					$rootScope.app.nav = {
-						enrolledModules: []
+					$rootScope.app.user = {
+						enrolledModules: [],
+						role: user.role
 					};
 
 					if(user.role === 'STUDENT'){
@@ -100,7 +133,16 @@ angular.module('SLATE.user')
 
 							var item = user.enrolledModules[i];
 
-							$rootScope.app.nav.enrolledModules.push({
+
+							var currentYear = new Date().getFullYear();
+
+							var year_no = currentYear - item.year;
+
+							if(!$rootScope.app.user.enrolledModules[year_no]){
+								$rootScope.app.user.enrolledModules[year_no] = [];
+							}
+
+							$rootScope.app.user.enrolledModules[year_no].push({
 								classCode: item.classCode,
 								name: item.name
 							})

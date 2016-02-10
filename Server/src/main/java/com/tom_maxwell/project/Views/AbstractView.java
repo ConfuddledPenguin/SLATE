@@ -28,6 +28,7 @@ public abstract class AbstractView implements View {
 	@Override
 	public void setDataExists(boolean dataExists) {
 		this.dataExists = dataExists;
+		setSuccessful(dataExists);
 	}
 
 	@Override

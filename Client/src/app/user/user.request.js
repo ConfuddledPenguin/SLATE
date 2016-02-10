@@ -21,6 +21,16 @@ angular.module('SLATE.user')
 
 		};
 
+		requestHelper.getUser = function(username){
+
+
+			return $http({
+				method: 'GET',
+				url: config.API_URL + '/users/' + username + '.json'
+			})
+
+		};
+
 		return requestHelper;
 
 	}]);

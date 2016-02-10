@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
  * Handled the users requests, routing them to the correct place.
  */
 @RestController
-@RequestMapping("/users/")
+@RequestMapping("/users")
 public class UserCtrl {
 
 	@Autowired
@@ -75,7 +75,7 @@ public class UserCtrl {
 	 *      "result": null
 	 *  }
 	 */
-	@RequestMapping(value="login", method= RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value="/login", method= RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody JSONResponse<View> login(@RequestBody LoginUserDTO loginUserDTO, HttpServletResponse httpResponse){
 
 		JSONResponse<View> response = new JSONResponse<>();
@@ -106,5 +106,31 @@ public class UserCtrl {
 		response.setResult(view);
 
 		return response;
+	}
+
+	@RequestMapping(value = "/{username}", method = RequestMethod.GET)
+	public @ResponseBody JSONResponse<View> getUser(@PathVariable("username") String username){
+
+		JSONResponse<View> response = new JSONResponse<>();
+
+		View view = userService.getUser(username);
+
+		if(!view.isDataExists()){
+			response.setSuccessful(false);
+			response.setStatus(4004);
+			response.setMessage(view.getMessage());
+		} else if(!view.isSuccessful()){
+			response.setSuccessful(false);
+			response.setStatus(5000);
+			response.setMessage(view.getMessage());
+		}else{
+			response.setSuccessful(true);
+			response.setMessage(view.getMessage());
+		}
+
+		response.setResult(view);
+
+		return response;
+
 	}
 }

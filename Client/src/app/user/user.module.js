@@ -11,7 +11,7 @@ angular.module('SLATE.user', [])
 				abstract: true,
 				views: {
 					'header': {
-						templateUrl: 'app/header/header.html',
+						templateUrl: 'app/header/header.html'
 					},
 					'nav': {
 						template: ''
@@ -34,7 +34,7 @@ angular.module('SLATE.user', [])
 			})
 			.state('user.auth.login', {
 				url: '/login',
-				templateUrl: 'app/users/users.login.html',
+				templateUrl: 'app/user/user.login.html',
 				controller: 'SLATE.user.login.controller'
 			});
 

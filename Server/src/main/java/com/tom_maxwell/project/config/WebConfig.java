@@ -52,4 +52,6 @@ public class WebConfig extends WebMvcConfigurerAdapter{
 		registry.addInterceptor(urlLogging);
 
 	}
+
+
 }

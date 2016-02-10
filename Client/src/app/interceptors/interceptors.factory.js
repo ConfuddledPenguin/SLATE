@@ -12,7 +12,7 @@ angular.module('SLATE.interceptors')
 
 				if(request.url.startsWith(config.API_URL)){
 
-					var user = localStorageService.get('user');
+					var user = localStorageService.get('SLATE.user');
 
 					if(user){
 						request.headers['x-access-token'] = localStorageService.get('SLATE.user').token;
@@ -33,7 +33,7 @@ angular.module('SLATE.interceptors')
 
 				if(response.headers('x-access-token')){
 
-					var user = localStorageService.get('user');
+					var user = localStorageService.get('SLATE.user');
 
 					if(user)
 						localStorageService.get('SLATE.user').token = response.headers('x-access-token');

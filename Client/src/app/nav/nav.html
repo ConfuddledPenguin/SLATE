@@ -1,9 +1,14 @@
 <div id="nav">
-	<ul id="nav-parts" class="clickable" ng-click="navigate()">
-		<li ng-repeat="(key, module) in app.nav.enrolledModules">
-			<p>{{module.classCode}} - {{module.name}}</p>
-		</li>
-	</ul>
+	<div ng-if="app.user.role === 'STUDENT'">
+		<ul id="nav-parts" class="clickable" ng-click="navigate()">
+			<li ng-repeat="(key, year) in app.nav.enrolledModules">
+				{{year}}
+			</li>
+			<!--<li ng-repeat="(key, module) in app.nav.enrolledModules">-->
+				<!--<p>{{module.classCode}} - {{module.name}}</p>-->
+			<!--</li>-->
+		</ul>
+	</div>
 	<ul id="nav-help" class="clickable" ng-click="navigate()">
 		<li><a href="https://acronym.ovh/about">About</a></li>
 		<li ui-sref="page.support" ui-sref-active="current">Support</li>
