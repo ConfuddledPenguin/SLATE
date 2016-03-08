@@ -1,0 +1,110 @@
+#module-admin-page, #module-page{
+
+	#info{
+		padding: 1rem 5rem;
+		border-top: 1px solid #eee;
+
+		#staff-info{
+			padding-top: 1rem;
+
+			p{
+				font-size: 0.8rem;
+			}
+
+			li{
+				float: left;
+			}
+		}
+	}
+}
+
+#module-page{
+
+	.container{
+		width: 100%;
+		max-width: 100%;
+	}
+
+	#assignments, #attendance{
+
+		#module-grade-info-holder, #module-attendance-info-holder{
+			position: absolute;
+			height: 100%;
+			width: 100%;
+			border-right: 1px solid #eee;
+			padding-bottom: 2rem;
+
+			>div{
+				height: 33%;
+				padding: 1rem;
+
+				>p{
+					text-align: center;
+				}
+			}
+		}
+
+		#module-attendance-info-holder>div{
+			height: 50%;
+		}
+
+		#module-progress-graph-holder, #module-attendance-graph-holder{
+			padding-bottom: 2rem;
+		}
+
+		#module-assignment-details{
+			padding-top: 3rem;
+			border-top: 1px solid #eee;
+		}
+
+		table{
+			margin-top: 1rem;
+		}
+	}
+}
+
+#module-admin{
+	.form-group{
+		padding: 1rem;
+		width: 100%;
+
+		label{
+			width: 70px;
+		}
+
+		input{
+			width: calc(100% - 75px);
+		}
+
+		.dropdown-menu{
+			width: 80.3%;
+
+			li{
+				padding: 0.2rem 0;
+				border-bottom: solid 1px #eee;
+			}
+		}
+	}
+}
+
+#module-admin-page{
+	.overview-facts{
+		>div{
+			height: 33%;
+			padding: 1rem;
+
+			>p{
+				text-align: center;
+			}
+
+			>p:first-of-type{
+				color: $background-color;
+				font-size: 4rem;
+			}
+
+			>p:last-of-type{
+
+			}
+		}
+	}
+}

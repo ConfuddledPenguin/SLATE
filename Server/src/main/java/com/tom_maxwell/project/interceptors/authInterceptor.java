@@ -37,7 +37,6 @@ import java.util.Map;
 /**
  * Interceptor responsible for ensuring users are logged in
  */
-//@Component
 public class AuthInterceptor implements HandlerInterceptor {
 
 	private static final Logger logger = LoggerFactory.getLogger(AuthInterceptor.class);

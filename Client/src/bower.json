@@ -3,19 +3,23 @@
   "version": "0.0.1",
   "description": "The client side interface for SLATE",
   "authors": [
-	"Thomas Maxwell hello@tom-maxwell.com"
+    "Thomas Maxwell hello@tom-maxwell.com"
   ],
   "ignore": [
-	"**/.*",
-	"node_modules",
-	"bower_components"
+    "**/.*",
+    "node_modules",
+    "bower_components"
   ],
   "dependencies": {
-	"angular": "1.4.8",
-	"angular-ui-router": "0.2.15",
-	"angular-local-storage": "~0.2.3",
-	"angular-toastr": "~1.6.0",
-	"angular-animate": "~1.4.8",
-	"angular-bootstrap": "~0.14.3"
+    "angular": "1.4.8",
+    "angular-ui-router": "0.2.15",
+    "angular-local-storage": "~0.2.3",
+    "angular-toastr": "~1.6.0",
+    "angular-animate": "~1.4.8",
+    "angular-bootstrap": "~0.14.3",
+    "blueimp-md5": "JavaScript-MD5#~1.1.1",
+    "plotlyjs": "plotly#~1.4.1",
+    "angularjs-slider": "~2.9.0",
+    "angular-ui-switch": "~0.1.1"
   }
 }

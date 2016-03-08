@@ -1,0 +1,22 @@
+<div id="module-admin" class="panel">
+	<form class="form-inline">
+		<div class="form-group">
+			<label for="module-search-box">Search: </label>
+			<input id="module-search-box" name="module-search-box" type="text" ng-model="module.searchText" uib-typeahead="module.classCode for module in modules.data.modules | filter: $viewValue | limitTo: 8" class="form-control">
+		</div>
+	</form>
+	<div>
+		<table class="table table-hover">
+			<tr>
+				<th>Class Code</th>
+				<th>Class Name</th>
+				<th>Class Description</th>
+			</tr>
+			<tr ng-repeat="(key, module) in modules.data.modules | filter:module.searchText | limitTo: 20" ng-click="navigateModule(module.classCode)" class="clickable">
+				<td>{{module.classCode}}</td>
+				<td>{{module.name}}</td>
+				<td>{{module.description | limitTo: 60}}...</td>
+			</tr>
+		</table>
+	</div>
+</div>

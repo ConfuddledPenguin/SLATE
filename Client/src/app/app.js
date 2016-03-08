@@ -2,9 +2,10 @@
  * Created by Tom on 19/01/2016.
  */
 
-angular.module('SLATE.app', ['SLATE.config', 'SLATE.polyfill', 'SLATE.interceptors', 'SLATE.header', 'SLATE.nav', 'SLATE.user']);
+angular.module('SLATE.dependencies', ['ui.router', 'LocalStorageModule', 'toastr', 'plotly', 'ui.bootstrap', 'rzModule', 'uiSwitch']);
 
-angular.module('SLATE.dependencies', ['ui.router', 'LocalStorageModule', 'toastr']);
+angular.module('SLATE.app', ['SLATE.config', 'SLATE.polyfill', 'SLATE.interceptors', 'SLATE.header', 'SLATE.nav', 'SLATE.user', 'SLATE.modules',
+								'SLATE.assignment']);
 
 app = angular.module('SLATE', ['SLATE.dependencies', 'SLATE.app']);
 

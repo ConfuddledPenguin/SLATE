@@ -30,3 +30,54 @@
 		}
 	}
 }
+
+#user-profile{
+
+	#user-info{
+
+		#user-info-image{
+			float:left;
+			padding: 0 1rem;
+			width: 200px;
+
+			img{
+				width: 100%;
+			}
+		}
+
+		#user-info-details{
+			width: calc( 100% - 2rem - 2rem - 200px);
+			float: left;
+			padding: 0 1rem;
+
+			table{
+				width: 100%;
+				table-layout: fixed;
+
+				td{
+					padding: 0.2rem 0.5rem;
+				}
+
+				td:first-of-type{
+					width: 200px;
+					overflow: hidden;
+
+					&:after{
+						display: block;
+						content: '-';
+						float: right;
+					}
+				}
+			}
+		}
+	}
+
+	#user-enrollment{
+		.slate-table{
+
+			th:first-of-type, td:first-of-type{
+				width: 200px;
+			}
+		}
+	}
+}

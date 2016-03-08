@@ -3,7 +3,9 @@
  */
 
 angular.module('SLATE.header')
-	.controller('SLATE.header.controller', ['$rootScope', '$scope', 'SLATE.user.service', function($rootScope, $scope, userService){
+	.controller('SLATE.header.controller', ['$rootScope', '$scope', 'SLATE.user.service','$state', function($rootScope, $scope, userService, $state){
+
+		$scope.imageurl = userService.getUser().imageurl;
 
 		$scope.back = function(){
 			window.history.back();
@@ -22,6 +24,10 @@ angular.module('SLATE.header')
 			if($scope.showUserMenu) $scope.toggleUserMenu();
 
 			$rootScope.app.showMenu = !$rootScope.app.showMenu;
+		};
+
+		$scope.profile = function(){
+			$state.go('frame.user.profile', {username: $rootScope.app.user.username})
 		};
 
 		$scope.logout = function(){

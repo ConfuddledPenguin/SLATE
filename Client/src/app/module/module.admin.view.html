@@ -1,0 +1,88 @@
+<div id="module-admin-page" class="panel">
+	<div class="panel-loader" ng-if="module.data == null">
+		<ng-include src="'app/general/loader.html'"></ng-include>
+	</div>
+	<div id="info" class="tile-borderless">
+		<h1>{{module.data.classCode}} - {{module.data.name}}</h1>
+		<p>{{module.data.description}}</p>
+		<div id="staff-info">
+			<p>Teaching Staff:</p>
+			<ul class="clear-fix">
+				<li ng-repeat=" (key, staff) in module.data.teachingStaff">
+					{{staff}}<span ng-if="key !== module.data.teachingStaff.length">, </span>
+				</li>
+				<li ng-if="module.data.teachingStaff.length === 0">
+					No registered staff
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div class="tile">
+		<h2>Class Information</h2>
+		<uib-tabset>
+			<uib-tab heading="Overview" active="tab.active" disable="tab.disabled">
+				<div class="tile-paddingless-borderless">
+					<h3>Overview</h3>
+					<div class="container container-full-width">
+						<div class="row overview-facts">
+							<div class="col-md-3">
+								<p>{{module.data.passRate |number:0}}%</p>
+								<p>Pass Rate</p>
+							</div>
+							<div class="col-md-3">
+								<p>{{module.data.classAverage.mean | number:0}}%</p>
+								<p>Mark Average</p>
+							</div>
+							<div class="col-md-3">
+								<p>{{module.data.attendanceAverage.mean | number:0}}%</p>
+								<p>Attendance Average</p>
+							</div>
+							<div class="col-md-3">
+								<p>{{module.data.noStudents | number:0}}</p>
+								<p>Total Students Taken Class</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="tile-paddingless">
+					<h3>Final Marks</h3>
+					<div class="container container-full-width">
+						<div class="row">
+							<div class="col-md-3">
+								<p style="padding: 2rem 0 5rem;">This graph shows the final grade trend over the modules years.</p>
+								<form style="display: table">
+									<div class="form-group" style="display: table-row">
+										<label for="standardDeviation" class="control-label" style="display: table-cell; vertical-align: middle">Show Standard Deviation</label>
+										<div style="display: table-cell; padding-left: 1rem">
+											<switch id="standardDeviation" name="standardDeviation" ng-model="module.yearFinalMarkGraph.userOptions.stdDev"></switch>
+										</div>
+									</div>
+									<div class="form-group" style="display: table-row">
+										<label for="minmax" class="control-label" style="display: table-cell; vertical-align: middle">Show Min / Max Values</label>
+										<div style="display: table-cell; padding-left: 1rem">
+											<switch id="minmax" name="minmax" ng-model="module.yearFinalMarkGraph.userOptions.minMax"></switch>
+										</div>
+									</div>
+								</form>
+							</div>
+							<div class="col-md-9" id="year-final-mark-graph-holder">
+								<plotly data="module.yearFinalMarkGraph.data" layout="module.yearFinalMarkGraph.layout" options="module.yearFinalMarkGraph.options"></plotly>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="tile-paddingless">
+					<h3>Grades</h3>
+				</div>
+				<div class="tile-paddingless">
+					<h3>Attendance</h3>
+				</div>
+			</uib-tab>
+			<uib-tab ng-repeat="(key, year) in module.data.yearsAsArray" heading="{{year.year}}">
+
+			</uib-tab>
+			<uib-tab ng-if="module.data.years.length === 0" heading="No years to display" disable="true">
+			</uib-tab>
+		</uib-tabset>
+	</div>
+</div>

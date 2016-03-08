@@ -5,17 +5,19 @@
 
 </div>
 <div id="header-name">
-	<p>SLATE</p>
+	<a ui-sref="frame.dashboard"><p>SLATE</p></a>
 </div>
 <div id="header-content">
 	<p>{{app.stateTitle}}</p>
 </div>
-<div id="header-user">
-	<img ng-src="{{imageurl}}" class="clickable" ng-click="toggleUserMenu()">
+<div id="header-user" class="clickable" ng-click="toggleUserMenu()">
+	<p ng-if="app.user.name !== null">{{app.user.name}}</p>
+	<p ng-if="app.user.name === null">{{app.user.username}}</p>
+	<img ng-src="{{imageurl}}">
 </div>
 <div id="header-user-menu" ng-class="{'no-display': !showUserMenu}">
 	<ul class="clickable" ng-click="toggleUserMenu()">
-		<li ui-sref="page.userprofile">Profile</li>
+		<li ng-click="profile()">Profile</li>
 		<li ng-click="logout()">Logout</li>
 	</ul>
 </div>

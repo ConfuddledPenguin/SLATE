@@ -5,6 +5,7 @@ package com.tom_maxwell.project.controllers;
 import com.tom_maxwell.project.modules.modules.ModuleService;
 import com.tom_maxwell.project.response.JSONResponse;
 import com.tom_maxwell.project.Views.*;
+import com.tom_maxwell.project.response.ViewProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/modules/")
-public class ModuleController {
+public class ModuleCtrl {
 
 	@Autowired
 	private ModuleService moduleService;
@@ -70,31 +71,61 @@ public class ModuleController {
 	 * }
 	 *
 	 */
-	@RequestMapping(value = "{year}/{classCode}", method = RequestMethod.GET)
-	public @ResponseBody JSONResponse<Object> getModule(
+	@RequestMapping(value = "get/{year}/{classCode}", method = RequestMethod.GET)
+	public @ResponseBody JSONResponse<View> getModule(
 			@PathVariable("classCode") String classcode, @PathVariable("year") String year
 	){
 
-		JSONResponse<Object> response = new JSONResponse<>();
+		JSONResponse<View> response = new JSONResponse<>();
 
 		View view = moduleService.getModule(classcode, year);
 
-		if(!view.isDataExists()){
-			response.setSuccessful(false);
-			response.setStatus(4004);
-			response.setMessage(view.getMessage());
-		} else if(!view.isSuccessful()){
-			response.setSuccessful(false);
-			response.setStatus(5000);
-			response.setMessage(view.getMessage());
-		}else{
-			response.setSuccessful(true);
-			response.setMessage(view.getMessage());
-		}
-
+		ViewProcessor.process(response, view);
 		response.setResult(view);
+		return response;
+	}
 
+	@RequestMapping(value = "overview/{classCode}")
+	public @ResponseBody JSONResponse<View> getModuleAdminView(@PathVariable("classCode") String classCode){
+
+		JSONResponse<View> response = new JSONResponse<>();
+
+		View view = moduleService.getModuleAdmin(classCode);
+
+		ViewProcessor.process(response, view);
+		response.setResult(view);
 		return response;
 
+	}
+
+	/**
+	 * Module search endpoint
+	 *
+	 * @param searchText the text to search for
+	 *
+	 * @return the response
+	 *
+	 * @api {get} /modules/search/:text.json Search for Modules
+	 * @apiName Modules Search
+	 * @apiGroup Modules
+	 *
+	 * @apiPermission ADMIN
+	 *
+	 * @apiParam {String} The search text
+	 *
+	 * @apiSampleRequest /modules/search/*.json
+	 *
+	 * @apiSuccessExample {json} User Response
+	 */
+	@RequestMapping(value = "search/{searchText}", method = RequestMethod.GET)
+	public @ResponseBody JSONResponse<View> searchModule(@PathVariable("searchText") String searchText){
+
+		JSONResponse<View> response = new JSONResponse<>();
+
+		View view = moduleService.searchModules(searchText);
+
+		ViewProcessor.process(response, view);
+		response.setResult(view);
+		return response;
 	}
 }

@@ -1,21 +1,27 @@
 package com.tom_maxwell.project.modules.modules;
 
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Created by Tom on 08/02/2016.
  */
 @Repository
+@Transactional
 public class ModuleDAO {
 
 	@Autowired
 	private HibernateTemplate hibernateTemplate;
 
 	public List<ModuleModel> getAll(){
+
 		return hibernateTemplate.loadAll(ModuleModel.class);
 	}
 
@@ -23,18 +29,61 @@ public class ModuleDAO {
 		return hibernateTemplate.get(ModuleModel.class, id);
 	}
 
-	public ModuleModel get(String classCode, String year){
+	public ModuleYearModel get(String classCode, String year){
 
-		String query = "SELECT m FROM ModuleModel m WHERE m.classCode=? AND m.year=?";
+		String query = "SELECT m FROM ModuleYearModel m WHERE m.classCode=? AND m.year=?";
 		String[] queryParams = {classCode, year};
 
-		//below is the correct way to do it but Intellij freaks out with it and flags everything as an error
-//		return (ModuleModel) hibernateTemplate.getSessionFactory().getCurrentSession()
-//				.createQuery("SELECT m FROM ModuleModel m WHERE m.classCode= :classCode AND m.year= :year")
-//				.setString("classCode", classCode)
-//				.setString("year", year)
-//				.uniqueResult();
+		List<ModuleYearModel> moduleModels = (List<ModuleYearModel>) hibernateTemplate.find(query, queryParams);
 
-		return (ModuleModel) hibernateTemplate.find(query, queryParams).get(0);
+		if (moduleModels.size() == 0) {
+			return null;
+		}
+
+		return moduleModels.get(0);
 	}
+
+	public ModuleModel getModule(String classCode) {
+
+		String query = "SELECT m FROM ModuleModel m WHERE m.classCode=?";
+		String[] queryParams = {classCode};
+
+		List<ModuleModel> moduleModels = (List<ModuleModel>) hibernateTemplate.find(query, queryParams);
+
+		if (moduleModels.size() == 0) {
+			return null;
+		}
+
+		return moduleModels.get(0);
+	}
+
+	public List<ModuleModel> search(String searchText){
+
+		if(searchText.equals("*")){
+			return this.getAll();
+		}
+
+		String query = "FROM ModuleModel m WHERE m.classCode LIKE ?";
+
+		Query query1 = hibernateTemplate.getSessionFactory().getCurrentSession().createQuery(query);
+		query1.setParameter(0, searchText);
+
+		List<ModuleModel> moduleModels = (List<ModuleModel>) query1.list();
+
+		if (moduleModels.size() == 0) {
+			return Collections.emptyList();
+		}
+
+		return moduleModels;
+	}
+
+	public ModuleModel save(ModuleModel model){
+		return hibernateTemplate.merge(model);
+	}
+
+	public ModuleYearModel save(ModuleYearModel model){
+		return hibernateTemplate.merge(model);
+	}
+
+
 }

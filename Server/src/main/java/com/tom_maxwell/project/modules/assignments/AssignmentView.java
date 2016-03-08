@@ -1,28 +1,31 @@
 package com.tom_maxwell.project.modules.assignments;
 
 import com.tom_maxwell.project.Views.AbstractView;
-import com.tom_maxwell.project.Views.View;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Tom on 09/02/2016.
  */
-public class AssignmentStudentView extends AbstractView {
+public class AssignmentView extends AbstractView {
 
 	private long Id;
 
 	private String name;
 	private int assignmentNo;
 	private Date dueDate;
-	private int percetnage;
+	private double percentage;
+	private double average;
 
-	public AssignmentStudentView(long id, String name, int assignmentNo, Date dueDate, int percetnage) {
+	public AssignmentView(long id, String name, int assignmentNo, Date dueDate, double percentage, double average) {
 		Id = id;
 		this.name = name;
 		this.assignmentNo = assignmentNo;
 		this.dueDate = dueDate;
-		this.percetnage = percetnage;
+		this.percentage = percentage;
+		this.average = average;
 	}
 
 	public long getId() {
@@ -57,11 +60,19 @@ public class AssignmentStudentView extends AbstractView {
 		this.dueDate = dueDate;
 	}
 
-	public int getPercetnage() {
-		return percetnage;
+	public double getPercentage() {
+		return percentage;
 	}
 
-	public void setPercetnage(int percetnage) {
-		this.percetnage = percetnage;
+	public void setPercentage(double percentage) {
+		this.percentage = percentage;
+	}
+
+	public double getAverage() {
+		return average;
+	}
+
+	public void setAverage(double average) {
+		this.average = average;
 	}
 }

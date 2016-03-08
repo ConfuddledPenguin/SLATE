@@ -125,6 +125,10 @@ main{
 	max-width: 400px;
 }
 
+
+/*
+ * loader
+ */
 .loader-container {
 	position: absolute;
 	width: 600px;
@@ -205,5 +209,19 @@ main{
 	}
 	100% {
 		margin-left: 20px;
+	}
+}
+
+.black-loader{
+
+	&.loader-container{
+		left: calc(50%);
+	}
+	.loader-circle{
+		border: 3px solid $background-color;
+		border-bottom: none;
+	}
+	.loader-hide{
+		background: white;
 	}
 }

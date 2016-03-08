@@ -17,8 +17,8 @@ public class UserPersonalView extends AbstractView {
 	private String year;
 	private String course;
 	private UserModel.Role role;
-	private List<ModuleStudentView> enrolledClasses;
-	private List<ModuleStudentView> teachingClasses;
+	private List<ModuleStudentView> enrolledModules;
+	private List<ModuleStudentView> teachingModules;
 
 	public UserPersonalView(String username, String name, String email, UserModel.Role role) {
 		this.username = username;
@@ -26,8 +26,8 @@ public class UserPersonalView extends AbstractView {
 		this.email = email;
 		this.role = role;
 
-		enrolledClasses = new ArrayList<>();
-		teachingClasses = new ArrayList<>();
+		enrolledModules = new ArrayList<>();
+		teachingModules = new ArrayList<>();
 	}
 
 	public String getUsername() {
@@ -78,19 +78,19 @@ public class UserPersonalView extends AbstractView {
 		this.role = role;
 	}
 
-	public List<ModuleStudentView> getEnrolledClasses() {
-		return enrolledClasses;
+	public List<ModuleStudentView> getEnrolledModules() {
+		return enrolledModules;
 	}
 
-	public void setEnrolledClasses(List<ModuleStudentView> enrolledClasses) {
-		this.enrolledClasses = enrolledClasses;
+	public void setEnrolledModules(List<ModuleStudentView> enrolledModules) {
+		this.enrolledModules = enrolledModules;
 	}
 
-	public List<ModuleStudentView> getTeachingClasses() {
-		return teachingClasses;
+	public List<ModuleStudentView> getTeachingModules() {
+		return teachingModules;
 	}
 
-	public void setTeachingClasses(List<ModuleStudentView> teachingClasses) {
-		this.teachingClasses = teachingClasses;
+	public void setTeachingModules(List<ModuleStudentView> teachingModules) {
+		this.teachingModules = teachingModules;
 	}
 }

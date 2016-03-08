@@ -4,6 +4,7 @@ import com.tom_maxwell.project.Views.View;
 import com.tom_maxwell.project.modules.users.LoginUserDTO;
 import com.tom_maxwell.project.modules.users.UserService;
 import com.tom_maxwell.project.response.JSONResponse;
+import com.tom_maxwell.project.response.ViewProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,6 @@ public class UserCtrl {
 
 	@Autowired
 	private UserService userService;
-
 
 	/**
 	 * Handles log in requests
@@ -75,6 +75,14 @@ public class UserCtrl {
 	 *      "result": null
 	 *  }
 	 */
+	/**
+	 * User login endpoint
+	 *
+	 * @param loginUserDTO User information
+	 * @param httpResponse The response
+	 *
+	 * @return The response body
+	 */
 	@RequestMapping(value="/login", method= RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody JSONResponse<View> login(@RequestBody LoginUserDTO loginUserDTO, HttpServletResponse httpResponse){
 
@@ -89,7 +97,7 @@ public class UserCtrl {
 			return response;
 		}
 
-		//log userModel in
+		//log user in
 		if(!userService.authUser(loginUserDTO)){
 			response.setSuccessful(false);
 			response.setStatus(1004);
@@ -108,6 +116,26 @@ public class UserCtrl {
 		return response;
 	}
 
+	/**
+	 * Handles user information requests
+	 *
+	 * param username the username
+	 *
+	 * return The response JSON
+	 *
+	 * @api {get} /users/:username.json retrieves user information
+	 * @apiName Users Info
+	 * @apiGroup Users
+	 *
+	 * @apiPermission ANY
+	 *
+	 * @apiParam {String} the username
+	 *
+	 * @apiSampleRequest /users/gvb12182.json
+	 *
+	 * @apiSuccessExample {json} User Response
+	 *
+	 */
 	@RequestMapping(value = "/{username}", method = RequestMethod.GET)
 	public @ResponseBody JSONResponse<View> getUser(@PathVariable("username") String username){
 
@@ -115,18 +143,7 @@ public class UserCtrl {
 
 		View view = userService.getUser(username);
 
-		if(!view.isDataExists()){
-			response.setSuccessful(false);
-			response.setStatus(4004);
-			response.setMessage(view.getMessage());
-		} else if(!view.isSuccessful()){
-			response.setSuccessful(false);
-			response.setStatus(5000);
-			response.setMessage(view.getMessage());
-		}else{
-			response.setSuccessful(true);
-			response.setMessage(view.getMessage());
-		}
+		response = ViewProcessor.process(response, view);
 
 		response.setResult(view);
 

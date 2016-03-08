@@ -3,8 +3,12 @@ package com.tom_maxwell.project.modules.users;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tom_maxwell.project.modules.assignments.AssignmentMarkModel;
 import com.tom_maxwell.project.modules.modules.ModuleModel;
+import com.tom_maxwell.project.modules.modules.ModuleYearModel;
+import com.tom_maxwell.project.modules.sessions.AttendanceModel;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -15,8 +19,6 @@ import java.util.Set;
 @Entity
 @Table(name = "User")
 public class UserModel {
-
-	public class UserModelSummary{}
 
 	/**
 	 * Represents the possible user roles
@@ -55,22 +57,21 @@ public class UserModel {
 
 	private String name;
 
-	@MapsId("moduleCode")
-	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	@JoinTable(name="moduleEnrollment", joinColumns = {
-			@JoinColumn(name = "username", nullable = false, updatable = false)},
-			inverseJoinColumns = {  @JoinColumn(name = "id", nullable = false, updatable = false)})
-	private Set<ModuleModel> enrolledModules;
+	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+	private Set<Enrollment> enrollments;
 
 	@MapsId("moduleCode")
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(name="moduleTeaching", joinColumns = {
 			@JoinColumn(name = "username", nullable = false, updatable = false)},
 			inverseJoinColumns = {  @JoinColumn(name = "id", nullable = false, updatable = false)})
-	private Set<ModuleModel> teachingModules;
+	private Set<ModuleYearModel> teachingModules;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
 	private Set<AssignmentMarkModel> assignmentMarks;
+
+	@OneToMany(mappedBy = "user")
+	private List<AttendanceModel> attendance = new ArrayList<>();
 
 	/**
 	 * Required for hibernate
@@ -125,19 +126,19 @@ public class UserModel {
 		this.role = role;
 	}
 
-	public Set<ModuleModel> getEnrolledModules() {
-		return enrolledModules;
+	public Set<Enrollment> getEnrollments() {
+		return enrollments;
 	}
 
-	public void setEnrolledModules(Set<ModuleModel> enrolledModules) {
-		this.enrolledModules = enrolledModules;
+	public void setEnrollments(Set<Enrollment> enrollments) {
+		this.enrollments = enrollments;
 	}
 
-	public Set<ModuleModel> getTeachingModules() {
+	public Set<ModuleYearModel> getTeachingModules() {
 		return teachingModules;
 	}
 
-	public void setTeachingModules(Set<ModuleModel> teachingModules) {
+	public void setTeachingModules(Set<ModuleYearModel> teachingModules) {
 		this.teachingModules = teachingModules;
 	}
 
@@ -173,14 +174,11 @@ public class UserModel {
 		this.name = name;
 	}
 
-	@Override
-	public String toString() {
-		return "UserModel{" +
-				"username='" + username + '\'' +
-				", password='" + password + '\'' +
-				", email='" + email + '\'' +
-				", role=" + role +
-				", enrolledModules=" + enrolledModules +
-				'}';
+	public List<AttendanceModel> getAttendance() {
+		return attendance;
+	}
+
+	public void setAttendance(List<AttendanceModel> attendance) {
+		this.attendance = attendance;
 	}
 }

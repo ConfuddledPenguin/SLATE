@@ -36,6 +36,20 @@ angular.module('SLATE.user', [])
 				url: '/login',
 				templateUrl: 'app/user/user.login.html',
 				controller: 'SLATE.user.login.controller'
-			});
+			})
+			.state('frame.user', {
+				url: '/user',
+				abstract: true,
+				template: '<div ng-class="{\'full-height\': !app.showNav}" ui-view></div>'
+			})
+			.state('frame.user.profile',{
+				url: '/profile/:username',
+				templateUrl:'app/user/user.profile.html',
+				controller: 'SLATE.user.profile.controller',
+				onEnter: function($rootScope){
+
+
+				}
+			})
 
 	}]);

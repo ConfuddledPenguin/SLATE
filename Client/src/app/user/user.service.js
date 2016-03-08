@@ -7,6 +7,8 @@ angular.module('SLATE.user')
 		function(requestHelper, localStorageService, $location, toastr, $rootScope, $timeout){
 
 			var user = null;
+			var userloaded = false;
+			var service = this;
 
 			this.login = function(username, password){
 
@@ -22,7 +24,7 @@ angular.module('SLATE.user')
 							//generateGravatar();
 							saveUser();
 
-							this.updateUserFromServer();
+							service.updateUserFromServer();
 
 							$location.path('/');
 
@@ -51,11 +53,9 @@ angular.module('SLATE.user')
 							localStorageService.get('SLATE.user');
 							user = response.result;
 
-							//generateGravatar();
+							generateGravatar();
 							saveUser();
 							sortGlobalUserInfo();
-
-							$location.path('/');
 
 						}else{
 							toastr.error(data.data.message, 'Error');
@@ -74,12 +74,17 @@ angular.module('SLATE.user')
 			this.logout = function(){
 
 				localStorageService.remove('SLATE.user');
+				localStorageService.remove('SLATE.token');
 
 				$location.path('/users/login');
 			};
 
 			this.getUser = function(){
 				return user;
+			};
+
+			this.getUserLoaded = function(){
+				return userloaded;
 			};
 
 			this.getToken = function(){
@@ -96,8 +101,8 @@ angular.module('SLATE.user')
 
 				user = localStorageService.get('SLATE.user');
 
-				if(user !== undefined && user !== null){
-					this.updateUserFromServer();
+				if(user){
+					service.updateUserFromServer();
 				}
 
 				return user;
@@ -107,6 +112,9 @@ angular.module('SLATE.user')
 
 				//save to local storage
 				localStorageService.set('SLATE.user', user);
+
+				if(user.token)
+					localStorageService.set('SLATE.token', user.token);
 			};
 
 			var generateGravatar = function(){
@@ -125,29 +133,51 @@ angular.module('SLATE.user')
 
 					$rootScope.app.user = {
 						enrolledModules: [],
-						role: user.role
+						role: user.role,
+						username: user.username,
+						name: user.name
 					};
 
 					if(user.role === 'STUDENT'){
+
+						var currentYear = new Date().getFullYear();
+
+						if( new Date().getMonth() < 7)
+							--currentYear;
+
 						for(var i = 0; i < user.enrolledModules.length; i++){
 
 							var item = user.enrolledModules[i];
 
-
-							var currentYear = new Date().getFullYear();
-
 							var year_no = currentYear - item.year;
+							var year_end = parseInt(item.year) + 1;
 
 							if(!$rootScope.app.user.enrolledModules[year_no]){
-								$rootScope.app.user.enrolledModules[year_no] = [];
+								$rootScope.app.user.enrolledModules[year_no] = {
+									year: item.year + " / " + year_end,
+									modules: []
+								};
 							}
 
-							$rootScope.app.user.enrolledModules[year_no].push({
+							$rootScope.app.user.enrolledModules[year_no].modules.push({
 								classCode: item.classCode,
+								year: item.year,
 								name: item.name
-							})
+							});
 						}
+
+						var newArray = [];
+						for(i = 0; i < $rootScope.app.user.enrolledModules.length; i++){
+
+							if($rootScope.app.user.enrolledModules[i]){
+								newArray.push($rootScope.app.user.enrolledModules[i]);
+							}
+						}
+						$rootScope.app.user.enrolledModules = newArray;
+
 					}
+
+					userloaded = true;
 
 				})
 			}

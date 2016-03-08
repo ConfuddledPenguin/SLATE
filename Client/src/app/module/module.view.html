@@ -1,0 +1,86 @@
+<div id="module-page" class="panel">
+	<div id="info" class="tile-borderless">
+		<h1>{{module.data.classCode}} - {{module.data.name}}</h1>
+		<p>{{module.data.description}}</p>
+		<div id="staff-info">
+			<p>Teaching Staff:</p>
+			<ul class="clear-fix">
+				<li ng-repeat=" (key, staff) in module.data.teachingStaff">
+					{{staff}}<span ng-if="key !== module.data.teachingStaff.length">, </span>
+				</li>
+				<li ng-if="module.data.teachingStaff.length === 0">
+					No registered staff
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div id="assignments" class="tile">
+		<h2>Assignments</h2>
+		<p>As logged in the SLATE system.</p>
+		<div class="container">
+			<div class="row slate-grid">
+				<div class="col-md-3 slate-grid-left-side">
+					<div id="module-grade-info-holder">
+						<div class="module-grade-info">
+							<p class="my-text">{{module.data.classAverage}}%</p>
+							<p>Your Grade Average</p>
+						</div>
+						<div class="module-grade-info">
+							<p class="class-text">{{module.data.classAverage}}%</p>
+							<p>Class Grade Average</p>
+						</div>
+						<div class="module-grade-info">
+							<p><a uib-tooltip="Please note: This is an estimation based on current performance. It is not 100% reliable and should not be used for anything really." tooltip-class="tooltip-override">71%</a></p>
+							<p>Your Grade Prediction</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-9 slate-grid-right-side" id="module-progress-graph-holder">
+					<plotly data="module.progressGraph.data" layout="module.progressGraph.layout" options="module.progressGraph.options"></plotly>
+				</div>
+			</div>
+		</div>
+		<div id="module-assignment-details">
+			<h3>Assignment Details</h3>
+			<table class="table table-hover">
+				<tr>
+					<th>#</th>
+					<th>Name</th>
+					<th>Due Date</th>
+					<th>Mark</th>
+					<th>Class Average</th>
+				</tr>
+				<tr ng-repeat="(key, assignment) in module.data.assignments | orderBy: 'assignmentNo'" ng-click="module.navigateAssignment(assignment.name, assignment.id)" class="clickable">
+					<td>{{assignment.assignmentNo}}</td>
+					<td>{{assignment.name}}</td>
+					<td>{{assignment.dueDate}}</td>
+					<td>{{assignment.percentage}}%</td>
+					<td>{{assignment.average}}%</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	<div id="attendance" class="tile">
+		<h2>Attendance</h2>
+		<p>As logged in the SLATE system</p>
+		<div class="container">
+			<div class="row slate-grid">
+				<div class="col-md-3 slate-grid-left-side">
+					<div id="module-attendance-info-holder">
+						<div class="module-grade-info">
+							<p class="my-text">{{module.data.classAverage}}%</p>
+							<p>Your Attendance Average</p>
+						</div>
+						<div class="module-grade-info">
+							<p class="class-text">{{module.data.classAverage}}%</p>
+							<p>Class Attendance Average</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-9 slate-grid-right-side" id="module-attendance-graph-holder">
+					<plotly data="module.attendanceGraph.data" layout="module.attendanceGraph.layout" options="module.attendanceGraph.options"></plotly>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

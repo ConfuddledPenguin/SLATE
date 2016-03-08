@@ -1,53 +1,70 @@
 package com.tom_maxwell.project.modules.modules;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.tom_maxwell.project.modules.assignments.AssignmentModel;
-import com.tom_maxwell.project.modules.users.UserModel;
+import com.tom_maxwell.project.modules.General.Mean;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * The Module Model, this maps onto the Module table in the DB
  */
 @Entity
 @Table(name = "Module")
-public class ModuleModel {
+public class ModuleModel{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 
 	private String classCode;
-	private String year;
+	@Column(columnDefinition = "TEXT")
 	private String description;
 	private String name;
 
-	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "enrolledModules")
-	@JsonBackReference
-	private Set<UserModel> enrolledStudents;
+	@OneToMany(mappedBy = "module", fetch = FetchType.EAGER)
+	@OrderColumn(name = "id")
+	private List<ModuleYearModel> moduleList;
 
-	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "teachingModules")
-	@JsonBackReference
-	private Set<UserModel> teachingStaff;
+	@ElementCollection
+	private List<Mean> attendanceMeans = new ArrayList<>();
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "module")
-	private List<AssignmentModel> assignments = new ArrayList<AssignmentModel>();
+	private double passRate;
+	@Embedded
+	@AttributeOverrides({
+			@AttributeOverride(name="mean", column = @Column(name = "classAverageMean")),
+			@AttributeOverride(name="min", column = @Column(name="classAverageMin")),
+			@AttributeOverride(name="max", column = @Column(name="classAverageMax")),
+			@AttributeOverride(name="stdDev", column = @Column(name="classAverageStdDev")),
+	})
+	private Mean classAverage;
+	@Embedded
+	@AttributeOverrides({
+			@AttributeOverride(name="mean", column = @Column(name = "attendanceAverageMean")),
+			@AttributeOverride(name="min", column = @Column(name="attendanceAverageMin")),
+			@AttributeOverride(name="max", column = @Column(name="attendanceAverageMax")),
+			@AttributeOverride(name="stdDev", column = @Column(name="attendanceAverageStdDev")),
+	})
+	private Mean attendanceAverage;
+	private int noStudents;
 
 	public ModuleModel() {
 	}
 
-	public ModuleModel(String classCode, String year, String description, String name) {
-		this.classCode = classCode;
-		this.year = year;
-		this.description = description;
-		this.name = name;
+	public long getId() {
+		return id;
+	}
 
-		this.enrolledStudents = new HashSet<UserModel>();
-		this.enrolledStudents = new HashSet<UserModel>();
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public String getClassCode() {
+		return classCode;
+	}
+
+	public void setClassCode(String classCode) {
+		this.classCode = classCode;
 	}
 
 	public String getDescription() {
@@ -66,51 +83,51 @@ public class ModuleModel {
 		this.name = name;
 	}
 
-	public Set<UserModel> getEnrolledStudents() {
-		return enrolledStudents;
+	public List<ModuleYearModel> getModuleList() {
+		return moduleList;
 	}
 
-	public void setEnrolledStudents(Set<UserModel> enrolledStudents) {
-		this.enrolledStudents = enrolledStudents;
+	public void setModuleList(List<ModuleYearModel> moduleList) {
+		this.moduleList = moduleList;
 	}
 
-	public Set<UserModel> getTeachingStaff() {
-		return teachingStaff;
+	public double getPassRate() {
+		return passRate;
 	}
 
-	public void setTeachingStaff(Set<UserModel> teachingStaff) {
-		this.teachingStaff = teachingStaff;
+	public void setPassRate(double passRate) {
+		this.passRate = passRate;
 	}
 
-	public long getId() {
-		return id;
+	public Mean getClassAverage() {
+		return classAverage;
 	}
 
-	public void setId(long id) {
-		this.id = id;
+	public void setClassAverage(Mean classAverage) {
+		this.classAverage = classAverage;
 	}
 
-	public List<AssignmentModel> getAssignments() {
-		return assignments;
+	public Mean getAttendanceAverage() {
+		return attendanceAverage;
 	}
 
-	public void setAssignments(List<AssignmentModel> assignments) {
-		this.assignments = assignments;
+	public void setAttendanceAverage(Mean attendanceAverage) {
+		this.attendanceAverage = attendanceAverage;
 	}
 
-	public String getClassCode() {
-		return classCode;
+	public int getNoStudents() {
+		return noStudents;
 	}
 
-	public void setClassCode(String classCode) {
-		this.classCode = classCode;
+	public void setNoStudents(int noStudents) {
+		this.noStudents = noStudents;
 	}
 
-	public String getYear() {
-		return year;
+	public List<Mean> getAttendanceMeans() {
+		return attendanceMeans;
 	}
 
-	public void setYear(String year) {
-		this.year = year;
+	public void setAttendanceMeans(List<Mean> attendanceMeans) {
+		this.attendanceMeans = attendanceMeans;
 	}
 }

@@ -32,9 +32,6 @@ import java.util.List;
 @ComponentScan(basePackages = "com.tom_maxwell.project")
 public class WebConfig extends WebMvcConfigurerAdapter{
 
-	@Value("${test}")
-	private String test;
-
 	@Autowired
 	private AuthInterceptor authInterceptor;
 	@Autowired
@@ -44,8 +41,6 @@ public class WebConfig extends WebMvcConfigurerAdapter{
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry){
-
-		test += "";
 
 		registry.addInterceptor(authInterceptor);
 		registry.addInterceptor(idInterceptor);

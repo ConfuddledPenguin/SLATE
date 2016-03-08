@@ -4,8 +4,10 @@ import com.tom_maxwell.project.Views.View;
 import com.tom_maxwell.project.modules.auth.JWTvalidator;
 import com.tom_maxwell.project.modules.modules.ModuleModel;
 import com.tom_maxwell.project.modules.modules.ModuleStudentView;
+import com.tom_maxwell.project.modules.modules.ModuleYearModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +17,7 @@ import java.util.Map;
  * the user service is responsible for handling user information
  */
 @Service
+@Transactional
 public class UserService {
 
 	@Autowired
@@ -64,14 +67,17 @@ public class UserService {
 
 		if(userModel.getRole() == UserModel.Role.STUDENT){
 
-			List<ModuleStudentView> moduleViews = view.getEnrolledClasses();
+			List<ModuleStudentView> moduleViews = view.getEnrolledModules();
 
-			for(ModuleModel moduleModel: userModel.getEnrolledModules()){
+			for(Enrollment enrollment: userModel.getEnrollments()){
+
+				ModuleYearModel moduleYearModel = enrollment.getModule();
+				ModuleModel moduleModel = moduleYearModel.getModule();
 
 				moduleViews.add(new ModuleStudentView(
 						moduleModel.getId(),
 						moduleModel.getClassCode(),
-						moduleModel.getYear(),
+						moduleYearModel.getYear(),
 						moduleModel.getDescription(),
 						moduleModel.getName()));
 			}
@@ -79,14 +85,15 @@ public class UserService {
 
 		if(userModel.getRole() == UserModel.Role.LECTURER){
 
-			List<ModuleStudentView> moduleViews = view.getTeachingClasses();
+			List<ModuleStudentView> moduleViews = view.getTeachingModules();
 
-			for(ModuleModel moduleModel: userModel.getTeachingModules()){
+			for(ModuleYearModel moduleYearModel: userModel.getTeachingModules()){
 
+				ModuleModel moduleModel = moduleYearModel.getModule();
 				moduleViews.add(new ModuleStudentView(
 						moduleModel.getId(),
 						moduleModel.getClassCode(),
-						moduleModel.getYear(),
+						moduleYearModel.getYear(),
 						moduleModel.getDescription(),
 						moduleModel.getName()));
 			}

@@ -2,6 +2,8 @@ package com.tom_maxwell.project.controllers;
 
 import com.tom_maxwell.project.modules.auth.AccessDeniedException;
 import com.tom_maxwell.project.response.JSONResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,6 +16,8 @@ import org.springframework.web.servlet.NoHandlerFoundException;
  */
 @ControllerAdvice
 public class ExceptionCtrl {
+
+	private static final Logger logger = LoggerFactory.getLogger(ExceptionCtrl.class);
 
 	/**
 	 * Handle 404's
@@ -40,7 +44,10 @@ public class ExceptionCtrl {
 	 */
 	@ExceptionHandler(DataAccessException.class)
 	public @ResponseBody
-	JSONResponse<String> handleDB(){
+	JSONResponse<String> handleDB(Exception e){
+
+		logger.error("DATABASE EXCEPTION");
+		e.printStackTrace();
 
 		JSONResponse<String> JSONResponse = new JSONResponse<>();
 
@@ -67,5 +74,25 @@ public class ExceptionCtrl {
 		JSONResponse.setMessage("Access Forbidden");
 
 		return JSONResponse;
+	}
+
+	/**
+	 * Handle every exception thrown
+	 *
+	 * @param e The exception
+	 * @return the JSONResponse
+	 */
+	@ExceptionHandler(Exception.class)
+	public @ResponseBody JSONResponse<String> handleException(Exception e){
+
+		e.printStackTrace();
+		JSONResponse<String> JSONResponse = new JSONResponse<>();
+
+		JSONResponse.setSuccessful(false);
+		JSONResponse.setStatus(5000);
+		JSONResponse.setMessage("Everything broke. Try again once someone who knows what they are doing is located");
+
+		return JSONResponse;
+
 	}
 }

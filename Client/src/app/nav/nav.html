@@ -1,17 +1,28 @@
 <div id="nav">
 	<div ng-if="app.user.role === 'STUDENT'">
-		<ul id="nav-parts" class="clickable" ng-click="navigate()">
-			<li ng-repeat="(key, year) in app.nav.enrolledModules">
-				{{year}}
+		<ul id="nav-parts"  ng-click="navigate()">
+			<li ng-repeat="(key, year) in app.user.enrolledModules" ng-class="{'current': nav.showSubPartList[key]}">
+				<div id="nav-parts-sub">
+					<p class="nav-parts-sub-title clickable" ng-click="nav.showSubPart(key)">{{year.year}}</p>
+					<ul ng-class="{'show': nav.showSubPartList[key]}">
+						<li ng-repeat="module in year.modules">
+							<a ng-click="navigateModule(module.year, module.classCode)" class="clickable">{{module.classCode}} - {{module.name}}</a>
+						</li>
+					</ul>
+				</div>
 			</li>
-			<!--<li ng-repeat="(key, module) in app.nav.enrolledModules">-->
-				<!--<p>{{module.classCode}} - {{module.name}}</p>-->
-			<!--</li>-->
+		</ul>
+	</div>
+	<div ng-if="app.user.role === 'ADMIN'">
+		<ul id="nav-parts" class="clickable">
+			<li ng-click="nav.adminOverview()">Overview</li>
+			<li ng-click="nav.adminModules()">Modules</li>
+			<li ng-click="nav.adminStudents()">Students</li>
+			<li ng-click="nav.adminLecturers()">Lecturers</li>
 		</ul>
 	</div>
 	<ul id="nav-help" class="clickable" ng-click="navigate()">
-		<li><a href="https://acronym.ovh/about">About</a></li>
-		<li ui-sref="page.support" ui-sref-active="current">Support</li>
-		<li><a href="https://github.com/nightpaws/Elite-Team-6/issues">Bugs</a></li>
+		<li><a href="https://slate.ovh">About</a></li>
+		<li><a href="https://github.com/ConfuddledPenguin/SLATE/issues">Bugs</a></li>
 	</ul>
 </div>

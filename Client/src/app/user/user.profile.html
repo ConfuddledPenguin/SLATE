@@ -1,0 +1,83 @@
+<div id="user-profile" class="panel">
+
+	<div ng-if="!profile.meta.own && profile.meta.role === 'STUDENT'">
+		you can't view this
+	</div>
+
+	<div ng-if="profile.meta.own && profile.meta.role === 'STUDENT'">
+		<div class="tile-borderless clear-fix" id="user-info">
+			<div id="user-info-image">
+				<img  ng-src="{{profile.user.imageurl}}" alt="user image">
+				<p>Image taken from <a href="http://en.gravatar.com/">Gravatar</a></p>
+			</div>
+			<div id="user-info-details">
+				<h2 ng-if="profile.user.name !== null">{{profile.user.name}}</h2>
+				<h2 ng-if="profile.user.name === null">No recorded name</h2>
+				<table>
+					<tr>
+						<td>username</td>
+						<td ng-if="profile.user.username != null">{{profile.user.username}}</td>
+						<td ng-if="profile.user.username == null">No recorded username</td>
+					</tr>
+					<tr>
+						<td>Reg No.</td>
+						<td ng-if="profile.user.regnum != null">{{profile.user.regnum}}</td>
+						<td ng-if="profile.user.regnum == null">No recorded registration number</td>
+					</tr>
+					<tr>
+						<td>Email Address</td>
+						<td ng-if="profile.user.email != null">{{profile.user.email}}</td>
+						<td ng-if="profile.user.email == null">No recorded email</td>
+					</tr>
+					<tr>
+						<td>Year of Study</td>
+						<td ng-if="profile.user.year != null">{{profile.user.year}}</td>
+						<td ng-if="profile.user.year == null">No recorded year</td>
+					</tr>
+					<tr>
+						<td>Email Address</td>
+						<td ng-if="profile.user.course != null">{{profile.user.course}}</td>
+						<td ng-if="profile.user.course == null">No recorded course</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div class="tile" id="user-enrollment">
+			<h2>Module Enrollment</h2>
+			<uib-tabset>
+				<uib-tab ng-repeat="(key, tab) in app.user.enrolledModules" heading="{{tab.year}}" active="tab.active" disable="tab.disabled">
+					<table class="table table-hover slate-table">
+						<tr>
+							<th>Class Code</th>
+							<th>Class Name</th>
+						</tr>
+						<tr ng-repeat="(key, module) in tab.modules" ng-click="navToModule(module)" class="clickable">
+							<td>{{module.classCode}}</td>
+							<td>{{module.name}}</td>
+						</tr>
+					</table>
+				</uib-tab>
+			</uib-tabset>
+		</div>
+		<div id="user-goals" class="tile">
+			<h2>Your Goals</h2>
+			<p>This section allows you to control and specify what your attainment aims for the current year are. This allows the SLATE system to tweak its algorithms to suit you, thus generating more accurate warnings.</p>
+			<table class="slate-table">
+				<tr>
+					<td style="width: 200px">Overall Goal</td>
+					<td style="width: 40px">{{profile.goals.total}}%</td>
+					<td><rzslider rz-slider-model="profile.goals.total" rz-slider-options="{floor: 0, ceil: 100, step: 5}"></rzslider></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+
+	<div ng-if="!profile.meta.own && (profile.meta.role === 'LECTURER' || profile.meta.role === 'ADMIN')">
+		lecturer / admin viewing student
+	</div>
+
+	<div ng-if="profile.meta.own && (profile.meta.role === 'LECTURER' || profile.meta.role === 'ADMIN')">
+		lecturer / admin viewing themselves
+	</div>
+
+</div>

@@ -25,7 +25,7 @@ public class AssignmentMarkModel {
 	@JsonManagedReference
 	private AssignmentModel assignment;
 
-	private int percentage;
+	private double percentage;
 
 	public AssignmentMarkModel() {
 	}
@@ -60,11 +60,11 @@ public class AssignmentMarkModel {
 		this.assignment = assignment;
 	}
 
-	public int getPercentage() {
+	public double getPercentage() {
 		return percentage;
 	}
 
-	public void setPercentage(int percentage) {
+	public void setPercentage(double percentage) {
 		this.percentage = percentage;
 	}
 }

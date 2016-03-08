@@ -25,6 +25,11 @@ header{
 		font-size: 2rem;
 		padding: 0.7rem 0.7rem;
 		border-right: 1px solid #eee;
+
+		a, a:hover{
+			color: black;
+			text-decoration: none;
+		}
 	}
 
 	#header-back:before{
@@ -50,11 +55,30 @@ header{
 	#header-user{
 		position: absolute;
 		top: 0;
-		left: calc(100% - #{$header-height});
+		right: 0;
+		border-left: 1px solid #ccc;
+
+		&:before{
+			content: "";
+			display: block;
+			height: $header-height;
+			border-right: 1px solid #eee;
+			position: absolute;
+		}
+
+		p{
+			height: $header-height;
+			line-height: $header-height;
+			margin-right: calc(#{$header-height} + 1rem);
+			margin-left: 1rem;
+		}
 
 		img{
 			width: $header-height;
 			height: calc( #{$header-height} - 1px );
+			position: absolute;
+			top: 0;
+			right: 0;
 		}
 	}
 

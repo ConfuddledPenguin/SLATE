@@ -28,8 +28,46 @@
 	border-bottom: 1px solid black;
 }
 
+.clear-fix:after{
+	content: "";
+	display: block;
+	clear: both;
+}
 
+.panel{
+	height: 100%;
+	width: 100%;
+	overflow-y: auto;
+	overflow-x: hidden;
+	position: relative;
 
+	.panel-loader{
+		height: 100%;
+		position: absolute;
+		background: white;
+		width: 100%;
+		z-index: 300;
+		transition: opacity 0.5s;
+	}
+}
+
+.tile{
+	padding: 1rem 5rem;
+	border-top: 1px solid #eee;
+}
+
+.tile-borderless{
+	padding: 1rem 5rem;
+}
+
+.tile-paddingless{
+	padding: 1rem 1rem;
+	border-top: 1px solid #eee;
+}
+
+.tile-paddingless-borderless{
+	padding: 1rem 1rem;
+}
 
 /*
  * Bootstrap overides
@@ -39,4 +77,107 @@ address, dl, ol, p, ul{
 	margin-bottom: 0;
 	list-style: none;
 	padding: 0;
+}
+
+.tooltip-override{
+	border-radius: 0;
+}
+
+.slate-table{
+	table-layout: fixed;
+	width: 100%;
+	td,th{
+		overflow: hidden;
+	}
+}
+
+.slate-grid {
+	display: table;
+	width: 100%;
+}
+
+.slate-grid-left-side {
+	float: none;
+	display: table-cell;
+}
+
+.slate-grid-right-side {
+	float: none;
+	display: table-cell;
+}
+
+.nav-tabs>li {
+	float: left;
+	margin-bottom: -1px;
+}
+.nav>li {
+	position: relative;
+	display: block;
+}
+
+.nav-tabs>li>a {
+	margin-right: 2px;
+	line-height: 1.42857143;
+	border: 1px solid transparent;
+	color: black;
+}
+.nav>li>a {
+	position: relative;
+	display: block;
+	padding: 10px 15px;
+}
+
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover {
+	color: #555;
+	cursor: default;
+	background-color: #fff;
+	border: 1px solid #ddd;
+	border-bottom-color: transparent;
+}
+
+.container-full-width{
+	width: 100%;
+	max-width: 100%;
+}
+
+/**
+ * slider overrides
+ */
+
+.switch {
+	background: #fff;
+	border: 1px solid #dfdfdf;
+	position: relative;
+	display: inline-block;
+	box-sizing: content-box;
+	overflow: visible;
+	width: 52px;
+	height: 20px;
+	padding: 0px;
+	margin: 0px;
+	border-radius: 0;
+	cursor: pointer;
+	box-shadow: rgb(223, 223, 223) 0px 0px 0px 0px inset;
+	transition: 0.3s ease-out all;
+	-webkit-transition: 0.3s ease-out all;
+	top: -1px;
+}
+.switch small {
+	background: #fff;
+	border-radius: 0;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+	width: 21px;
+	height: 20px;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	transition: 0.3s ease-out all;
+	-webkit-transition: 0.3s ease-out all;
+}
+.switch.checked {
+	background: $background-color;
+	border-color: #dfdfdf;
+}
+.switch.checked small {
+	left: 31px;
 }

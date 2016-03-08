@@ -1,8 +1,7 @@
 package com.tom_maxwell.project.modules.modules;
 
 import com.tom_maxwell.project.Views.AbstractView;
-import com.tom_maxwell.project.Views.View;
-import com.tom_maxwell.project.modules.assignments.AssignmentStudentView;
+import com.tom_maxwell.project.modules.assignments.AssignmentView;
 import com.tom_maxwell.project.modules.users.UserStudentView;
 
 import java.util.ArrayList;
@@ -21,6 +20,9 @@ public class ModuleStudentView extends AbstractView {
 	private String year;
 	private String description;
 	private String name;
+	private double classAverage;
+	private Set<UserStudentView> teachingStaff = new HashSet<>();
+	private List<AssignmentView> assignments = new ArrayList<>();
 
 	public ModuleStudentView() {
 	}
@@ -32,10 +34,6 @@ public class ModuleStudentView extends AbstractView {
 		this.description = description;
 		this.name = name;
 	}
-
-	private Set<UserStudentView> teachingStaff = new HashSet<>();
-
-	private List<AssignmentStudentView> assignments = new ArrayList<>();
 
 	public long getId() {
 		return id;
@@ -85,11 +83,19 @@ public class ModuleStudentView extends AbstractView {
 		this.teachingStaff = teachingStaff;
 	}
 
-	public List<AssignmentStudentView> getAssignments() {
+	public List<AssignmentView> getAssignments() {
 		return assignments;
 	}
 
-	public void setAssignments(List<AssignmentStudentView> assignments) {
+	public void setAssignments(List<AssignmentView> assignments) {
 		this.assignments = assignments;
+	}
+
+	public double getClassAverage() {
+		return classAverage;
+	}
+
+	public void setClassAverage(double classAverage) {
+		this.classAverage = classAverage;
 	}
 }

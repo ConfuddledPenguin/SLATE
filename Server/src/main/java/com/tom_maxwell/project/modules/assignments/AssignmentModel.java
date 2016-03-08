@@ -3,6 +3,7 @@ package com.tom_maxwell.project.modules.assignments;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.tom_maxwell.project.modules.modules.ModuleModel;
+import com.tom_maxwell.project.modules.modules.ModuleYearModel;
 
 import javax.persistence.*;
 import java.util.*;
@@ -25,15 +26,19 @@ public class AssignmentModel {
 	@ManyToOne
 	@JoinColumn(name="module")
 	@JsonIgnore
-	private ModuleModel module;
+	private ModuleYearModel module;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "assignment")
+//	@OrderColumn(name="id")
 	private List<AssignmentMarkModel> assignmentMarks = new ArrayList<AssignmentMarkModel>();
+
+	//stats
+	private double average;
 
 	public AssignmentModel() {
 	}
 
-	public AssignmentModel(String name, int assignmentNo, ModuleModel module) {
+	public AssignmentModel(String name, int assignmentNo, ModuleYearModel module) {
 		this.name = name;
 		this.assignmentNo = assignmentNo;
 		this.module = module;
@@ -63,11 +68,11 @@ public class AssignmentModel {
 		this.assignmentNo = assignmentNo;
 	}
 
-	public ModuleModel getModule() {
+	public ModuleYearModel getModule() {
 		return module;
 	}
 
-	public void setModule(ModuleModel module) {
+	public void setModule(ModuleYearModel module) {
 		this.module = module;
 	}
 
@@ -85,5 +90,13 @@ public class AssignmentModel {
 
 	public void setDueDate(Date dueDate) {
 		this.dueDate = dueDate;
+	}
+
+	public double getAverage() {
+		return average;
+	}
+
+	public void setAverage(double average) {
+		this.average = average;
 	}
 }
