@@ -1,7 +1,7 @@
 package com.tom_maxwell.project.modules.modules;
 
 import com.tom_maxwell.project.Views.AbstractView;
-import com.tom_maxwell.project.modules.General.Mean;
+import com.tom_maxwell.project.modules.statistics.Mean;
 
 /**
  * Created by Tom on 07/03/2016.

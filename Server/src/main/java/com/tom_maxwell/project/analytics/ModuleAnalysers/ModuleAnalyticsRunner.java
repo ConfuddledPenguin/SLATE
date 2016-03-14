@@ -52,8 +52,9 @@ public class ModuleAnalyticsRunner extends AbstractAnalyser implements ModuleAna
 				executorService.execute(runner);
 
 			}
-			executorService.execute(moduleClassAverageAnalyser);
-			executorService.execute(moduleAttendanceAnalyser);
+
+			moduleAttendanceAnalyser.analyse();
+			moduleClassAverageAnalyser.analyse();
 
 			executorService.shutdown();
 			boolean finished = executorService.awaitTermination(10, TimeUnit.MINUTES);

@@ -1,7 +1,7 @@
 package com.tom_maxwell.project.analytics.SessionAnalysers;
 
 import com.tom_maxwell.project.analytics.AbstractAnalyser;
-import com.tom_maxwell.project.modules.General.Mean;
+import com.tom_maxwell.project.modules.statistics.Mean;
 import com.tom_maxwell.project.modules.sessions.AttendanceModel;
 import com.tom_maxwell.project.modules.sessions.SessionDAO;
 import com.tom_maxwell.project.modules.sessions.SessionModel;
@@ -10,9 +10,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.*;
 
 /**
  * Created by Tom on 08/03/2016.

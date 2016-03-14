@@ -16,4 +16,6 @@ public interface AnalyticsRunnerInterface extends Analyser {
 	void runModuleAnalytics(ModuleModel module);
 
 	void runSessionAnalytics();
+
+	void runGlobalAnalytics();
 }

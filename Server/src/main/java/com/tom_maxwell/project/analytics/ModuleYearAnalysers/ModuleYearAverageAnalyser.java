@@ -1,7 +1,7 @@
 package com.tom_maxwell.project.analytics.ModuleYearAnalysers;
 
 import com.tom_maxwell.project.analytics.AbstractAnalyser;
-import com.tom_maxwell.project.modules.General.Mean;
+import com.tom_maxwell.project.modules.statistics.Mean;
 import com.tom_maxwell.project.modules.modules.ModuleDAO;
 import com.tom_maxwell.project.modules.modules.ModuleYearModel;
 import com.tom_maxwell.project.modules.users.Enrollment;
@@ -27,41 +27,37 @@ public class ModuleYearAverageAnalyser extends AbstractAnalyser implements Modul
 	@Override
 	public void analyse() {
 
-		synchronized (ModuleYearAverageAnalyser.LOCK) {
+		double averageTracker = 0;
 
-			double averageTracker = 0;
+		moduleYearModel = moduleDAO.get(moduleYearModel.getClassCode(), moduleYearModel.getYear());
 
-			moduleYearModel = moduleDAO.get(moduleYearModel.getClassCode(), moduleYearModel.getYear());
+		DescriptiveStatistics statistics = new DescriptiveStatistics();
 
-			DescriptiveStatistics statistics = new DescriptiveStatistics();
+		double noStudents = 0;
+		double noPasses = 0;
+		for(Enrollment enrollment: moduleYearModel.getEnrollments()){
+			statistics.addValue(enrollment.getFinalMark());
 
-			double noStudents = 0;
-			double noPasses = 0;
-			for(Enrollment enrollment: moduleYearModel.getEnrollments()){
-				statistics.addValue(enrollment.getFinalMark());
+			if(enrollment.getResult() == Enrollment.Result.PASS)
+				++noPasses;
 
-				if(enrollment.getResult() == Enrollment.Result.PASS)
-					++noPasses;
-
-				++noStudents;
-			}
-
-			averageTracker = statistics.getMean();
-			if (Double.isNaN(averageTracker)) averageTracker = 0;
-			Mean mean = new Mean();
-			mean.setMean(statistics.getMean());
-			mean.setMax(statistics.getMax());
-			mean.setMin(statistics.getMin());
-			mean.setStdDev(statistics.getStandardDeviation());
-			moduleYearModel.setFinalMark(mean);
-
-			double passRate = noPasses / noStudents * 100;
-			moduleYearModel.setPassRate(passRate);
-
-			moduleDAO.save(moduleYearModel);
-			LOCK.notify();
+			++noStudents;
 		}
 
+		averageTracker = statistics.getMean();
+		if (Double.isNaN(averageTracker)) averageTracker = 0;
+		Mean mean = new Mean();
+		mean.setMean(statistics.getMean());
+		mean.setMax(statistics.getMax());
+		mean.setMin(statistics.getMin());
+		mean.setStdDev(statistics.getStandardDeviation());
+		moduleYearModel.setFinalMark(mean);
+
+		double passRate = noPasses / noStudents * 100;
+		moduleYearModel.setPassRate(passRate);
+
+		moduleDAO.save(moduleYearModel);
+		moduleDAO.flush();
 	}
 
 	@Override

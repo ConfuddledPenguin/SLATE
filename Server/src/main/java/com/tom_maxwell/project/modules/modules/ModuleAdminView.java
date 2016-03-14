@@ -2,7 +2,7 @@ package com.tom_maxwell.project.modules.modules;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tom_maxwell.project.Views.AbstractView;
-import com.tom_maxwell.project.modules.General.Mean;
+import com.tom_maxwell.project.modules.statistics.Mean;
 import com.tom_maxwell.project.modules.users.UserStudentView;
 
 import java.util.*;

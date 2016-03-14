@@ -5,7 +5,7 @@
 angular.module('SLATE.dependencies', ['ui.router', 'LocalStorageModule', 'toastr', 'plotly', 'ui.bootstrap', 'rzModule', 'uiSwitch']);
 
 angular.module('SLATE.app', ['SLATE.config', 'SLATE.polyfill', 'SLATE.interceptors', 'SLATE.header', 'SLATE.nav', 'SLATE.user', 'SLATE.modules',
-								'SLATE.assignment']);
+								'SLATE.assignment', 'SLATE.statistics']);
 
 app = angular.module('SLATE', ['SLATE.dependencies', 'SLATE.app']);
 

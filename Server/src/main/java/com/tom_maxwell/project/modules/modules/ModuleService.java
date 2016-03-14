@@ -11,19 +11,17 @@ import com.tom_maxwell.project.modules.users.UserModel;
 import com.tom_maxwell.project.modules.users.UserStudentView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Tom on 08/02/2016.
  */
 @Service
-@Transactional
+@Transactional(isolation = Isolation.READ_COMMITTED)
 public class ModuleService {
 
 	@Autowired
@@ -136,7 +134,9 @@ public class ModuleService {
 
 		moduleAnalyticsRunnerInterface.setModuleModel(moduleModel);
 		moduleAnalyticsRunnerInterface.analyse();
-		moduleDAO.get(moduleModel.getId());
+
+		moduleDAO.clear();
+		moduleDAO.refresh(moduleModel);
 
 		ModuleAdminView view = new ModuleAdminView();
 		view.setName(moduleModel.getName());

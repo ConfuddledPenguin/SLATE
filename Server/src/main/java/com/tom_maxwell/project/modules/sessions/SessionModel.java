@@ -1,7 +1,6 @@
 package com.tom_maxwell.project.modules.sessions;
 
-import com.tom_maxwell.project.modules.General.Mean;
-import com.tom_maxwell.project.modules.modules.ModuleModel;
+import com.tom_maxwell.project.modules.statistics.Mean;
 import com.tom_maxwell.project.modules.modules.ModuleYearModel;
 
 import javax.persistence.*;
@@ -17,6 +16,7 @@ import java.util.List;
 public class SessionModel {
 
 	public enum SessionType {
+		ALL("ALL"),
 		LECTURE("LECTURE"),
 		TUTORIAL("TUTORIAL"),
 		AD_HOC("AD_HOC"),
@@ -47,6 +47,8 @@ public class SessionModel {
 	private Date date;
 
 	private Date weekDate;
+
+	private int weekNo;
 
 	@Enumerated(EnumType.STRING)
 	private SessionType sessionType;
@@ -149,6 +151,14 @@ public class SessionModel {
 
 	public void setPresent(int present) {
 		this.present = present;
+	}
+
+	public int getWeekNo() {
+		return weekNo;
+	}
+
+	public void setWeekNo(int weekNo) {
+		this.weekNo = weekNo;
 	}
 }
 

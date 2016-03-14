@@ -3,23 +3,24 @@
  */
 
 angular.module('SLATE.modules')
-	.controller('SLATE.module.admin.view.controller', ['$scope', '$stateParams', '$state', 'toastr', 'SLATE.module.requestHelper',
-		function($scope, $stateParams, $state, toastr, requestHelper){
+	.controller('SLATE.module.admin.view.controller', ['$scope', '$stateParams', '$state', 'toastr', 'SLATE.module.requestHelper', 'SLATE.statistics.requestHelper', '$interval',
+		function($scope, $stateParams, $state, toastr, moduleRequestHelper, statsRequestHelper, $interval){
 
 			function modulesAdminViewController(){
 
 				$scope.module = {
-					data: null
+					data: null,
+					stats: null
 				};
 
 				fetchModule();
+				fetchStats();
 				buildYearFinalMarkGraph();
-
 			}
 
 			function fetchModule(){
 
-				requestHelper.getModuleAdmin($stateParams.classCode)
+				moduleRequestHelper.getModuleAdmin($stateParams.classCode)
 					.then(function(data){
 
 						if(data.data.successful === true){
@@ -49,6 +50,73 @@ angular.module('SLATE.modules')
 						toastr.error('Couldn\'t reach server sorry about that', 'Error');
 
 					});
+
+			}
+
+			function fetchStats(){
+
+				var stats = ['PASS_RATE','PASSMARK_MEAN','ATTENDANCE_MEAN'];
+
+				statsRequestHelper.getStatistics(stats)
+					.then(function(data){
+
+						if(data.data.successful === true){
+
+							var response = data.data;
+
+							$scope.module.stats = response.result.result;
+
+							preformStatCalcs();
+
+						}else{
+							toastr.error(data.data.message, 'Error');
+						}
+
+					})
+					.catch(function(data){
+
+						toastr.error('Couldn\'t reach server sorry about that', 'Error');
+
+					});
+
+			}
+
+			function preformStatCalcs(){
+
+				var checker = $interval(function(){
+
+					if(!$scope.module.data || !$scope.module.stats)
+						return;
+
+					$interval.cancel(checker);
+
+					var diff;
+
+					diff = $scope.module.data.passRate - $scope.module.stats.PASS_RATE;
+
+					if(diff < 0){
+						$scope.module.stats.passratephrase = Math.abs(Math.trunc(diff)) + '% points lower than average';
+					}else{
+						$scope.module.stats.passratephrase = Math.abs(Math.trunc(diff)) + '% points higher than average';
+					}
+
+					diff = $scope.module.data.classAverage.mean - $scope.module.stats.PASSMARK_MEAN;
+
+					if(diff < 0){
+						$scope.module.stats.classaveragephrase = Math.abs(Math.trunc(diff)) + '% points lower than average';
+					}else{
+						$scope.module.stats.classaveragephrase = Math.abs(Math.trunc(diff)) + '% points higher than average';
+					}
+
+					diff = $scope.module.data.attendanceAverage.mean - $scope.module.stats.ATTENDANCE_AVERAGE;
+
+					if(diff < 0){
+						$scope.module.stats.attendanceaveragephrase = Math.abs(Math.trunc(diff)) + '% points lower than average';
+					}else{
+						$scope.module.stats.attendanceaveragephrase = Math.abs(Math.trunc(diff)) + '% points higher than average';
+					}
+
+				}, 500);
 
 			}
 

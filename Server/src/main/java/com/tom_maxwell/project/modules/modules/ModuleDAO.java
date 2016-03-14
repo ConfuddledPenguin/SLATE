@@ -1,10 +1,14 @@
 package com.tom_maxwell.project.modules.modules;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
+import org.hibernate.LockMode;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
@@ -14,7 +18,8 @@ import java.util.List;
  * Created by Tom on 08/02/2016.
  */
 @Repository
-@Transactional
+@Transactional(isolation = Isolation.READ_COMMITTED)
+@Scope("prototype")
 public class ModuleDAO {
 
 	@Autowired
@@ -85,5 +90,28 @@ public class ModuleDAO {
 		return hibernateTemplate.merge(model);
 	}
 
+	public void flush(){
+		hibernateTemplate.flush();
+	}
 
+	public void clear(){
+		hibernateTemplate.clear();
+	}
+
+	public void refresh(ModuleModel model){
+
+		System.out.println("Session cache contains item:" + hibernateTemplate.contains(model));
+		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
+
+		hibernateTemplate.refresh(model);
+		hibernateTemplate.getSessionFactory().getCurrentSession().refresh(model);
+	}
+
+	public void lock(ModuleModel model){
+		hibernateTemplate.lock(model, LockMode.PESSIMISTIC_WRITE);
+	}
+
+	public void unlock(ModuleModel model){
+		hibernateTemplate.lock(model, LockMode.NONE);
+	}
 }

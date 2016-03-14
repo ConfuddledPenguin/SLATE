@@ -1,4 +1,4 @@
-package com.tom_maxwell.project.modules.General;
+package com.tom_maxwell.project.modules.statistics;
 
 import javax.persistence.Embeddable;
 
@@ -12,6 +12,7 @@ public class Mean {
 	private double min = 0;
 	private double max = 0;
 	private double stdDev = 0;
+	private double total = 0;
 
 	public double getMean() {
 		return mean;
@@ -43,5 +44,13 @@ public class Mean {
 
 	public void setStdDev(double stdDev) {
 		this.stdDev = stdDev;
+	}
+
+	public double getTotal() {
+		return total;
+	}
+
+	public void setTotal(double total) {
+		this.total = total;
 	}
 }

@@ -1,6 +1,6 @@
 package com.tom_maxwell.project.modules.modules;
 
-import com.tom_maxwell.project.modules.General.Mean;
+import com.tom_maxwell.project.modules.statistics.Mean;
 import com.tom_maxwell.project.modules.assignments.AssignmentModel;
 import com.tom_maxwell.project.modules.sessions.SessionModel;
 import com.tom_maxwell.project.modules.users.Enrollment;
@@ -50,6 +50,7 @@ public class ModuleYearModel {
 			@AttributeOverride(name="min", column = @Column(name="finalMarkMin")),
 			@AttributeOverride(name="max", column = @Column(name="finalMarkMax")),
 			@AttributeOverride(name="stdDev", column = @Column(name="finalMarkStdDev")),
+			@AttributeOverride(name="total", column = @Column(name="finalMarkAverageTotal"))
 					})
 	private Mean finalMark;
 

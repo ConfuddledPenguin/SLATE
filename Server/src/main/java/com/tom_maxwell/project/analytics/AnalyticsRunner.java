@@ -10,11 +10,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -43,11 +41,6 @@ public class AnalyticsRunner extends AbstractAnalyser implements AnalyticsRunner
 
 	private ExecutorService executorService = Executors.newFixedThreadPool(10);
 
-	@PostConstruct
-	public void post(){
-//		hibernateTemplate.getSessionFactory().openSession();
-	}
-
 	@Override
 	public void analyse() {
 		runAll();
@@ -59,6 +52,8 @@ public class AnalyticsRunner extends AbstractAnalyser implements AnalyticsRunner
 		if(!perform_startup_analytics) return;
 
 		logger.info("Setting up on start analytics");
+
+		runGlobalAnalytics();
 
 		runAllModulesAnalytics();
 
@@ -73,6 +68,17 @@ public class AnalyticsRunner extends AbstractAnalyser implements AnalyticsRunner
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+
+	}
+
+	@Override
+	public void runGlobalAnalytics(){
+
+		Analyser analyser = (Analyser) context.getBean("AttendanceAnalyser");
+		executorService.execute(analyser);
+
+		analyser = (Analyser) context.getBean("ResultAnalyser");
+		executorService.execute(analyser);
 
 	}
 
@@ -100,13 +106,23 @@ public class AnalyticsRunner extends AbstractAnalyser implements AnalyticsRunner
 	@Override
 	public void runSessionAnalytics(){
 
+		ExecutorService executorServiceSessions = Executors.newFixedThreadPool(10);
+
 		List<SessionModel> sessionModelList = sessionDAO.getAll();
 
 		for(SessionModel sessionModel: sessionModelList){
 
 			SessionAnalyserInterface sessionAnalyser = (SessionAnalyserInterface) context.getBean("SessionAnalyser");
 			sessionAnalyser.setSessionModel(sessionModel);
-			executorService.execute(sessionAnalyser);
+			executorServiceSessions.execute(sessionAnalyser);
+		}
+
+		executorServiceSessions.shutdown();
+		try {
+			executorServiceSessions.awaitTermination(10, TimeUnit.MINUTES);
+			logger.info("session analytics finished");
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 	}
 }

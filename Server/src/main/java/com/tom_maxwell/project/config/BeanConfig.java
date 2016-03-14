@@ -4,16 +4,9 @@ import com.tom_maxwell.project.interceptors.AuthInterceptor;
 import com.tom_maxwell.project.interceptors.IDInterceptor;
 import com.tom_maxwell.project.interceptors.UrlLogging;
 import com.tom_maxwell.project.modules.auth.JWTvalidator;
-import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 /**
  * Contains the configuration for beans not found by component scanning.

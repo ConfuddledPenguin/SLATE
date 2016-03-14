@@ -28,7 +28,7 @@ public class ModuleYearAnalyticsRunner extends AbstractAnalyser implements Modul
 	@Override
 	public void analyse(){
 
-		ExecutorService executorService = Executors.newFixedThreadPool(10);
+		ExecutorService executorService = Executors.newFixedThreadPool(1);
 
 		moduleYearAverageAnalyser.setModuleYearModel(moduleYearModel);
 		executorService.execute(moduleYearAverageAnalyser);
@@ -36,6 +36,7 @@ public class ModuleYearAnalyticsRunner extends AbstractAnalyser implements Modul
 		executorService.shutdown();
 		try {
 			boolean finished = executorService.awaitTermination(10, TimeUnit.MINUTES);
+			System.out.println(this.getClass().getCanonicalName() + "finished");
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

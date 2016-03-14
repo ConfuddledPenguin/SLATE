@@ -28,14 +28,17 @@
 							<div class="col-md-3">
 								<p>{{module.data.passRate |number:0}}%</p>
 								<p>Pass Rate</p>
+								<p>{{module.stats.passratephrase}}</p>
 							</div>
 							<div class="col-md-3">
 								<p>{{module.data.classAverage.mean | number:0}}%</p>
 								<p>Mark Average</p>
+								<p>{{module.stats.classaveragephrase}}</p>
 							</div>
 							<div class="col-md-3">
 								<p>{{module.data.attendanceAverage.mean | number:0}}%</p>
 								<p>Attendance Average</p>
+								<p>{{module.stats.attendanceaveragephrase}}</p>
 							</div>
 							<div class="col-md-3">
 								<p>{{module.data.noStudents | number:0}}</p>

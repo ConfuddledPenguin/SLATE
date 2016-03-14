@@ -12,6 +12,7 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
 import java.util.Properties;
 
 /**
@@ -45,6 +46,11 @@ public class DBConfig {
 		ds.setUrl(url);
 		ds.setUsername(username);
 		ds.setPassword(password);
+
+		Properties properties = new Properties();
+		properties.setProperty("hibernate.connection.isolation",String.valueOf(Connection.TRANSACTION_SERIALIZABLE));
+
+		ds.setConnectionProperties(properties);
 		return ds;
 	}
 
@@ -82,6 +88,9 @@ public class DBConfig {
 		properties.put("hibernate.dialect", hibernateDialect);
 		properties.put("hibernate.show_sql", hibernateShowSql);
 		properties.put("hibernate.hbm2ddl.auto", hibernateHbm2ddlAuto);
+		properties.put("org.hibernate.flushMode", "COMMIT");
+		properties.put("hibernate.cache.use_second_level_cache", false);
+		properties.put("hibernate.connection.isolation", String.valueOf(Connection.TRANSACTION_READ_COMMITTED));
 
 		return properties;
 	}

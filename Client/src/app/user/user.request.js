@@ -9,7 +9,6 @@ angular.module('SLATE.user')
 
 		requestHelper.login = function(username, password){
 
-
 			return $http({
 				method: 'POST',
 				url: config.API_URL + '/users/login.json',

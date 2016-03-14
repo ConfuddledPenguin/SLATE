@@ -1,5 +1,7 @@
 package com.tom_maxwell.project.analytics;
 
+import org.hibernate.Transaction;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class AbstractAnalyser implements Analyser {
 
 	private static final Logger logger = LoggerFactory.getLogger(AbstractAnalyser.class);
-
-	public static final Object LOCK = new Object();
 
 	@Value("${SLATE.analytics.ignore_analysed_bool}")
 	protected boolean ignore_analysed_bool;
