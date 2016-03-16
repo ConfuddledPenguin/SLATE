@@ -2,8 +2,12 @@ package com.tom_maxwell.project.modules.users;
 
 import com.tom_maxwell.project.modules.modules.ModuleModel;
 import com.tom_maxwell.project.modules.modules.ModuleYearModel;
+import com.tom_maxwell.project.modules.sessions.AttendanceGrouping;
+import com.tom_maxwell.project.modules.sessions.SessionModel;
+import com.tom_maxwell.project.modules.statistics.Mean;
 
 import javax.persistence.*;
+import java.util.Map;
 
 /**
  * Created by Tom on 24/02/2016.
@@ -44,6 +48,16 @@ public class Enrollment {
 	private double finalMark;
 
 	private double average;
+
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinTable(
+			name="EnrollmentAttendanceGroupings",
+			joinColumns = @JoinColumn(name="attendanceGroupingId"),
+			inverseJoinColumns = @JoinColumn(name="enrollmentId")
+	)
+	@MapKey(name="sessionType")
+	@MapKeyEnumerated
+	private Map<SessionModel.SessionType, AttendanceGrouping> attendanceMean;
 
 	@Enumerated(EnumType.STRING)
 	private Result result;
@@ -102,5 +116,13 @@ public class Enrollment {
 
 	public void setResult(Result result) {
 		this.result = result;
+	}
+
+	public Map<SessionModel.SessionType, AttendanceGrouping> getAttendanceMean() {
+		return attendanceMean;
+	}
+
+	public void setAttendanceMean(Map<SessionModel.SessionType, AttendanceGrouping> attendanceMean) {
+		this.attendanceMean = attendanceMean;
 	}
 }

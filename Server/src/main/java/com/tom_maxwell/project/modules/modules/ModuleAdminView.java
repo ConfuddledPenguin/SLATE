@@ -2,6 +2,9 @@ package com.tom_maxwell.project.modules.modules;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tom_maxwell.project.Views.AbstractView;
+import com.tom_maxwell.project.Views.View;
+import com.tom_maxwell.project.modules.sessions.SessionModel;
+import com.tom_maxwell.project.modules.statistics.Correlation;
 import com.tom_maxwell.project.modules.statistics.Mean;
 import com.tom_maxwell.project.modules.users.UserStudentView;
 
@@ -25,6 +28,13 @@ public class ModuleAdminView extends AbstractView {
 
 	@JsonProperty("years")
 	private Map<String, ModuleYearAdminView> moduleYearAdminViews = new HashMap<>();
+
+	//map : String-Year : means per week
+	private Map<SessionModel.SessionType, List<Mean>> attendance = new HashMap<>();
+
+	private Map<SessionModel.SessionType, Correlation> attendanceAttainmentCorrelation = new HashMap<>();
+
+	private List<View> enrollments = new ArrayList<>();
 
 
 	public String getClassCode() {
@@ -97,5 +107,29 @@ public class ModuleAdminView extends AbstractView {
 
 	public void setModuleYearAdminViews(Map<String, ModuleYearAdminView> moduleYearAdminViews) {
 		this.moduleYearAdminViews = moduleYearAdminViews;
+	}
+
+	public Map<SessionModel.SessionType, List<Mean>> getAttendance() {
+		return attendance;
+	}
+
+	public void setAttendance(Map<SessionModel.SessionType, List<Mean>> attendance) {
+		this.attendance = attendance;
+	}
+
+	public List<View> getEnrollments() {
+		return enrollments;
+	}
+
+	public void setEnrollments(List<View> enrollments) {
+		this.enrollments = enrollments;
+	}
+
+	public Map<SessionModel.SessionType, Correlation> getAttendanceAttainmentCorrelation() {
+		return attendanceAttainmentCorrelation;
+	}
+
+	public void setAttendanceAttainmentCorrelation(Map<SessionModel.SessionType, Correlation> attendanceAttainmentCorrelation) {
+		this.attendanceAttainmentCorrelation = attendanceAttainmentCorrelation;
 	}
 }

@@ -3,6 +3,7 @@ package com.tom_maxwell.project.analytics.ModuleAnalysers;
 import com.tom_maxwell.project.analytics.AbstractAnalyser;
 import com.tom_maxwell.project.analytics.ModuleYearAnalysers.ModuleYearAnalyticsRunner;
 import com.tom_maxwell.project.analytics.ModuleYearAnalysers.ModuleYearAnalyticsRunnerInterface;
+import com.tom_maxwell.project.modules.modules.ModuleDAO;
 import com.tom_maxwell.project.modules.modules.ModuleModel;
 import com.tom_maxwell.project.modules.modules.ModuleYearModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +29,16 @@ public class ModuleAnalyticsRunner extends AbstractAnalyser implements ModuleAna
 	@Autowired
 	private ApplicationContext context;
 
+	@Autowired
+	private ModuleDAO moduleDAO;
+
 	public ModuleAnalyticsRunner() {
 	}
 
 	@Override
 	public void analyse() {
+
+		moduleModel = moduleDAO.get(moduleModel.getId());
 
 		ExecutorService executorService = Executors.newFixedThreadPool(10);
 
@@ -50,14 +56,17 @@ public class ModuleAnalyticsRunner extends AbstractAnalyser implements ModuleAna
 				ModuleYearAnalyticsRunnerInterface runner = (ModuleYearAnalyticsRunnerInterface) context.getBean("ModuleYearAnalyticsRunner");
 				runner.setModuleYearModel(moduleYearModel);
 				executorService.execute(runner);
-
 			}
+
+			executorService.shutdown();
+			boolean finished = executorService.awaitTermination(10, TimeUnit.MINUTES);
 
 			moduleAttendanceAnalyser.analyse();
 			moduleClassAverageAnalyser.analyse();
 
-			executorService.shutdown();
-			boolean finished = executorService.awaitTermination(10, TimeUnit.MINUTES);
+			ModuleEnrollmentAnalyserInterface moduleEnrollmentAnalyser = (ModuleEnrollmentAnalyserInterface) context.getBean("ModuleEnrollmentAnalyser");
+			moduleEnrollmentAnalyser.setModuleModel(moduleModel);
+			moduleEnrollmentAnalyser.analyse();
 
 		}catch(InterruptedException e){
 			e.printStackTrace();

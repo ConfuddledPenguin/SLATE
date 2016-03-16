@@ -7,8 +7,16 @@ import com.tom_maxwell.project.modules.assignments.AssignmentModel;
 import com.tom_maxwell.project.modules.assignments.AssignmentView;
 import com.tom_maxwell.project.modules.auth.AccessDeniedException;
 import com.tom_maxwell.project.modules.auth.EntitlementService;
+import com.tom_maxwell.project.modules.sessions.AttendanceGrouping;
+import com.tom_maxwell.project.modules.sessions.SessionModel;
+import com.tom_maxwell.project.modules.statistics.Mean;
+import com.tom_maxwell.project.modules.users.Enrollment;
+import com.tom_maxwell.project.modules.users.EnrollmentService;
 import com.tom_maxwell.project.modules.users.UserModel;
 import com.tom_maxwell.project.modules.users.UserStudentView;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
+import org.apache.commons.math3.stat.regression.SimpleRegression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -32,6 +40,9 @@ public class ModuleService {
 
 	@Autowired
 	private ModuleAnalyticsRunnerInterface moduleAnalyticsRunnerInterface;
+
+	@Autowired
+	private EnrollmentService enrollmentService;
 
 	@Autowired
 	private HttpServletRequest request;
@@ -83,7 +94,7 @@ public class ModuleService {
 						assignmentModel.getAssignmentNo(),
 						assignmentModel.getDueDate(),
 						percentage,
-						assignmentModel.getAverage()
+						assignmentModel.getMarkMean().getMean()
 				));
 			}
 
@@ -159,6 +170,24 @@ public class ModuleService {
 			years.put(moduleYearModel.getYear(), yearView );
 		}
 		view.setModuleYearAdminViews(years);
+
+		Map<SessionModel.SessionType, List<Mean>> att = view.getAttendance();
+		for(Map.Entry<SessionModel.SessionType, AttendanceGrouping> entry: moduleModel.getAttendanceGroupings().entrySet()){
+			att.put(entry.getKey(), entry.getValue().getWeeklyMeans());
+		}
+
+		List<View> enrollments = view.getEnrollments();
+
+		for(ModuleYearModel yearModel: moduleModel.getModuleList()){
+
+			if(yearModel == null) continue;
+
+			for(Enrollment enrollment: yearModel.getEnrollments()){
+				enrollments.add(enrollmentService.getEnrollmentView(enrollment));
+			}
+		}
+
+		view.setAttendanceAttainmentCorrelation(moduleModel.getAttendanceAttainmentCorrelation());
 
 		Set<UserStudentView> users = getStudentUserViews(moduleModel, view.getTeachingStaff());
 		view.setTeachingStaff(users);

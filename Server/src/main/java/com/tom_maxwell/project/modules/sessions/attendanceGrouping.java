@@ -3,6 +3,7 @@ package com.tom_maxwell.project.modules.sessions;
 import com.tom_maxwell.project.modules.statistics.Mean;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +18,7 @@ public class AttendanceGrouping {
 	private long Id;
 
 	@Enumerated(EnumType.STRING)
+	@NotNull
 	private SessionModel.SessionType sessionType;
 
 	@Embedded
@@ -57,7 +59,6 @@ public class AttendanceGrouping {
 		if(weeklyMeans.size() == 0){
 			for(int i = 0; i < 25; i++){
 				Mean m = new Mean();
-//				m.setOrderIndex(i);
 				weeklyMeans.add(m);
 			}
 		}

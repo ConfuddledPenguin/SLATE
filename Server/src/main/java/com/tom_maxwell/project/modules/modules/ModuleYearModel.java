@@ -35,10 +35,10 @@ public class ModuleYearModel {
 	@OneToMany(mappedBy = "module", cascade = CascadeType.ALL)
 	private Set<Enrollment> enrollments;
 
-	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "teachingModules")
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "teachingModules")
 	private Set<UserModel> teachingStaff;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "module")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "module")
 	private List<AssignmentModel> assignments = new ArrayList<AssignmentModel>();
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "module")
@@ -50,7 +50,7 @@ public class ModuleYearModel {
 			@AttributeOverride(name="min", column = @Column(name="finalMarkMin")),
 			@AttributeOverride(name="max", column = @Column(name="finalMarkMax")),
 			@AttributeOverride(name="stdDev", column = @Column(name="finalMarkStdDev")),
-			@AttributeOverride(name="total", column = @Column(name="finalMarkAverageTotal"))
+			@AttributeOverride(name="total", column = @Column(name="finalMarkAverageTotal", columnDefinition = "int default 0"))
 					})
 	private Mean finalMark;
 

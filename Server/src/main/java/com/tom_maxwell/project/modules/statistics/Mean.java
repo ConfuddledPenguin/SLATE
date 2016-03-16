@@ -1,5 +1,6 @@
 package com.tom_maxwell.project.modules.statistics;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 /**
@@ -8,11 +9,12 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class Mean {
 
-	private double mean = 0;
-	private double min = 0;
-	private double max = 0;
-	private double stdDev = 0;
-	private double total = 0;
+	private Double mean = new Double(0);
+	private Double min = new Double(0);
+	private Double max = new Double(0);
+	private Double stdDev = new Double(0);
+	@Column(columnDefinition = "int default 0")
+	private int total = 0;
 
 	public double getMean() {
 		return mean;
@@ -46,11 +48,11 @@ public class Mean {
 		this.stdDev = stdDev;
 	}
 
-	public double getTotal() {
+	public int getTotal() {
 		return total;
 	}
 
-	public void setTotal(double total) {
+	public void setTotal(int total) {
 		this.total = total;
 	}
 }

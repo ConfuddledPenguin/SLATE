@@ -66,7 +66,7 @@ public class AssignmentService {
 														assignmentModel.getAssignmentNo(),
 														assignmentModel.getDueDate(),
 														percentage,
-														assignmentModel.getAverage()
+														assignmentModel.getMarkMean().getMean()
 										);
 
 		List<Double> marks = view.getMarks();

@@ -24,4 +24,9 @@ public class EnrollmentDAO {
 	public List<Enrollment> getAll(){
 		return hibernateTemplate.loadAll(Enrollment.class);
 	}
+
+	public Enrollment get(int id) {
+
+		return hibernateTemplate.get(Enrollment.class, id);
+	}
 }

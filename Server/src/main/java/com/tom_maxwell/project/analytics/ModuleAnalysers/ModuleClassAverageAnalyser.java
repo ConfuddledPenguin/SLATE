@@ -70,8 +70,8 @@ public class ModuleClassAverageAnalyser extends AbstractAnalyser implements Modu
 
 
 		moduleDAO.lock(module);
-		moduleDAO.clear();
-		moduleDAO.refresh(module);
+//		moduleDAO.clear();
+//		moduleDAO.refresh(module);
 		module.setPassRate(passRate);
 		module.setClassAverage(mean);
 		moduleDAO.save(module);

@@ -100,9 +100,6 @@ public class ModuleDAO {
 
 	public void refresh(ModuleModel model){
 
-		System.out.println("Session cache contains item:" + hibernateTemplate.contains(model));
-		Session session = hibernateTemplate.getSessionFactory().getCurrentSession();
-
 		hibernateTemplate.refresh(model);
 		hibernateTemplate.getSessionFactory().getCurrentSession().refresh(model);
 	}

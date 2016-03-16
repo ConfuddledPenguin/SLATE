@@ -3,6 +3,9 @@ package com.tom_maxwell.project.modules.modules;
 import com.tom_maxwell.project.Views.AbstractView;
 import com.tom_maxwell.project.modules.statistics.Mean;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * Created by Tom on 07/03/2016.
  */
@@ -37,4 +40,6 @@ public class ModuleYearAdminView extends AbstractView{
 	public void setPassRate(Double passRate) {
 		this.passRate = passRate;
 	}
+
+
 }

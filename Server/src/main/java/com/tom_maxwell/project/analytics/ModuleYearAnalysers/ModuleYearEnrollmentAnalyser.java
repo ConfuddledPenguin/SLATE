@@ -1,70 +1,59 @@
-package com.tom_maxwell.project.analytics.ModuleAnalysers;
+package com.tom_maxwell.project.analytics.ModuleYearAnalysers;
 
 import com.tom_maxwell.project.analytics.AbstractAnalyser;
-import com.tom_maxwell.project.modules.statistics.Mean;
-import com.tom_maxwell.project.modules.modules.ModuleDAO;
-import com.tom_maxwell.project.modules.modules.ModuleModel;
-import com.tom_maxwell.project.modules.modules.ModuleYearModel;
+import com.tom_maxwell.project.modules.sessions.AttendanceDAO;
 import com.tom_maxwell.project.modules.sessions.AttendanceGrouping;
 import com.tom_maxwell.project.modules.sessions.AttendanceModel;
 import com.tom_maxwell.project.modules.sessions.SessionModel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.tom_maxwell.project.modules.statistics.Mean;
+import com.tom_maxwell.project.modules.users.Enrollment;
+import com.tom_maxwell.project.modules.users.EnrollmentDAO;
+import com.tom_maxwell.project.modules.users.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
- * Created by Tom on 07/03/2016.
+ * Created by Tom on 15/03/2016.
  */
-@Component("ModuleAttendanceAnalyser")
-@Transactional(isolation = Isolation.READ_COMMITTED)
+@Component("ModuleYearEnrollmentAnalyser")
+@Transactional
 @Scope("prototype")
-public class ModuleAttendanceAnalyser extends AbstractAnalyser implements ModuleAttendanceAnalyserInterface {
+public class ModuleYearEnrollmentAnalyser extends AbstractAnalyser implements ModuleYearEnrollmentAnalyserInterface {
 
-	private static final Logger logger = LoggerFactory.getLogger(ModuleAttendanceAnalyser.class);
-
-	private ModuleModel module;
+	private Enrollment enrollment;
 
 	@Autowired
-	private ModuleDAO moduleDAO;
+	private EnrollmentDAO enrollmentDAO;
+
+	@Autowired
+	private AttendanceDAO attendanceDAO;
 
 	@Override
 	public void analyse() {
 
-		module = moduleDAO.get(module.getId());
+		enrollment = enrollmentDAO.get(enrollment.getId());
+
+		UserModel user = enrollment.getUser();
+		List<SessionModel> sessions = enrollment.getModule().getSessions();
 
 		Map<SessionModel.SessionType, List<SessionModel>> sessionMapping = new HashMap<>();
+		for(SessionModel session: sessions){
 
-		double noOppertunities = 0;
-		double noPresents = 0;
-		for(ModuleYearModel moduleYearModel: module.getModuleList()){
-			if (moduleYearModel == null) continue;
-
-			for(SessionModel sessionModel: moduleYearModel.getSessions()){
-
-				List<SessionModel> sessionInfo = sessionMapping.get(sessionModel.getSessionType());
-				if(sessionInfo == null) sessionInfo = new ArrayList<>();
-				sessionInfo.add(sessionModel);
-				sessionMapping.put(sessionModel.getSessionType(), sessionInfo);
-
-				for(AttendanceModel attendanceModel: sessionModel.getAttendance()){
-
-					if(attendanceModel.getAttendance() == AttendanceModel.AttendanceValue.PRESENT)
-						++noPresents;
-
-					++noOppertunities;
-				}
-			}
+			List<SessionModel> sessionInfo = sessionMapping.get(session.getSessionType());
+			if(sessionInfo == null) sessionInfo = new ArrayList<>();
+			sessionInfo.add(session);
+			sessionMapping.put(session.getSessionType(), sessionInfo);
 		}
 
-		Map<SessionModel.SessionType, AttendanceGrouping> groupings = module.getAttendanceGroupings();
+		Map<SessionModel.SessionType, AttendanceGrouping> groupings = enrollment.getAttendanceMean();
 
 		//sort global
 		List<Point> allWeeklyAttendance = new ArrayList<>();
@@ -79,7 +68,7 @@ public class ModuleAttendanceAnalyser extends AbstractAnalyser implements Module
 			grouping.setSessionType(sessionTypeMap.getKey());
 			groupings.put(sessionTypeMap.getKey(), grouping);
 
-			List<SessionModel> sessions = sessionMapping.get(sessionTypeMap.getKey());
+			sessions = sessionMapping.get(sessionTypeMap.getKey());
 
 			List<Point> weeklyAttendance = new ArrayList<>();
 			for(int i = 0; i < 25; i++){
@@ -98,7 +87,7 @@ public class ModuleAttendanceAnalyser extends AbstractAnalyser implements Module
 				if(allWeeks == null) allWeeks = new Point();
 				allWeeklyAttendance.set(session.getWeekNo(), allWeeks);
 
-				for(AttendanceModel attendance: session.getAttendance()){
+				for(AttendanceModel attendance: attendanceDAO.get(user.getUsername(), session.getId())){
 
 					if(attendance.getAttendance() == AttendanceModel.AttendanceValue.PRESENT){
 						sessionAttendance.y++;
@@ -129,56 +118,42 @@ public class ModuleAttendanceAnalyser extends AbstractAnalyser implements Module
 			}
 		}
 
-		double attendancePercentage = (noPresents / noOppertunities) * 100;
-		Mean mean = new Mean();
-		mean.setMean(attendancePercentage);
-
 		AttendanceGrouping all = new AttendanceGrouping();
-		all.setAttendanceAverage(mean);
 		all.setSessionType(SessionModel.SessionType.ALL);
 		List<Mean> weekAv = all.getWeeklyMeans();
 		int i = 0;
+		double noOppertunities = 0;
+		double noPresents = 0;
 		for(Point week: allWeeklyAttendance){
 			Mean m = weekAv.get(i);
 			double z = (week.getY() / week.getX()) * 100;
+			noOppertunities += week.getX();
+			noPresents += week.getY();
 			if(Double.isNaN(z)) z = 0;
 			m.setMean(z);
 			m.setTotal( (int) week.getX());
 			i++;
 		}
 
+		double attendancePercentage = (noPresents / noOppertunities) * 100;
+		if(Double.isNaN(attendancePercentage)) attendancePercentage = 0;
+		Mean mean = new Mean();
+		mean.setMean(attendancePercentage);
+
+		all.setAttendanceAverage(mean);
 		groupings.put(SessionModel.SessionType.ALL, all);
 
-		moduleDAO.lock(module);
-		module.setAttendanceAverage(mean);
-		module.setNoStudents(noStudents());
-		moduleDAO.save(module);
-		moduleDAO.flush();
-		moduleDAO.unlock(module);
+		enrollment.setAttendanceMean(groupings);
+		enrollmentDAO.save(enrollment);
 	}
 
 	@Override
-	public ModuleModel getModule() {
-		return module;
+	public Enrollment getEnrollment() {
+		return enrollment;
 	}
 
 	@Override
-	public void setModule(ModuleModel module) {
-		this.module = module;
-	}
-
-
-	////////////////help methods////////////////////////////////////////////////////////////////////////////////////////
-
-	private int noStudents(){
-
-		int no = 0;
-		for(ModuleYearModel yearModel: module.getModuleList()){
-
-			if(yearModel == null) continue;
-			no += yearModel.getEnrollments().size();
-		}
-
-		return no;
+	public void setEnrollment(Enrollment enrollment) {
+		this.enrollment = enrollment;
 	}
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.tom_maxwell.project.modules.modules.ModuleModel;
 import com.tom_maxwell.project.modules.modules.ModuleYearModel;
+import com.tom_maxwell.project.modules.statistics.Mean;
 
 import javax.persistence.*;
 import java.util.*;
@@ -29,11 +30,18 @@ public class AssignmentModel {
 	private ModuleYearModel module;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "assignment")
-//	@OrderColumn(name="id")
 	private List<AssignmentMarkModel> assignmentMarks = new ArrayList<AssignmentMarkModel>();
 
 	//stats
-	private double average;
+	@Embedded
+	@AttributeOverrides({
+			@AttributeOverride(name="mean", column = @Column(name = "markMeanMean")),
+			@AttributeOverride(name="min", column = @Column(name="markMeanMin")),
+			@AttributeOverride(name="max", column = @Column(name="markMeanMax")),
+			@AttributeOverride(name="stdDev", column = @Column(name="markMeanStdDev")),
+			@AttributeOverride(name="total", column = @Column(name="markMeanTotal", columnDefinition = "int default 0"))
+	})
+	private Mean markMean;
 
 	public AssignmentModel() {
 	}
@@ -92,11 +100,11 @@ public class AssignmentModel {
 		this.dueDate = dueDate;
 	}
 
-	public double getAverage() {
-		return average;
+	public Mean getMarkMean() {
+		return markMean;
 	}
 
-	public void setAverage(double average) {
-		this.average = average;
+	public void setMarkMean(Mean markMean) {
+		this.markMean = markMean;
 	}
 }

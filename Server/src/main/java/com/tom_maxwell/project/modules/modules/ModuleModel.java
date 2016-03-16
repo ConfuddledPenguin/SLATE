@@ -1,10 +1,12 @@
 package com.tom_maxwell.project.modules.modules;
 
+import com.tom_maxwell.project.modules.statistics.Correlation;
 import com.tom_maxwell.project.modules.statistics.Mean;
 import com.tom_maxwell.project.modules.sessions.SessionModel;
 import com.tom_maxwell.project.modules.sessions.AttendanceGrouping;
 
 import javax.persistence.*;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -28,13 +30,14 @@ public class ModuleModel{
 	@OrderColumn(name = "id")
 	private List<ModuleYearModel> moduleList;
 
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinTable(
 			name="ModuleAttendanceGroupings",
-			joinColumns = @JoinColumn(name="AttendanceGroupingId"),
-			inverseJoinColumns = @JoinColumn(name="ModuleId")
+			joinColumns = @JoinColumn(name="attendanceGroupingId"),
+			inverseJoinColumns = @JoinColumn(name="moduleId")
 	)
 	@MapKey(name="sessionType")
+	@MapKeyEnumerated
 	private Map<SessionModel.SessionType, AttendanceGrouping> attendanceGroupings;
 
 	private double passRate;
@@ -44,7 +47,7 @@ public class ModuleModel{
 			@AttributeOverride(name="min", column = @Column(name="classAverageMin")),
 			@AttributeOverride(name="max", column = @Column(name="classAverageMax")),
 			@AttributeOverride(name="stdDev", column = @Column(name="classAverageStdDev")),
-			@AttributeOverride(name="total", column = @Column(name="classAverageTotal"))
+			@AttributeOverride(name="total", column = @Column(name="classAverageTotal", columnDefinition = "int default 0"))
 	})
 	private Mean classAverage;
 	@Embedded
@@ -53,9 +56,20 @@ public class ModuleModel{
 			@AttributeOverride(name="min", column = @Column(name="attendanceAverageMin")),
 			@AttributeOverride(name="max", column = @Column(name="attendanceAverageMax")),
 			@AttributeOverride(name="stdDev", column = @Column(name="attendanceAverageStdDev")),
-			@AttributeOverride(name="total", column = @Column(name="attendanceAverageTotal"))
+			@AttributeOverride(name="total", column = @Column(name="attendanceAverageTotal", columnDefinition = "int default 0"))
 	})
 	private Mean attendanceAverage;
+
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinTable(
+			name="ModuleAttendanceAttainmentCorrelations",
+			joinColumns = @JoinColumn(name="moduleId"),
+			inverseJoinColumns = @JoinColumn(name="correlationId")
+	)
+	@MapKey(name = "sessionType")
+	@MapKeyEnumerated
+	private Map<SessionModel.SessionType, Correlation> attendanceAttainmentCorrelation;
+
 	private int noStudents;
 
 	private boolean analysed;
@@ -149,5 +163,13 @@ public class ModuleModel{
 
 	public void setAnalysed(boolean analysed) {
 		this.analysed = analysed;
+	}
+
+	public Map<SessionModel.SessionType, Correlation> getAttendanceAttainmentCorrelation() {
+		return attendanceAttainmentCorrelation;
+	}
+
+	public void setAttendanceAttainmentCorrelation(Map<SessionModel.SessionType, Correlation> attendanceAttainmentCorrelation) {
+		this.attendanceAttainmentCorrelation = attendanceAttainmentCorrelation;
 	}
 }

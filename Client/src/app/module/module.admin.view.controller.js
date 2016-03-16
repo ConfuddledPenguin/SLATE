@@ -3,8 +3,8 @@
  */
 
 angular.module('SLATE.modules')
-	.controller('SLATE.module.admin.view.controller', ['$scope', '$stateParams', '$state', 'toastr', 'SLATE.module.requestHelper', 'SLATE.statistics.requestHelper', '$interval',
-		function($scope, $stateParams, $state, toastr, moduleRequestHelper, statsRequestHelper, $interval){
+	.controller('SLATE.module.admin.view.controller', ['$scope', '$stateParams', '$state', 'toastr', 'SLATE.module.requestHelper', 'SLATE.statistics.requestHelper', '$interval', 'SLATE.config',
+		function($scope, $stateParams, $state, toastr, moduleRequestHelper, statsRequestHelper, $interval, config){
 
 			function modulesAdminViewController(){
 
@@ -16,6 +16,8 @@ angular.module('SLATE.modules')
 				fetchModule();
 				fetchStats();
 				buildYearFinalMarkGraph();
+				buildAttendanceGraph();
+				buildAttendanceAttainmentGraph();
 			}
 
 			function fetchModule(){
@@ -29,6 +31,8 @@ angular.module('SLATE.modules')
 
 							$scope.module.data = response.result;
 
+							console.log($scope.module.data);
+
 							var years = $scope.module.data.years;
 
 							$scope.module.data.yearsAsArray = Object.keys(years).map(function(key){
@@ -40,6 +44,8 @@ angular.module('SLATE.modules')
 							});
 
 							buildYearFinalMarkGraph();
+							buildAttendanceGraph();
+							buildAttendanceAttainmentGraph();
 						}else{
 							toastr.error(data.data.message, 'Error');
 						}
@@ -264,6 +270,307 @@ angular.module('SLATE.modules')
 					}
 				}, true)
 
+			}
+
+			function buildAttendanceGraph(){
+
+				$scope.module.moduleAttendanceGraph = {
+					data: [],
+					layout: {},
+					options: {},
+					userOptions: {}
+				};
+
+				var firstRun = true;
+				function build(){
+
+					var userOptions = {};
+					if(firstRun){
+
+						if($scope.module.data){
+
+							userOptions.sessiontypes = {
+								ALL: {
+									display: true,
+									name: 'all'
+								}
+							};
+
+							Object.keys($scope.module.data.attendance).forEach(function( value, key){
+
+								if(value === 'ALL') return;
+
+								userOptions.sessiontypes[value] = {
+									display: false,
+									name: value.toLowerCase()
+								};
+
+							});
+						}
+
+						$scope.module.moduleAttendanceGraph.userOptions = userOptions;
+
+					}else{
+						userOptions = $scope.module.moduleAttendanceGraph.userOptions;
+					}
+					firstRun = false;
+
+
+					var data = [
+						{
+							x: ['week1', 'week2', 'week3', 'week4', 'week5', 'week6', 'week7', 'week8', 'week9','week10','week11','week12',
+								'week13', 'week14', 'week15', 'week16', 'week17', 'week18', 'week19', 'week20', 'week21','week22','week23','week24'],
+							y: [],
+							type: 'bar',
+							marker: {
+								color: '#3055A6'
+							}
+						}
+					];
+
+					if($scope.module.data){
+
+						data = [];
+
+						Object.keys($scope.module.data.attendance).forEach(function(item, key){
+
+							if(userOptions.sessiontypes[item].display){
+
+								var x = [];
+								var y = [];
+
+								$scope.module.data.attendance[item].forEach(function(value, key){
+
+									if(key == 0) return;
+
+									x.push('week ' + key);
+									y.push(value.mean);
+
+								});
+
+								var color;
+								if(item == 'ALL')
+									color = '#F47B20';
+								else{
+									color = config.GRAPH_COLORS[ key % config.GRAPH_COLORS.length];
+								}
+
+								data.push({
+									x: x,
+									y: y,
+									type: 'bar',
+									marker: {
+										color: color
+									},
+									name: userOptions.sessiontypes[item].name
+								})
+
+							}
+						});
+					}
+
+					var holder = document.getElementById('year-final-mark-graph-holder');
+					var width = (holder != null) ? holder.offsetWidth: 500;
+
+					var layout = {
+						showlegend: true,
+						title: 'Attendance Graph',
+						xaxis: {
+							fixedrange: true,
+							title: 'Week'
+						},
+						yaxis: {
+							range: [0,100],
+							fixedrange: true,
+							title: 'Percentance Attendance'
+						},
+						autosize: false,
+						width: width
+					};
+
+					var options = {
+						displayModeBar: false
+					};
+
+					$scope.module.moduleAttendanceGraph.data = data;
+					$scope.module.moduleAttendanceGraph.layout = layout;
+					$scope.module.moduleAttendanceGraph.options = options;
+				}
+
+				build();
+
+				$scope.$watch('module.moduleAttendanceGraph.userOptions', function(newVal, oldVal){
+
+					if(newVal !== oldVal){
+
+						build();
+						$scope.module.moduleAttendanceGraph.userOptions = newVal;
+					}
+				}, true)
+			}
+
+			function buildAttendanceAttainmentGraph(){
+
+				$scope.module.moduleAttendanceAttainmentGraph = {
+					data: [],
+					layout: {},
+					options: {},
+					userOptions: {}
+				};
+
+				var firstRun = true;
+				function build(){
+
+					var userOptions = {
+						showScatter: true,
+						showBestFit: false
+					};
+					if(firstRun){
+
+						if($scope.module.data){
+
+							userOptions.sessiontypes = {
+								ALL: {
+									display: true,
+									name: 'all',
+									color: '#F47B20'
+								}
+							};
+
+							Object.keys($scope.module.data.enrollments[0].attendance).forEach(function( value, key){
+
+								if(value === 'ALL') return;
+
+								var color = config.GRAPH_COLORS[ key % config.GRAPH_COLORS.length];
+
+								userOptions.sessiontypes[value] = {
+									display: false,
+									name: value.toLowerCase(),
+									color: color
+								};
+							});
+						}
+
+						$scope.module.moduleAttendanceAttainmentGraph.userOptions = userOptions;
+
+					}else{
+						userOptions = $scope.module.moduleAttendanceAttainmentGraph.userOptions;
+					}
+					firstRun = false;
+
+					var data = [];
+
+					if($scope.module.data){
+
+						Object.keys(userOptions.sessiontypes).forEach(function(item, key){
+
+							var session = userOptions.sessiontypes[item];
+
+							if(!session.display) return;
+
+							if(userOptions.showScatter){
+								var sessionData = {
+									x: [],
+									y: [],
+									type: 'scatter',
+									mode: 'markers',
+									marker: {
+										color: userOptions.sessiontypes[item].color
+									},
+									name: session.name
+								};
+
+								$scope.module.data.enrollments.forEach(function(value){
+
+									sessionData.x.push(value.finalMark);
+									sessionData.y.push(value.attendance[item].attendanceAverage.mean);
+								});
+
+								data.push(sessionData);
+							}
+
+							if(userOptions.showBestFit){
+
+								var sessionData = {
+									x: [],
+									y: [],
+									type: 'scatter',
+									mode: 'lines',
+									marker: {
+										color: userOptions.sessiontypes[item].color
+									},
+									name: session.name
+								};
+
+								var fits = {
+									minX: Number.MAX_VALUE,
+									maxX: Number.MIN_VALUE
+								};
+
+								$scope.module.data.enrollments.forEach(function(value){
+
+									if(fits.minX > value.finalMark) fits.minX = value.finalMark;
+									if(fits.maxX < value.finalMark) fits.maxX = value.finalMark;
+
+									//sessionData.y.push(value.attendance[item].attendanceAverage.mean);
+								});
+
+								console.log("fits)");
+								console.log(fits);
+
+								sessionData.x.push(fits.minX);
+								sessionData.y.push(fits.minX * $scope.module.data.attendanceAttainmentCorrelation[item].linearSlope
+									+ $scope.module.data.attendanceAttainmentCorrelation[item].linearIntercept);
+
+								sessionData.x.push(fits.maxX);
+								sessionData.y.push(fits.maxX * $scope.module.data.attendanceAttainmentCorrelation[item].linearSlope
+									+ $scope.module.data.attendanceAttainmentCorrelation[item].linearIntercept);
+
+								data.push(sessionData);
+							}
+						});
+
+						console.log(data)
+					}
+
+					var holder = document.getElementById('year-final-mark-graph-holder');
+					var width = (holder != null) ? holder.offsetWidth: 500;
+
+					var layout = {
+						showlegend: true,
+						title: 'Attendance vs Attainment Graph',
+						xaxis: {
+							range: [0,100],
+							fixedrange: true,
+							title: 'Final Mark Percentage'
+						},
+						yaxis: {
+							range: [0,100],
+							fixedrange: true,
+							title: 'Percentage Attendance'
+						},
+						autosize: false,
+						width: width
+					};
+
+					var options = {
+						displayModeBar: false
+					};
+
+					$scope.module.moduleAttendanceAttainmentGraph.data = data;
+					$scope.module.moduleAttendanceAttainmentGraph.layout = layout;
+					$scope.module.moduleAttendanceAttainmentGraph.options = options;
+				}
+				build();
+
+				$scope.$watch('module.moduleAttendanceAttainmentGraph.userOptions', function(newVal, oldVal){
+
+					if(newVal !== oldVal){
+
+						build();
+						$scope.module.moduleAttendanceAttainmentGraph.userOptions = newVal;
+					}
+				}, true)
 			}
 
 			modulesAdminViewController();
