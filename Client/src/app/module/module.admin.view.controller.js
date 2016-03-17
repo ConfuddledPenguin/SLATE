@@ -38,6 +38,7 @@ angular.module('SLATE.modules')
 							$scope.module.data.yearsAsArray = Object.keys(years).map(function(key){
 								var year = years[key];
 
+								year.yearOriginal = year.year;
 								year.year = year.year + "/" + (parseInt(year.year) + 1)
 
 								return year;

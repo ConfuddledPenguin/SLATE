@@ -1,9 +1,7 @@
-package com.tom_maxwell.project.analytics.ModuleAnalysers;
+package com.tom_maxwell.project.analytics.ModuleYearAnalysers;
 
-import com.tom_maxwell.project.Views.AbstractView;
 import com.tom_maxwell.project.analytics.AbstractAnalyser;
 import com.tom_maxwell.project.modules.modules.ModuleDAO;
-import com.tom_maxwell.project.modules.modules.ModuleModel;
 import com.tom_maxwell.project.modules.modules.ModuleYearModel;
 import com.tom_maxwell.project.modules.sessions.AttendanceGrouping;
 import com.tom_maxwell.project.modules.sessions.SessionModel;
@@ -23,65 +21,62 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Tom on 15/03/2016.
+ * Created by Tom on 17/03/2016.
  */
-@Component("ModuleEnrollmentAnalyser")
+@Component("ModuleYearAttendanceAttainmentAnalyser")
 @Transactional
 @Scope("prototype")
-public class ModuleEnrollmentAnalyser extends AbstractAnalyser implements ModuleEnrollmentAnalyserInterface {
+public class ModuleYearAttendanceAttainmentAnalyser extends AbstractAnalyser implements ModuleYearAttendanceAttainmentAnalyserInterface {
 
 	@Autowired
 	private ModuleDAO moduleDAO;
 
-	private ModuleModel moduleModel;
+	private ModuleYearModel yearModel;
 
 	@Override
 	public void analyse() {
 
-		moduleModel = moduleDAO.get(moduleModel.getId());
+		if(calledThroughRun)
+			yearModel = moduleDAO.get(yearModel.getModule().getClassCode(), yearModel.getYear());
 
+		//data holders
 		Map<SessionModel.SessionType, List<Double>> attendanceByType = new HashMap<>();
 		Map<SessionModel.SessionType, List<Double>> gradeByType = new HashMap<>();
 
 		Map<SessionModel.SessionType, SimpleRegression> regressionByType = new HashMap<>();
 
-		for(ModuleYearModel year: moduleModel.getModuleList() ){
+		for(Enrollment enrollment: yearModel.getEnrollments()){
 
-			if(year == null) continue;
+			for(Map.Entry<SessionModel.SessionType, AttendanceGrouping> entry: enrollment.getAttendanceMean().entrySet()){
 
-			for(Enrollment enrollment: year.getEnrollments()){
+				SessionModel.SessionType type = entry.getKey();
 
-				for(Map.Entry<SessionModel.SessionType, AttendanceGrouping> entry: enrollment.getAttendanceMean().entrySet()){
-
-					SessionModel.SessionType type = entry.getKey();
-
-					List<Double> attendance = attendanceByType.get(type);
-					if(attendance == null){
-						attendance = new ArrayList<>();
-						attendanceByType.put(type, attendance);
-					}
-
-					List<Double> grade = gradeByType.get(type);
-					if(grade == null){
-						grade = new ArrayList<>();
-						gradeByType.put(type, grade);
-					}
-
-					SimpleRegression regression = regressionByType.get(type);
-					if(regression == null){
-						regression = new SimpleRegression();
-						regressionByType.put(type, regression);
-					}
-
-					grade.add(enrollment.getFinalMark());
-					attendance.add(entry.getValue().getAttendanceAverage().getMean());
-
-					regression.addData(enrollment.getFinalMark(), entry.getValue().getAttendanceAverage().getMean());
+				List<Double> attendance = attendanceByType.get(type);
+				if(attendance == null){
+					attendance = new ArrayList<>();
+					attendanceByType.put(type, attendance);
 				}
+
+				List<Double> grade = gradeByType.get(type);
+				if(grade == null){
+					grade = new ArrayList<>();
+					gradeByType.put(type, grade);
+				}
+
+				SimpleRegression regression = regressionByType.get(type);
+				if(regression == null){
+					regression = new SimpleRegression();
+					regressionByType.put(type, regression);
+				}
+
+				grade.add(enrollment.getFinalMark());
+				attendance.add(entry.getValue().getAttendanceAverage().getMean());
+
+				regression.addData(enrollment.getFinalMark(), entry.getValue().getAttendanceAverage().getMean());
 			}
 		}
 
-		Map<SessionModel.SessionType, Correlation> attendanceAttainment = moduleModel.getAttendanceAttainmentCorrelation();
+		Map<SessionModel.SessionType, Correlation> attendanceAttainment = yearModel.getAttendanceAttainmentCorrelation();
 		for(Map.Entry<SessionModel.SessionType, List<Double>> entry: attendanceByType.entrySet()){
 
 			SessionModel.SessionType type = entry.getKey();
@@ -106,19 +101,19 @@ public class ModuleEnrollmentAnalyser extends AbstractAnalyser implements Module
 			c.setLinearIntercept(regression.getIntercept());
 		}
 
-		moduleDAO.lock(moduleModel);
-		moduleDAO.save(moduleModel);
+		moduleDAO.lock(yearModel);
+		moduleDAO.save(yearModel);
 		moduleDAO.flush();
-		moduleDAO.unlock(moduleModel);
+		moduleDAO.unlock(yearModel);
 	}
 
 	@Override
-	public ModuleModel getModuleModel() {
-		return moduleModel;
+	public ModuleYearModel getYearModel() {
+		return yearModel;
 	}
 
 	@Override
-	public void setModuleModel(ModuleModel moduleModel) {
-		this.moduleModel = moduleModel;
+	public void setYearModel(ModuleYearModel yearModel) {
+		this.yearModel = yearModel;
 	}
 }

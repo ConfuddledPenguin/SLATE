@@ -108,6 +108,14 @@ public class ModuleDAO {
 		hibernateTemplate.lock(model, LockMode.PESSIMISTIC_WRITE);
 	}
 
+	public void lock(ModuleYearModel model){
+		hibernateTemplate.lock(model, LockMode.PESSIMISTIC_WRITE);
+	}
+
+	public void unlock(ModuleYearModel model){
+		hibernateTemplate.lock(model, LockMode.NONE);
+	}
+
 	public void unlock(ModuleModel model){
 		hibernateTemplate.lock(model, LockMode.NONE);
 	}

@@ -1,1 +1,58 @@
-{{args}}
+<div class="tile-paddingless-borderless">
+	<h3>Overview</h3>
+	<div class="container container-full-width">
+		<div class="row overview-facts">
+			<div class="col-md-3">
+				<p>{{year.data.passRate |number:0}}%</p>
+				<p>Pass Rate</p>
+				<p>{{year.stats.passratephrase}}</p>
+			</div>
+			<div class="col-md-3">
+				<p>{{year.data.classAverage.mean | number:0}}%</p>
+				<p>Mark Average</p>
+				<p>{{year.stats.classaveragephrase}}</p>
+			</div>
+			<div class="col-md-3">
+				<p>{{year.data.attendanceAverage.mean | number:0}}%</p>
+				<p>Attendance Average</p>
+				<p>{{year.stats.attendanceaveragephrase}}</p>
+			</div>
+			<div class="col-md-3">
+				<p>{{year.data.noStudents | number:0}}</p>
+				<p>Total Students Taken Class</p>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="tile-paddingless">
+	<h3>Final Marks</h3>
+</div>
+<div class="tile-paddingless">
+	<h3>Grades</h3>
+</div>
+<div class="tile-paddingless">
+	<h3>Attendance</h3>
+	<div class="container container-full-width">
+		<div class="row">
+			<div class="col-md-3">
+				<p style="padding: 2rem 0 5rem;">This graph shows the final grade trend over the modules years.</p>
+				<form style="display: table">
+					<div class="form-group" ng-repeat="(key, sessiontype) in year.moduleAttendanceGraph.userOptions.sessiontypes" style="display: table-row">
+						<label for="standardDeviation" class="control-label" style="display: table-cell; vertical-align: middle">Show {{sessiontype.name | capitalize}} sessions</label>
+						<div style="display: table-cell; padding-left: 1rem">
+							<switch id="standardDeviation" name="standardDeviation" ng-model="sessiontype.display"></switch>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="col-md-9" id="year-attendance-graph-holder-{{args.key}}">
+				<plotly data="year.moduleAttendanceGraph.data" layout="year.moduleAttendanceGraph.layout" options="year.moduleAttendanceGraph.options"></plotly>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="tile-paddingless">
+	<h3>Attendance vs Attainment</h3>
+	<p>This section contains details about the classes attainment compared to attendance</p>
+	<slate-graphs-attendance-attainment-graph data="{attendance: year.data.attendance, enrollments: year.data.enrollments, attendanceAttainmentCorrelation: year.data.attendanceAttainmentCorrelation}" uniqueid="{{args.year.yearOriginal}}"></slate-graphs-attendance-attainment-graph>
+</div>

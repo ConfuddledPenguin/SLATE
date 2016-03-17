@@ -23,8 +23,11 @@ public class AbstractAnalyser implements Analyser {
 	@Autowired
 	protected HibernateTemplate hibernateTemplate;
 
+	protected boolean calledThroughRun = false;
+
 	@Override
 	public void run() {
+		calledThroughRun = true;
 		analyse();
 	}
 

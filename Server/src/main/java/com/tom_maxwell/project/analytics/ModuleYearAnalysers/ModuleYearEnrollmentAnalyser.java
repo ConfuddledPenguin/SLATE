@@ -12,6 +12,7 @@ import com.tom_maxwell.project.modules.users.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.awt.*;
@@ -24,7 +25,7 @@ import java.util.Map;
  * Created by Tom on 15/03/2016.
  */
 @Component("ModuleYearEnrollmentAnalyser")
-@Transactional
+@Transactional(isolation = Isolation.READ_COMMITTED)
 @Scope("prototype")
 public class ModuleYearEnrollmentAnalyser extends AbstractAnalyser implements ModuleYearEnrollmentAnalyserInterface {
 

@@ -26,6 +26,12 @@ public class ModuleYearAnalyticsRunner extends AbstractAnalyser implements Modul
 	private ModuleYearAverageAnalyserInterface moduleYearAverageAnalyser;
 
 	@Autowired
+	private ModuleYearAttendanceAnalyserInterface moduleYearAttendanceAnalyser;
+
+	@Autowired
+	private ModuleYearAttendanceAttainmentAnalyserInterface moduleYearAttendanceAttainmentAnalyser;
+
+	@Autowired
 	private ApplicationContext context;
 
 	@Autowired
@@ -36,7 +42,10 @@ public class ModuleYearAnalyticsRunner extends AbstractAnalyser implements Modul
 	@Override
 	public void analyse(){
 
-		moduleYearModel = moduleDAO.get(moduleYearModel.getClassCode(), moduleYearModel.getYear());
+		if(calledThroughRun)
+			moduleYearModel = moduleDAO.get(moduleYearModel.getClassCode(), moduleYearModel.getYear());
+
+		if(moduleYearModel.isAnalysed() && !ignore_analysed_bool) return;
 
 		ExecutorService executorService = Executors.newFixedThreadPool(1);
 
@@ -46,9 +55,6 @@ public class ModuleYearAnalyticsRunner extends AbstractAnalyser implements Modul
 			executorService.execute(enrollmentAnalyser);
 		}
 
-		moduleYearAverageAnalyser.setModuleYearModel(moduleYearModel);
-		executorService.execute(moduleYearAverageAnalyser);
-
 		executorService.shutdown();
 		try {
 			boolean finished = executorService.awaitTermination(10, TimeUnit.MINUTES);
@@ -56,6 +62,15 @@ public class ModuleYearAnalyticsRunner extends AbstractAnalyser implements Modul
 			e.printStackTrace();
 		}
 
+		moduleYearAverageAnalyser.setModuleYearModel(moduleYearModel);
+		moduleYearAverageAnalyser.analyse();
+		moduleYearAttendanceAnalyser.setYearModel(moduleYearModel);
+		moduleYearAttendanceAnalyser.analyse();
+		moduleYearAttendanceAttainmentAnalyser.setYearModel(moduleYearModel);
+		moduleYearAttendanceAttainmentAnalyser.analyse();
+
+		moduleYearModel.setAnalysed(true);
+		moduleDAO.save(moduleYearModel);
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package com.tom_maxwell.project.modules.modules;
 
+import com.tom_maxwell.project.modules.sessions.AttendanceGrouping;
+import com.tom_maxwell.project.modules.statistics.Correlation;
 import com.tom_maxwell.project.modules.statistics.Mean;
 import com.tom_maxwell.project.modules.assignments.AssignmentModel;
 import com.tom_maxwell.project.modules.sessions.SessionModel;
@@ -7,10 +9,7 @@ import com.tom_maxwell.project.modules.users.Enrollment;
 import com.tom_maxwell.project.modules.users.UserModel;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Tom on 06/03/2016.
@@ -44,6 +43,16 @@ public class ModuleYearModel {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "module")
 	private List<SessionModel> sessions = new ArrayList<SessionModel>();
 
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinTable(
+			name="ModuleYearAttendanceGroupings",
+			joinColumns = @JoinColumn(name="attendanceGroupingId"),
+			inverseJoinColumns = @JoinColumn(name="moduleId")
+	)
+	@MapKey(name="sessionType")
+	@MapKeyEnumerated
+	private Map<SessionModel.SessionType, AttendanceGrouping> attendanceGroupings;
+
 	@Embedded
 	@AttributeOverrides({
 			@AttributeOverride(name="mean", column = @Column(name = "finalMarkMean")),
@@ -54,7 +63,21 @@ public class ModuleYearModel {
 					})
 	private Mean finalMark;
 
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinTable(
+			name="ModuleYearAttendanceAttainmentCorrelations",
+			joinColumns = @JoinColumn(name="moduleId"),
+			inverseJoinColumns = @JoinColumn(name="correlationId")
+	)
+	@MapKey(name = "sessionType")
+	@MapKeyEnumerated
+	private Map<SessionModel.SessionType, Correlation> attendanceAttainmentCorrelation;
+
 	private double passRate = 0;
+
+	private int noStudents;
+
+	private boolean analysed = false;
 
 	public ModuleYearModel() {
 	}
@@ -144,5 +167,37 @@ public class ModuleYearModel {
 
 	public void setFinalMark(Mean finalMark) {
 		this.finalMark = finalMark;
+	}
+
+	public boolean isAnalysed() {
+		return analysed;
+	}
+
+	public void setAnalysed(boolean analysed) {
+		this.analysed = analysed;
+	}
+
+	public Map<SessionModel.SessionType, AttendanceGrouping> getAttendanceGroupings() {
+		return attendanceGroupings;
+	}
+
+	public void setAttendanceGroupings(Map<SessionModel.SessionType, AttendanceGrouping> attendanceGroupings) {
+		this.attendanceGroupings = attendanceGroupings;
+	}
+
+	public int getNoStudents() {
+		return noStudents;
+	}
+
+	public void setNoStudents(int noStudents) {
+		this.noStudents = noStudents;
+	}
+
+	public Map<SessionModel.SessionType, Correlation> getAttendanceAttainmentCorrelation() {
+		return attendanceAttainmentCorrelation;
+	}
+
+	public void setAttendanceAttainmentCorrelation(Map<SessionModel.SessionType, Correlation> attendanceAttainmentCorrelation) {
+		this.attendanceAttainmentCorrelation = attendanceAttainmentCorrelation;
 	}
 }

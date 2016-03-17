@@ -1,0 +1,116 @@
+<div class="container container-full-width">
+	<div class="row">
+		<div class="col-md-3">
+			<form style="display: table">
+				<br>
+				<br>
+				<div class="form-group" ng-repeat="(key, sessiontype) in graph.userOptions.sessiontypes" style="display: table-row">
+					<label for="standardDeviation" class="control-label" style="display: table-cell; vertical-align: middle">Show {{sessiontype.name | capitalize}} sessions</label>
+					<div style="display: table-cell; padding-left: 1rem">
+						<switch id="standardDeviation" name="standardDeviation" ng-model="sessiontype.display"></switch>
+					</div>
+				</div>
+				<br>
+				<div class="form-group" style="display: table-row">
+					<label for="standardDeviation" class="control-label" style="display: table-cell; vertical-align: middle">Show Scatter</label>
+					<div style="display: table-cell; padding-left: 1rem">
+						<switch id="standardDeviation" name="standardDeviation" ng-model="graph.userOptions.showScatter"></switch>
+					</div>
+				</div>
+				<div class="form-group" style="display: table-row">
+					<label for="standardDeviation" class="control-label" style="display: table-cell; vertical-align: middle">Show Best Fit</label>
+					<div style="display: table-cell; padding-left: 1rem">
+						<switch id="standardDeviation" name="standardDeviation" ng-model="graph.userOptions.showBestFit"></switch>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="col-md-9" id="attendance-attainment-graph-{{uniqueId}}">
+			<plotly data="graph.data" layout="graph.layout" options="graph.options"></plotly>
+		</div>
+	</div>
+	<div class="tile tile-paddingless-borderless">
+		<h4>Further Details</h4>
+		<div class="row tile tile-paddingless-borderless" ng-repeat="(key, value) in graph.userOptions.sessiontypes" ng-if="value.display">
+			<div class="color-block" ng-style="{'background': '{{value.color}}'}"></div>
+			<h5 style="padding-left: .9375rem; display: inline-block">{{value.name | capitalize}} Sessions</h5>
+			<div class="container container-full-width">
+				<div class="row attendance-attainment-facts">
+					<div class="col-md-3 highlight">
+						<p>{{data.attendanceAttainmentCorrelation[key].pearson | number: 2}}</p>
+						<p uib-tooltip="The pearson value is a measure of how 'tight' the correlation is. The higher this value the more certain you can be that the correlation exists.">Pearson Value</p>
+					</div>
+					<div class="col-md-9">
+						<p ng-if="data.attendanceAttainmentCorrelation[key].pearson >= 0.5">
+							A pearson value with this range is considered a strong correlation. This means that the attending {{value.name}} sessions appears to have a significant positive impact on the final grade of students.
+						</p>
+						<p ng-if="data.attendanceAttainmentCorrelation[key].pearson >= 0.3 && data.attendanceAttainmentCorrelation[key].pearson < 0.5">
+							A pearson value with this range is considered a moderate correlation. This means that the attending {{value.name}} sessions appears to have an positive impact on the final grade of students.
+						</p>
+						<p ng-if="data.attendanceAttainmentCorrelation[key].pearson > 0.1 && data.attendanceAttainmentCorrelation[key].pearson < 0.3">
+							A pearson value with this range is considered a week correlation. This means that the attending {{value.name}} sessions appears to have a little impact on the final grade of students.
+						</p>
+						<p ng-if="data.attendanceAttainmentCorrelation[key].pearson > -0.1 && data.attendanceAttainmentCorrelation[key].pearson < 0.1">
+							A pearson value with this range is considered a week correlation. This means that the attending {{value.name}} sessions appears to have no impact on the final grade of students.
+						</p>
+						<p ng-if="data.attendanceAttainmentCorrelation[key].pearson <= -0.1 && data.attendanceAttainmentCorrelation[key].pearson < -0.3">
+							A pearson value with this range is considered a week correlation. This means that the attending {{value.name}} sessions appears to have a little detrimental impact on the final grade of students.
+						</p>
+						<p ng-if="data.attendanceAttainmentCorrelation[key].pearson <= -0.3 && data.attendanceAttainmentCorrelation[key].pearson > -0.5">
+							A pearson value with this range is considered a moderate negative correlation. This means that the attending {{value.name}} sessions appears to have an detrimental impact on the final grade of students.
+						</p>
+						<p ng-if="data.attendanceAttainmentCorrelation[key].pearson < -0.5">
+							A pearson value with this range is considered a strong negative correlation. This means that the attending {{value.name}} sessions appears to have a significant detrimental impact on the final grade of students.
+						</p>
+					</div>
+				</div>
+				<div class="row attendance-attainment-facts">
+					<div class="col-md-3 highlight">
+						<p>{{data.attendanceAttainmentCorrelation[key].linearSlope | number: 2}}</p>
+						<p>Linear Slope</p>
+					</div>
+					<div class="col-md-9">
+						<p ng-if="data.attendanceAttainmentCorrelation[key].linearSlope >= 0.5">
+							A pearson value with this range is considered a strong correlation. This means that the attending {{value.name}} sessions appears to have a significant positive impact on the final grade of students.
+						</p>
+						<p ng-if="data.attendanceAttainmentCorrelation[key].linearSlope >= 0.3 && data.attendanceAttainmentCorrelation[key].linearSlope < 0.5">
+							A pearson value with this range is considered a moderate correlation. This means that the attending {{value.name}} sessions appears to have an positive impact on the final grade of students.
+						</p>
+						<p ng-if="data.attendanceAttainmentCorrelation[key].linearSlope > -0.3 && data.attendanceAttainmentCorrelation[key].linearSlope < 0.3">
+							A pearson value with this range is considered a week correlation. This means that the attending {{value.name}} sessions appears to have a little to no impact on the final grade of students.
+						</p>
+						<p ng-if="data.attendanceAttainmentCorrelation[key].linearSlope <= -0.3 && data.attendanceAttainmentCorrelation[key].linearSlope > -0.5">
+							A pearson value with this range is considered a moderate negative correlation. This means that the attending {{value.name}} sessions appears to have an detrimental impact on the final grade of students.
+						</p>
+						<p ng-if="data.attendanceAttainmentCorrelation[key].linearSlope < -0.5">
+							A pearson value with this range is considered a strong negative correlation. This means that the attending {{value.name}} sessions appears to have a significant detrimental impact on the final grade of students.
+						</p>
+					</div>
+				</div>
+				<div class="row attendance-attainment-facts">
+					<div class="col-md-3 highlight">
+						<p>{{data.attendanceAttainmentCorrelation[key].linearIntercept | number: 2}}</p>
+						<p>Linear Intercept</p>
+					</div>
+					<div class="col-md-9">
+						<p ng-if="data.attendanceAttainmentCorrelation[key].linearIntercept >= 0.5">
+							A pearson value with this range is considered a strong correlation. This means that the attending {{value.name}} sessions appears to have a significant positive impact on the final grade of students.
+						</p>
+						<p ng-if="data.attendanceAttainmentCorrelation[key].linearIntercept >= 0.3 && data.attendanceAttainmentCorrelation[key].linearIntercept < 0.5">
+							A pearson value with this range is considered a moderate correlation. This means that the attending {{value.name}} sessions appears to have an positive impact on the final grade of students.
+						</p>
+						<p ng-if="data.attendanceAttainmentCorrelation[key].linearIntercept > -0.3 && data.attendanceAttainmentCorrelation[key].linearIntercept < 0.3">
+							A pearson value with this range is considered a week correlation. This means that the attending {{value.name}} sessions appears to have a little to no impact on the final grade of students.
+						</p>
+						<p ng-if="data.attendanceAttainmentCorrelation[key].linearIntercept <= -0.3 && data.attendanceAttainmentCorrelation[key].linearIntercept > -0.5">
+							A pearson value with this range is considered a moderate negative correlation. This means that the attending {{value.name}} sessions appears to have an detrimental impact on the final grade of students.
+						</p>
+						<p ng-if="data.attendanceAttainmentCorrelation[key].linearIntercept < -0.5">
+							A pearson value with this range is considered a strong negative correlation. This means that the attending {{value.name}} sessions appears to have a significant detrimental impact on the final grade of students.
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -2,6 +2,8 @@ package com.tom_maxwell.project.modules.modules;
 
 import com.tom_maxwell.project.Views.*;
 import com.tom_maxwell.project.analytics.ModuleAnalysers.ModuleAnalyticsRunnerInterface;
+import com.tom_maxwell.project.analytics.ModuleYearAnalysers.ModuleYearAnalyticsRunner;
+import com.tom_maxwell.project.analytics.ModuleYearAnalysers.ModuleYearAnalyticsRunnerInterface;
 import com.tom_maxwell.project.modules.assignments.AssignmentMarkModel;
 import com.tom_maxwell.project.modules.assignments.AssignmentModel;
 import com.tom_maxwell.project.modules.assignments.AssignmentView;
@@ -18,6 +20,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,7 +42,7 @@ public class ModuleService {
 	private EntitlementService entitlementService;
 
 	@Autowired
-	private ModuleAnalyticsRunnerInterface moduleAnalyticsRunnerInterface;
+	private ApplicationContext context;
 
 	@Autowired
 	private EnrollmentService enrollmentService;
@@ -62,6 +65,12 @@ public class ModuleService {
 		}
 
 		entitlementService.canAccessModule(moduleModel);
+
+		ModuleYearAnalyticsRunnerInterface moduleYearAnalyticsRunner = (ModuleYearAnalyticsRunnerInterface) context.getBean("ModuleYearAnalyticsRunner");
+
+		moduleYearAnalyticsRunner.setModuleYearModel(moduleModel);
+		moduleYearAnalyticsRunner.analyse();
+
 
 		if(role == UserModel.Role.STUDENT){
 
@@ -101,10 +110,36 @@ public class ModuleService {
 			view.setDataExists(true);
 			return view;
 
-		}else{
-			return null;
+		}else if( role == UserModel.Role.ADMIN){
+
+			ModuleYearDetailAdminView view = new ModuleYearDetailAdminView();
+
+			view.setYear(moduleModel.getYear());
+			view.setClassAverage(moduleModel.getFinalMark());
+			view.setPassRate(moduleModel.getPassRate());
+			view.setAttendanceAverage(moduleModel.getAttendanceGroupings().get(SessionModel.SessionType.ALL).getAttendanceAverage());
+			view.setNoStudents(moduleModel.getNoStudents());
+
+			Map<SessionModel.SessionType, List<Mean>> att = view.getAttendance();
+			for(Map.Entry<SessionModel.SessionType, AttendanceGrouping> entry: moduleModel.getAttendanceGroupings().entrySet()){
+				att.put(entry.getKey(), entry.getValue().getWeeklyMeans());
+			}
+			view.setAttendance(att);
+
+			view.setAttendanceAttainmentCorrelation(moduleModel.getAttendanceAttainmentCorrelation());
+
+			List<View> enrollments = view.getEnrollments();
+
+			for(Enrollment enrollment: moduleModel.getEnrollments()){
+				enrollments.add(enrollmentService.getEnrollmentView(enrollment));
+			}
+
+
+			view.setDataExists(true);
+			return view;
 		}
 
+		return null;
 	}
 
 	public View getModuleAdmin(String classCode){
@@ -143,8 +178,9 @@ public class ModuleService {
 			throw new AccessDeniedException();
 		}
 
-		moduleAnalyticsRunnerInterface.setModuleModel(moduleModel);
-		moduleAnalyticsRunnerInterface.analyse();
+		ModuleAnalyticsRunnerInterface moduleAnalyticsRunner = (ModuleAnalyticsRunnerInterface) context.getBean("moduleAnalyticsRunner");
+		moduleAnalyticsRunner.setModuleModel(moduleModel);
+		moduleAnalyticsRunner.analyse();
 
 		moduleDAO.clear();
 		moduleDAO.refresh(moduleModel);

@@ -6,7 +6,7 @@ import com.tom_maxwell.project.modules.modules.ModuleModel;
 /**
  * Created by Tom on 15/03/2016.
  */
-public interface ModuleEnrollmentAnalyserInterface extends Analyser {
+public interface ModuleAttendanceAttainmentAnalyserInterface extends Analyser {
 	@Override
 	void analyse();
 

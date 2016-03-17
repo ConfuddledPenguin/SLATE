@@ -29,7 +29,8 @@ public class ModuleYearAverageAnalyser extends AbstractAnalyser implements Modul
 
 		double averageTracker = 0;
 
-		moduleYearModel = moduleDAO.get(moduleYearModel.getClassCode(), moduleYearModel.getYear());
+		if(calledThroughRun)
+			moduleYearModel = moduleDAO.get(moduleYearModel.getClassCode(), moduleYearModel.getYear());
 
 		DescriptiveStatistics statistics = new DescriptiveStatistics();
 
@@ -56,8 +57,10 @@ public class ModuleYearAverageAnalyser extends AbstractAnalyser implements Modul
 		double passRate = noPasses / noStudents * 100;
 		moduleYearModel.setPassRate(passRate);
 
+		moduleDAO.lock(moduleYearModel);
 		moduleDAO.save(moduleYearModel);
 		moduleDAO.flush();
+		moduleDAO.unlock(moduleYearModel);
 	}
 
 	@Override

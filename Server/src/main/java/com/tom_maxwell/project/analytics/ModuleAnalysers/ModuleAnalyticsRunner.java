@@ -1,7 +1,6 @@
 package com.tom_maxwell.project.analytics.ModuleAnalysers;
 
 import com.tom_maxwell.project.analytics.AbstractAnalyser;
-import com.tom_maxwell.project.analytics.ModuleYearAnalysers.ModuleYearAnalyticsRunner;
 import com.tom_maxwell.project.analytics.ModuleYearAnalysers.ModuleYearAnalyticsRunnerInterface;
 import com.tom_maxwell.project.modules.modules.ModuleDAO;
 import com.tom_maxwell.project.modules.modules.ModuleModel;
@@ -19,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by Tom on 06/03/2016.
  */
-@Component
+@Component("moduleAnalyticsRunner")
 @Transactional(readOnly = false)
 @Scope("prototype")
 public class ModuleAnalyticsRunner extends AbstractAnalyser implements ModuleAnalyticsRunnerInterface {
@@ -64,7 +63,7 @@ public class ModuleAnalyticsRunner extends AbstractAnalyser implements ModuleAna
 			moduleAttendanceAnalyser.analyse();
 			moduleClassAverageAnalyser.analyse();
 
-			ModuleEnrollmentAnalyserInterface moduleEnrollmentAnalyser = (ModuleEnrollmentAnalyserInterface) context.getBean("ModuleEnrollmentAnalyser");
+			ModuleAttendanceAttainmentAnalyserInterface moduleEnrollmentAnalyser = (ModuleAttendanceAttainmentAnalyserInterface) context.getBean("ModuleAttendanceAttainmentAnalyser");
 			moduleEnrollmentAnalyser.setModuleModel(moduleModel);
 			moduleEnrollmentAnalyser.analyse();
 
