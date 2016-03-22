@@ -1,21 +1,22 @@
 /**
- * Created by Tom on 17/03/2016.
+ * Created by Tom on 21/03/2016.
  */
 
+
 angular.module('SLATE.graphs')
-	.directive('slateGraphsAttendanceAttainmentGraph', function(){
+	.directive('slateGraphsAttendanceGraph', function(){
 		return {
-			templateUrl: 'app/graph/graph.attendanceattainmentgraph.html',
+			templateUrl: 'app/graph/graph.attendancegraph.html',
 			scope: {
 				data: '=data',
 				uniqueId: '@uniqueid'
 			},
-			controller: 'SLATE.graphs.attendanceattainmentgraph.controller'
+			controller: 'SLATE.graphs.attendancegraph.controller'
 		}
 	})
-	.controller('SLATE.graphs.attendanceattainmentgraph.controller', ['$scope', 'SLATE.config', '$timeout', function($scope, config, $timeout){
+	.controller('SLATE.graphs.attendancegraph.controller', ['$scope', 'SLATE.config', function($scope, config){
 
-		function graphsAttendanceAttainmentGraphController(){
+		function graphsAttendanceGraphController(){
 
 			$scope.graph = {};
 
@@ -76,9 +77,21 @@ angular.module('SLATE.graphs')
 				}
 				firstRun = false;
 
-				var data = [];
+				var data = [
+					{
+						x: ['week1', 'week2', 'week3', 'week4', 'week5', 'week6', 'week7', 'week8', 'week9','week10','week11','week12',
+							'week13', 'week14', 'week15', 'week16', 'week17', 'week18', 'week19', 'week20', 'week21','week22','week23','week24'],
+						y: [],
+						type: 'bar',
+						marker: {
+							color: '#3055A6'
+						}
+					}
+				];
 
 				if($scope.data.attendance){
+
+					data = [];
 
 					Object.keys(userOptions.sessiontypes).forEach(function(item, key){
 
@@ -86,79 +99,44 @@ angular.module('SLATE.graphs')
 
 						if(!session.display) return;
 
-						if(userOptions.showScatter){
 							var sessionData = {
 								x: [],
 								y: [],
-								type: 'scatter',
-								mode: 'markers',
+								type: 'bar',
 								marker: {
 									color: userOptions.sessiontypes[item].color
 								},
 								name: session.name
 							};
 
-							$scope.data.enrollments.forEach(function(value){
+						$scope.data.attendance[item].forEach(function(value, key){
 
-								sessionData.x.push(value.finalMark);
-								sessionData.y.push(value.attendance[item].attendanceAverage.mean);
-							});
+							if(key == 0) return;
 
-							data.push(sessionData);
-						}
+							sessionData.x.push('week ' + key);
+							sessionData.y.push(value.mean);
 
-						if(userOptions.showBestFit){
+						});
 
-							var sessionData = {
-								x: [],
-								y: [],
-								type: 'scatter',
-								mode: 'lines',
-								marker: {
-									color: userOptions.sessiontypes[item].color
-								},
-								name: session.name
-							};
+						data.push(sessionData);
 
-							var fits = {
-								minX: Number.MAX_VALUE,
-								maxX: Number.MIN_VALUE
-							};
-
-							$scope.data.enrollments.forEach(function(value){
-
-								if(fits.minX > value.finalMark) fits.minX = value.finalMark;
-								if(fits.maxX < value.finalMark) fits.maxX = value.finalMark;
-							});
-
-							sessionData.x.push(fits.minX);
-							sessionData.y.push(fits.minX * $scope.data.attendanceAttainmentCorrelation[item].linearSlope
-								+ $scope.data.attendanceAttainmentCorrelation[item].linearIntercept);
-
-							sessionData.x.push(fits.maxX);
-							sessionData.y.push(fits.maxX * $scope.data.attendanceAttainmentCorrelation[item].linearSlope
-								+ $scope.data.attendanceAttainmentCorrelation[item].linearIntercept);
-
-							data.push(sessionData);
-						}
 					});
 				}
 
-				var holder = document.getElementById('attendance-attainment-graph-' + $scope.uniqueId);
+				var holder = document.getElementById('attendance-graph-' + $scope.uniqueId);
 				var width = (holder != null) ? holder.offsetWidth: 500;
 
 				var layout = {
 					showlegend: true,
-					title: 'Attendance vs Attainment Graph',
+					title: 'Attendance Graph',
 					xaxis: {
-						range: [0,100],
 						fixedrange: true,
-						title: 'Final Mark Percentage'
+						title: 'Week'
 					},
 					yaxis: {
 						range: [0,100],
 						fixedrange: true,
-						title: 'Percentage Attendance'
+						title: 'Percentance Attendance'
 					},
 					autosize: false,
 					width: width
@@ -185,7 +163,7 @@ angular.module('SLATE.graphs')
 
 			$scope.$watch(
 				function(){
-					var holder = document.getElementById('attendance-attainment-graph-' + $scope.uniqueId);
+					var holder = document.getElementById('attendance-graph-' + $scope.uniqueId);
 					var width = (holder != null) ? holder.offsetWidth: 500;
 					return width;
 				},
@@ -195,6 +173,6 @@ angular.module('SLATE.graphs')
 			)
 		}
 
-		graphsAttendanceAttainmentGraphController();
+		graphsAttendanceGraphController();
 
 	}]);

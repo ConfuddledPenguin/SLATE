@@ -11,11 +11,5 @@ public interface AnalyticsRunnerInterface extends Analyser {
 
 	void runAll();
 
-	void runAllModulesAnalytics();
-
-	void runModuleAnalytics(ModuleModel module);
-
-	void runSessionAnalytics();
-
 	void runGlobalAnalytics();
 }

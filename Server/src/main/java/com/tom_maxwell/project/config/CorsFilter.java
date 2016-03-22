@@ -1,6 +1,7 @@
 package com.tom_maxwell.project.config;
 
 import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
@@ -23,7 +24,17 @@ public class CorsFilter implements javax.servlet.Filter {
 		// TODO Auto-generated method stub
 		HttpServletResponse response=(HttpServletResponse) resp;
 
-		response.setHeader("Access-Control-Allow-Origin", "http://localhost");
+        HttpServletRequest request = (HttpServletRequest) req;
+
+        String originalHost = request.getHeader("Origin");
+        String allowOrigin = "http://localhost";
+        if(originalHost.equals("http://localhost")){
+            allowOrigin = "http://localhost";
+        }else if(originalHost.equals("http://localhost:8090")){
+            allowOrigin = "http://localhost:8090";
+        }
+
+		response.setHeader("Access-Control-Allow-Origin", allowOrigin);
 		response.setHeader("Access-Control-Allow-Methods", "POST, PUT, GET, OPTIONS, DELETE");
 		response.setHeader("Access-Control-Max-Age", "3600");
 		response.setHeader("Access-Control-Allow-Headers", "x-access-token, Content-Type");

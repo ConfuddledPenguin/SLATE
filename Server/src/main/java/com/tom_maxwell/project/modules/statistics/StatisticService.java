@@ -23,15 +23,31 @@ public class StatisticService {
 	@Autowired
 	private HttpServletRequest request;
 
-	public void save(Statistic statistic){
+	public void save(StatisticInterface statistic){
 		statisticDAO.save(statistic);
 	}
 
-	public Statistic get(Statistic.Stat_type id){
-		Statistic statistic = statisticDAO.get(id);
+	public StatisticInterface get(StatisticModel.Stat_type id){
+		StatisticInterface statistic = statisticDAO.get(id);
 
 		if(statistic == null){
-			return Statistic.createStatistic(id);
+
+			return StatisticModel.createStatistic(id);
+		}
+
+		return statistic;
+	}
+
+	public void save(StatisticFlexibleModel statistic){
+		statisticDAO.save(statistic);
+	}
+
+	public StatisticFlexibleModel get(String id){
+		StatisticFlexibleModel statistic = statisticDAO.get(id);
+
+		if(statistic == null){
+
+			return StatisticFlexibleModel.createStatistic(id);
 		}
 
 		return statistic;
@@ -54,17 +70,22 @@ public class StatisticService {
 
 			stat = stat.trim();
 
-			Statistic.Stat_type stat_type;
-			try{
-				 stat_type = Statistic.Stat_type.valueOf(stat);
-			}catch(IllegalArgumentException e){
-				GenericView view = new GenericView();
-				view.setDataExists(false);
-				view.setMessage(stat + " is not a valid statistic");
-				return view;
-			}
+			StatisticInterface s = get(stat);
+			if(s == null) {
 
-			Statistic s = get(stat_type);
+				StatisticModel.Stat_type stat_type;
+				try {
+					stat_type = StatisticModel.Stat_type.valueOf(stat);
+				} catch (IllegalArgumentException e) {
+					GenericView view = new GenericView();
+					view.setDataExists(false);
+					view.setMessage(stat + " is not a valid statistic");
+					return view;
+				}
+
+				s = get(stat_type);
+
+			}
 
 			result.put(s.getName(), s.getValue());
 		}

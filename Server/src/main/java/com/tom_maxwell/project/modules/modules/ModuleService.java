@@ -9,8 +9,11 @@ import com.tom_maxwell.project.modules.assignments.AssignmentModel;
 import com.tom_maxwell.project.modules.assignments.AssignmentView;
 import com.tom_maxwell.project.modules.auth.AccessDeniedException;
 import com.tom_maxwell.project.modules.auth.EntitlementService;
+import com.tom_maxwell.project.modules.messages.MessageService;
+import com.tom_maxwell.project.modules.messages.MessageView;
 import com.tom_maxwell.project.modules.sessions.AttendanceGrouping;
 import com.tom_maxwell.project.modules.sessions.SessionModel;
+import com.tom_maxwell.project.modules.statistics.Correlation;
 import com.tom_maxwell.project.modules.statistics.Mean;
 import com.tom_maxwell.project.modules.users.Enrollment;
 import com.tom_maxwell.project.modules.users.EnrollmentService;
@@ -19,6 +22,7 @@ import com.tom_maxwell.project.modules.users.UserStudentView;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
+import org.atteo.evo.inflector.English;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
@@ -46,6 +50,9 @@ public class ModuleService {
 
 	@Autowired
 	private EnrollmentService enrollmentService;
+
+	@Autowired
+	private MessageService messageService;
 
 	@Autowired
 	private HttpServletRequest request;
@@ -85,27 +92,27 @@ public class ModuleService {
 			Set<UserStudentView> users = getStudentUserViews(moduleModel.getModule(), view.getTeachingStaff());
 			view.setTeachingStaff(users);
 
-			List<AssignmentView> assignmentStudentViews = view.getAssignments();
-			for(AssignmentModel assignmentModel: moduleModel.getAssignments()){
-
-				double percentage = 0;
-				double average = 0;
-				for(AssignmentMarkModel assignmentMarkModel: assignmentModel.getAssignmentMarks()){
-					if(assignmentMarkModel.getUser().getUsername().equals(username)){
-						percentage = assignmentMarkModel.getPercentage();
-						break;
-					}
-				}
-
-				assignmentStudentViews.add(new AssignmentView(
-						assignmentModel.getId(),
-						assignmentModel.getName(),
-						assignmentModel.getAssignmentNo(),
-						assignmentModel.getDueDate(),
-						percentage,
-						assignmentModel.getMarkMean().getMean()
-				));
-			}
+//			List<AssignmentView> assignmentStudentViews = view.getAssignments();
+//			for(AssignmentModel assignmentModel: moduleModel.getAssignments()){
+//
+//				double percentage = 0;
+//				double average = 0;
+//				for(AssignmentMarkModel assignmentMarkModel: assignmentModel.getAssignmentMarks()){
+//					if(assignmentMarkModel.getUser().getUsername().equals(username)){
+//						percentage = assignmentMarkModel.getPercentage();
+//						break;
+//					}
+//				}
+//
+//				assignmentStudentViews.add(new AssignmentView(
+//						assignmentModel.getId(),
+//						assignmentModel.getName(),
+//						assignmentModel.getAssignmentNo(),
+//						assignmentModel.getDueDate(),
+//						percentage,
+//						assignmentModel.getMarkMean().getMean()
+//				));
+//			}
 
 			view.setDataExists(true);
 			return view;
@@ -225,6 +232,10 @@ public class ModuleService {
 
 		view.setAttendanceAttainmentCorrelation(moduleModel.getAttendanceAttainmentCorrelation());
 
+		Set<View> messages = getMessages(moduleModel);
+
+		view.setMessages(messages);
+
 		Set<UserStudentView> users = getStudentUserViews(moduleModel, view.getTeachingStaff());
 		view.setTeachingStaff(users);
 
@@ -272,5 +283,80 @@ public class ModuleService {
 		}
 
 		return usersViews;
+	}
+
+	private Set<View> getMessages(ModuleModel module){
+
+		Set<View> messages = new HashSet<>();
+
+		Map<SessionModel.SessionType, Correlation> groupings = module.getAttendanceAttainmentCorrelation();
+
+		for(Map.Entry<SessionModel.SessionType, Correlation> entry: groupings.entrySet()){
+
+			Correlation c = entry.getValue();
+
+			double pearson = c.getPearson();
+
+			StringBuilder message = new StringBuilder();
+
+			if(pearson > 0.5){
+				message.append( messageService.get("ATTENDANCE_ATTAINMENT_HIGH_POSITIVE_PEARS").getText() );
+			}else if(pearson> 0.3){
+				message.append( messageService.get("ATTENDANCE_ATTAINMENT_MEDIUM_POSITIVE_PEARS").getText() );
+			}else if(pearson > 0.1){
+				message.append( messageService.get("ATTENDANCE_ATTAINMENT_LOW_POSITIVE_PEARS").getText() );
+			}else if(pearson < -0.1){
+				message.append( messageService.get("ATTENDANCE_ATTAINMENT_HIGH_NEGATIVE_PEARS").getText() );
+			}else if(pearson < -0.3){
+				message.append( messageService.get("ATTENDANCE_ATTAINMENT_MEDIUM_NEGATIVE_PEARS").getText() );
+			}else if(pearson < -0.5){
+				message.append( messageService.get("ATTENDANCE_ATTAINMENT_LOW_NEGATIVE_PEARS").getText() );
+			}
+
+			message.append(", ");
+
+			double slope = c.getLinearSlope();
+
+			if(slope > 0.5){
+				message.append( messageService.get("ATTENDANCE_ATTAINMENT_STEEP_SLOPE").getText() );
+			}else if(slope > 0.25){
+				message.append( messageService.get("ATTENDANCE_ATTAINMENT_MEDIUM_SLOPE").getText() );
+			}else{
+				message.append( messageService.get("ATTENDANCE_ATTAINMENT_GENTLE_SLOPE").getText() );
+			}
+
+			message.append(", ");
+
+			if(pearson < 0){
+				message.append( messageService.get("ATTENDANCE_ATTAINMENT_DONTRECOMMEND").getText());
+			}else{
+
+				if(slope > 0.5){
+					message.append( messageService.get("ATTENDANCE_ATTAINMENT_RECOMMEND").getText() );
+				}else{
+					message.append( messageService.get("ATTENDANCE_ATTAINMENT_MEHRECOMMEND").getText() );
+				}
+			}
+
+			message.append(".");
+
+			String messageString = message.toString();
+
+			if(entry.getKey() == SessionModel.SessionType.ALL){
+				messageString = messageString.replaceAll(":sessiontype", "module");
+			}else{
+				messageString = messageString.replaceAll(":sessiontype", "modules " + English.plural(entry.getKey().toString().toLowerCase(), 2));
+			}
+
+
+			MessageView messageView = new MessageView();
+			messageView.setText(messageString);
+			messageView.setType("ATTENDANCE_ATTAINMENT");
+			messageView.setName("ATTENDANCE_ATTAINMENT_" + entry.getKey().toString());
+			messageView.setSuccessful(true);
+			messages.add(messageView);
+		}
+
+		return messages;
 	}
 }

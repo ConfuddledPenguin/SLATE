@@ -15,11 +15,19 @@ public class StatisticDAO {
 	@Autowired
 	private HibernateTemplate hibernateTemplate;
 
-	public void save(Statistic statistic){
+	public void save(StatisticInterface statistic){
 		hibernateTemplate.merge(statistic);
 	}
 
-	public Statistic get(Statistic.Stat_type id){
-		return hibernateTemplate.get(Statistic.class, id);
+	public StatisticInterface get(StatisticModel.Stat_type id){
+		return hibernateTemplate.get(StatisticModel.class, id);
+	}
+
+	public void save(StatisticFlexibleModel statistic){
+		hibernateTemplate.merge(statistic);
+	}
+
+	public StatisticFlexibleModel get(String id){
+		return hibernateTemplate.get(StatisticFlexibleModel.class, id);
 	}
 }

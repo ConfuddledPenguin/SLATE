@@ -40,6 +40,9 @@ public class WebAppInit implements WebApplicationInitializer{
 		dispatcher.setLoadOnStartup(1);
 		dispatcher.addMapping("*.json");
 
+		//load messages
+		MessageConfig messageConfig = context.getBean(MessageConfig.class);
+		messageConfig.load();
 
 		//Spin off on start analytics
 		AnalyticsRunnerInterface analyticsRunnerInterface = (AnalyticsRunnerInterface) context.getBean("AnalyticsRunner");

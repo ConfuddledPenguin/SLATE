@@ -74,6 +74,8 @@ public class ModuleModel{
 
 	private boolean analysed;
 
+	private int moduleLevel;
+
 	public ModuleModel() {
 	}
 
@@ -171,5 +173,13 @@ public class ModuleModel{
 
 	public void setAttendanceAttainmentCorrelation(Map<SessionModel.SessionType, Correlation> attendanceAttainmentCorrelation) {
 		this.attendanceAttainmentCorrelation = attendanceAttainmentCorrelation;
+	}
+
+	public int getModuleLevel() {
+		return moduleLevel;
+	}
+
+	public void setModuleLevel(int moduleLevel) {
+		this.moduleLevel = moduleLevel;
 	}
 }

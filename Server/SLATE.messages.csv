@@ -1,0 +1,23 @@
+# This file contains the messages that are to be displayed to the user. This file is loaded on startup
+#
+# Attendance attainment---------------------------------------------------------------------------------------
+#
+# Pearson info
+ATTENDANCE_ATTAINMENT_HIGH_POSITIVE_PEARS,      ATTENDANCE_ATTAINMENT,    This :sessiontype features a strong positive correlation between attendance and correlation
+ATTENDANCE_ATTAINMENT_MEDIUM_POSITIVE_PEARS,    ATTENDANCE_ATTAINMENT,    This :sessiontype features a medium positive correlation between attendance and correlation
+ATTENDANCE_ATTAINMENT_LOW_POSITIVE_PEARS,       ATTENDANCE_ATTAINMENT,    This :sessiontype features a weak positive correlation between attendance and correlation
+ATTENDANCE_ATTAINMENT_HIGH_NEGATIVE_PEARS,      ATTENDANCE_ATTAINMENT,    This :sessiontype features a strong negative correlation between attendance and correlation
+ATTENDANCE_ATTAINMENT_MEDIUM_NEGATIVE_PEARS,    ATTENDANCE_ATTAINMENT,    This :sessiontype features a medium negative correlation between attendance and correlation
+ATTENDANCE_ATTAINMENT_LOW_NEGATIVE_PEARS,       ATTENDANCE_ATTAINMENT,    This :sessiontype features a weak negative correlation between attendance and correlation
+#
+# Slope info
+#
+ATTENDANCE_ATTAINMENT_STEEP_SLOPE,      ATTENDANCE_ATTAINMENT,   the data suggests that attendance will have a large impact final marks
+ATTENDANCE_ATTAINMENT_MEDIUM_SLOPE,     ATTENDANCE_ATTAINMENT,   the data suggests that attendance will have an impact final marks
+ATTENDANCE_ATTAINMENT_GENTLE_SLOPE,     ATTENDANCE_ATTAINMENT,   the data suggests that attendance will not overly effect final marks
+#
+# GUIDANCE
+#
+ATTENDANCE_ATTAINMENT_RECOMMEND,            ATTENDANCE_ATTAINMENT,      therefore we recommend you attend the :sessiontype as much as possible
+ATTENDANCE_ATTAINMENT_MEHRECOMMEND,         ATTENDANCE_ATTAINMENT,      therefore we advise you attend the :sessiontype
+ATTENDANCE_ATTAINMENT_DONTRECOMMEND,        ATTENDANCE_ATTAINMENT,      therefore we recommend you DON'T attend the :sessiontype

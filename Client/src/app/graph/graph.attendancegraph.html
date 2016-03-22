@@ -1,0 +1,17 @@
+<div class="container container-full-width">
+	<div class="row">
+		<div class="col-md-3">
+			<form style="display: table">
+				<div class="form-group" ng-repeat="(key, sessiontype) in graph.userOptions.sessiontypes" style="display: table-row">
+					<label for="standardDeviation" class="control-label" style="display: table-cell; vertical-align: middle">Show {{sessiontype.name | capitalize}} sessions</label>
+					<div style="display: table-cell; padding-left: 1rem">
+						<switch id="standardDeviation" name="standardDeviation" ng-model="sessiontype.display"></switch>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="col-md-9" id="attendance-graph-{{uniqueId}}">
+			<plotly data="graph.data" layout="graph.layout" options="graph.options"></plotly>
+		</div>
+	</div>
+</div>

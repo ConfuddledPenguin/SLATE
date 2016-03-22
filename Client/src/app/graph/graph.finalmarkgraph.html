@@ -1,0 +1,24 @@
+<div class="container container-full-width">
+	<div class="row">
+		<div class="col-md-3">
+			<p style="padding: 2rem 0 5rem;">This graph shows the final grade trend over the modules years.</p>
+			<form style="display: table">
+				<div class="form-group" style="display: table-row">
+					<label for="standardDeviation" class="control-label" style="display: table-cell; vertical-align: middle">Show Standard Deviation</label>
+					<div style="display: table-cell; padding-left: 1rem">
+						<switch id="standardDeviation" name="standardDeviation" ng-model="graph.userOptions.stdDev"></switch>
+					</div>
+				</div>
+				<div class="form-group" style="display: table-row">
+					<label for="minmax" class="control-label" style="display: table-cell; vertical-align: middle">Show Min / Max Values</label>
+					<div style="display: table-cell; padding-left: 1rem">
+						<switch id="minmax" name="minmax" ng-model="graph.userOptions.minMax"></switch>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="col-md-9" id="final-mark-graph-{{uniqueId}}">
+			<plotly data="graph.data" layout="graph.layout" options="graph.options"></plotly>
+		</div>
+	</div>
+</div>

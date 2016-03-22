@@ -22,3 +22,21 @@ html, body {
 h3{
 	font-size: 1.4rem;
 }
+
+h4{
+	font-size: 1rem;
+	font-weight: 600;
+}
+
+.icon{
+	font-family: icomoon;
+}
+
+.icon-info:before {
+	content: "\e906";
+}
+
+.highlight-text{
+	font-size: 1.1rem;
+	padding: 0.5rem 0;
+}

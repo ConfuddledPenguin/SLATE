@@ -36,6 +36,8 @@ public class ModuleAdminView extends AbstractView {
 
 	private List<View> enrollments = new ArrayList<>();
 
+	private Set<View> messages = new HashSet<>();
+
 
 	public String getClassCode() {
 		return classCode;
@@ -131,5 +133,13 @@ public class ModuleAdminView extends AbstractView {
 
 	public void setAttendanceAttainmentCorrelation(Map<SessionModel.SessionType, Correlation> attendanceAttainmentCorrelation) {
 		this.attendanceAttainmentCorrelation = attendanceAttainmentCorrelation;
+	}
+
+	public Set<View> getMessages() {
+		return messages;
+	}
+
+	public void setMessages(Set<View> messages) {
+		this.messages = messages;
 	}
 }

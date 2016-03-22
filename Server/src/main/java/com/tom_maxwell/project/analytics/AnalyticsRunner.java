@@ -55,9 +55,7 @@ public class AnalyticsRunner extends AbstractAnalyser implements AnalyticsRunner
 
 		runGlobalAnalytics();
 
-		runAllModulesAnalytics();
-
-		runSessionAnalytics();
+//		runSessionAnalytics();
 
 		logger.info("Completed Initialization of on start analytics");
 
@@ -77,33 +75,11 @@ public class AnalyticsRunner extends AbstractAnalyser implements AnalyticsRunner
 		Analyser analyser = (Analyser) context.getBean("AttendanceAnalyser");
 		executorService.execute(analyser);
 
-		analyser = (Analyser) context.getBean("ResultAnalyser");
-		executorService.execute(analyser);
+//		analyser = (Analyser) context.getBean("ResultAnalyser");
+//		executorService.execute(analyser);
 
 	}
 
-	@Override
-	public void runAllModulesAnalytics(){
-
-//		for(ModuleModel moduleModel: moduleDAO.getAll()){
-//
-//			runModuleAnalytics(moduleModel);
-//		}
-	}
-
-	@Override
-	public void runModuleAnalytics(ModuleModel module){
-
-		//TODO Re-write
-
-//		Analyser analyser = analyserFactory.getModuleAssignmentAnalyserAsAnalyser(module);
-//		analyser.analyse();
-
-//		analyser = analyserFactory.getModuleClassAverageAnalyser(module);
-//		analyser.analyse();
-	}
-
-	@Override
 	public void runSessionAnalytics(){
 
 		ExecutorService executorServiceSessions = Executors.newFixedThreadPool(10);
