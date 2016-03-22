@@ -63,7 +63,7 @@ public class ModuleYearModel {
 					})
 	private Mean finalMark;
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	@JoinTable(
 			name="ModuleYearAttendanceAttainmentCorrelations",
 			joinColumns = @JoinColumn(name="moduleId"),
