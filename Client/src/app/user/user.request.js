@@ -30,6 +30,20 @@ angular.module('SLATE.user')
 
 		};
 
+
+		requestHelper.updateGoals = function( username, attendance, attainment){
+
+			return $http({
+				method: 'POST',
+				url: config.API_URL + '/users/' + username+ '/goals.json',
+				data:{
+					attainmentGoal: attainment,
+					attendanceGoal: attendance
+				}
+			})
+
+		};
+
 		return requestHelper;
 
 	}]);

@@ -76,6 +76,9 @@ public class ModuleModel{
 
 	private int moduleLevel;
 
+	private int attendanceGoal;
+	private int attainmentGoal;
+
 	public ModuleModel() {
 	}
 
@@ -181,5 +184,21 @@ public class ModuleModel{
 
 	public void setModuleLevel(int moduleLevel) {
 		this.moduleLevel = moduleLevel;
+	}
+
+	public int getAttendanceGoal() {
+		return attendanceGoal;
+	}
+
+	public void setAttendanceGoal(int attendanceGoal) {
+		this.attendanceGoal = attendanceGoal;
+	}
+
+	public int getAttainmentGoal() {
+		return attainmentGoal;
+	}
+
+	public void setAttainmentGoal(int attainmentGoal) {
+		this.attainmentGoal = attainmentGoal;
 	}
 }

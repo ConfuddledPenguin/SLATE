@@ -3,6 +3,7 @@ package com.tom_maxwell.project.controllers;
 
 
 import com.tom_maxwell.project.modules.modules.ModuleService;
+import com.tom_maxwell.project.modules.users.GoalsUserDTO;
 import com.tom_maxwell.project.response.JSONResponse;
 import com.tom_maxwell.project.Views.*;
 import com.tom_maxwell.project.response.ViewProcessor;
@@ -79,6 +80,34 @@ public class ModuleCtrl {
 		JSONResponse<View> response = new JSONResponse<>();
 
 		View view = moduleService.getModule(classcode, year);
+
+		ViewProcessor.process(response, view);
+		response.setResult(view);
+		return response;
+	}
+
+	@RequestMapping(value = "setGoals/{year}/{classCode}", method = RequestMethod.POST)
+	public @ResponseBody JSONResponse<View> setYearGoals(
+			@PathVariable("classCode") String classcode, @PathVariable("year") String year, @RequestBody GoalsUserDTO goals
+	){
+
+		JSONResponse<View> response = new JSONResponse<>();
+
+		View view = moduleService.setYearGoals(classcode, year, goals.getAttendanceGoal(), goals.getAttainmentGoal());
+
+		ViewProcessor.process(response, view);
+		response.setResult(view);
+		return response;
+	}
+
+	@RequestMapping(value = "setGoals/{classCode}", method = RequestMethod.POST)
+	public @ResponseBody JSONResponse<View> setGoals(
+			@PathVariable("classCode") String classcode, @RequestBody GoalsUserDTO goals
+	){
+
+		JSONResponse<View> response = new JSONResponse<>();
+
+		View view = moduleService.setModuleGoals(classcode, goals.getAttendanceGoal(), goals.getAttainmentGoal());
 
 		ViewProcessor.process(response, view);
 		response.setResult(view);

@@ -93,7 +93,7 @@ angular.module('SLATE.modules')
 						$scope.year.stats.classaveragephrase = Math.abs(Math.trunc(diff)) + '% points higher than average';
 					}
 
-					diff = $scope.year.data.attendanceAverage.mean - $scope.args.stats.ATTENDANCE_AVERAGE;
+					diff = $scope.year.data.attendanceAverage.mean - $scope.args.stats.ATTENDANCE_MEAN;
 
 					if(diff < 0){
 						$scope.year.stats.attendanceaveragephrase = Math.abs(Math.trunc(diff)) + '% points lower than average';

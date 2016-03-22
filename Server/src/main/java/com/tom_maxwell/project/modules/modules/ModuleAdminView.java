@@ -26,6 +26,9 @@ public class ModuleAdminView extends AbstractView {
 	private double passRate;
 	private int noStudents;
 
+	private int attainmentGoal;
+	private int attendanceGoal;
+
 	@JsonProperty("years")
 	private Map<String, ModuleYearAdminView> moduleYearAdminViews = new HashMap<>();
 
@@ -141,5 +144,21 @@ public class ModuleAdminView extends AbstractView {
 
 	public void setMessages(Set<View> messages) {
 		this.messages = messages;
+	}
+
+	public int getAttainmentGoal() {
+		return attainmentGoal;
+	}
+
+	public void setAttainmentGoal(int attainmentGoal) {
+		this.attainmentGoal = attainmentGoal;
+	}
+
+	public int getAttendanceGoal() {
+		return attendanceGoal;
+	}
+
+	public void setAttendanceGoal(int attendanceGoal) {
+		this.attendanceGoal = attendanceGoal;
 	}
 }

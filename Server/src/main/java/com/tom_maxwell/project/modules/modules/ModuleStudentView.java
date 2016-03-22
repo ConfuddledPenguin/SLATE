@@ -24,6 +24,9 @@ public class ModuleStudentView extends AbstractView {
 	private Set<UserStudentView> teachingStaff = new HashSet<>();
 	private List<AssignmentView> assignments = new ArrayList<>();
 
+	private int attainmentGoal;
+	private int attendanceGoal;
+
 	public ModuleStudentView() {
 	}
 
@@ -97,5 +100,21 @@ public class ModuleStudentView extends AbstractView {
 
 	public void setClassAverage(double classAverage) {
 		this.classAverage = classAverage;
+	}
+
+	public int getAttainmentGoal() {
+		return attainmentGoal;
+	}
+
+	public void setAttainmentGoal(int attainmentGoal) {
+		this.attainmentGoal = attainmentGoal;
+	}
+
+	public int getAttendanceGoal() {
+		return attendanceGoal;
+	}
+
+	public void setAttendanceGoal(int attendanceGoal) {
+		this.attendanceGoal = attendanceGoal;
 	}
 }

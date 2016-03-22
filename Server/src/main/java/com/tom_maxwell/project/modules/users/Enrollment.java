@@ -49,6 +49,9 @@ public class Enrollment {
 
 	private double average;
 
+	private int attainmentGoal;
+	private int attendanceGoal;
+
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinTable(
 			name="EnrollmentAttendanceGroupings",
@@ -124,5 +127,21 @@ public class Enrollment {
 
 	public void setAttendanceMean(Map<SessionModel.SessionType, AttendanceGrouping> attendanceMean) {
 		this.attendanceMean = attendanceMean;
+	}
+
+	public int getAttainmentGoal() {
+		return attainmentGoal;
+	}
+
+	public void setAttainmentGoal(int attainmentGoal) {
+		this.attainmentGoal = attainmentGoal;
+	}
+
+	public int getAttendanceGoal() {
+		return attendanceGoal;
+	}
+
+	public void setAttendanceGoal(int attendanceGoal) {
+		this.attendanceGoal = attendanceGoal;
 	}
 }

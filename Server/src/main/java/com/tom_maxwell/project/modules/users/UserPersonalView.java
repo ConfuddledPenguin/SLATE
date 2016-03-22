@@ -20,6 +20,9 @@ public class UserPersonalView extends AbstractView {
 	private List<ModuleStudentView> enrolledModules;
 	private List<ModuleStudentView> teachingModules;
 
+	private int attendanceGoal;
+	private int attainmentGoal;
+
 	public UserPersonalView(String username, String name, String email, UserModel.Role role) {
 		this.username = username;
 		this.name = name;
@@ -92,5 +95,21 @@ public class UserPersonalView extends AbstractView {
 
 	public void setTeachingModules(List<ModuleStudentView> teachingModules) {
 		this.teachingModules = teachingModules;
+	}
+
+	public int getAttendanceGoal() {
+		return attendanceGoal;
+	}
+
+	public void setAttendanceGoal(int attendanceGoal) {
+		this.attendanceGoal = attendanceGoal;
+	}
+
+	public int getAttainmentGoal() {
+		return attainmentGoal;
+	}
+
+	public void setAttainmentGoal(int attainmentGoal) {
+		this.attainmentGoal = attainmentGoal;
 	}
 }

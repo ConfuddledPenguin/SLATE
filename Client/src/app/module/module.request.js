@@ -31,6 +31,30 @@ angular.module('SLATE.modules')
 			})
 		};
 
+		requestHelper.updateUserModuleGoals = function(year, classCode,attendance, attainment){
+
+			return $http({
+				method: 'POST',
+				url: config.API_URL + '/modules/setGoals/' + year + '/' + classCode + '.json',
+				data: {
+					attendanceGoal: attendance,
+					attainmentGoal: attainment
+				}
+			})
+		};
+
+		requestHelper.updateModuleGoals = function( classCode,attendance, attainment){
+
+			return $http({
+				method: 'POST',
+				url: config.API_URL + '/modules/setGoals/' + classCode + '.json',
+				data: {
+					attendanceGoal: attendance,
+					attainmentGoal: attainment
+				}
+			})
+		};
+
 		return requestHelper;
 
 	}]);

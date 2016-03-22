@@ -1,7 +1,9 @@
 package com.tom_maxwell.project.modules.users;
 
+import com.tom_maxwell.project.Views.GenericView;
 import com.tom_maxwell.project.Views.View;
 import com.tom_maxwell.project.modules.auth.JWTvalidator;
+import com.tom_maxwell.project.modules.modules.ModuleDAO;
 import com.tom_maxwell.project.modules.modules.ModuleModel;
 import com.tom_maxwell.project.modules.modules.ModuleStudentView;
 import com.tom_maxwell.project.modules.modules.ModuleYearModel;
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +27,13 @@ public class UserService {
 	private UserDAO userDAO;
 
 	@Autowired
+	private ModuleDAO moduleDAO;
+
+	@Autowired
 	private JWTvalidator jwTvalidator;
+
+	@Autowired
+	private HttpServletRequest request;
 
 	/**
 	 * Gets all of the users
@@ -100,6 +109,9 @@ public class UserService {
 
 		}
 
+		view.setAttainmentGoal(userModel.getAttainmentGoal());
+		view.setAttendanceGoal(userModel.getAttendanceGoal());
+
 		view.setDataExists(true);
 		return view;
 	}
@@ -113,6 +125,38 @@ public class UserService {
 	 */
 	public UserModel save(UserModel user) {
 		return userDAO.save(user);
+	}
+
+	public View updateGoals(String urlusername, int attendanceGoal, int attainmentGoal){
+
+		UserModel.Role role = (UserModel.Role) request.getAttribute("role");
+		String username = (String) request.getAttribute("username");
+
+		View view = new GenericView<>();
+		if(urlusername.equals(username)){
+			UserModel user = userDAO.get(username);
+
+			user.setAttainmentGoal(attainmentGoal);
+			user.setAttendanceGoal(attendanceGoal);
+
+			for(Enrollment enrollment: user.getEnrollments()){
+
+				ModuleYearModel year = enrollment.getModule();
+				year.setAnalysed(false);
+				ModuleModel module = year.getModule();
+				module.setAnalysed(false);
+
+				moduleDAO.save(module);
+				moduleDAO.save(year);
+			}
+
+			userDAO.save(user);
+
+			view.setSuccessful(true);
+			view.setDataExists(true);
+		}
+
+		return view;
 	}
 
 	/**

@@ -46,4 +46,8 @@ public class EnrollmentService {
 		view.setSuccessful(true);
 		return view;
 	}
+
+	public void save(Enrollment enrollment) {
+		enrollmentDAO.save(enrollment);
+	}
 }

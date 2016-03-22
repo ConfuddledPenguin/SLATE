@@ -108,6 +108,12 @@ angular.module('SLATE.user')
 				return user;
 			};
 
+			this.updateGoals = function(attainemnt, attendance){
+
+				return requestHelper.updateGoals( user.username, attainemnt, attendance);
+
+			};
+
 			var saveUser = function(){
 
 				//save to local storage

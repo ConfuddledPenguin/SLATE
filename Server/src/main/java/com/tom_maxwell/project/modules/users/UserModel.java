@@ -73,6 +73,9 @@ public class UserModel {
 	@OneToMany(mappedBy = "user")
 	private List<AttendanceModel> attendance = new ArrayList<>();
 
+	private int attendanceGoal = 70;
+	private int attainmentGoal = 100;
+
 	/**
 	 * Required for hibernate
 	 */
@@ -180,5 +183,25 @@ public class UserModel {
 
 	public void setAttendance(List<AttendanceModel> attendance) {
 		this.attendance = attendance;
+	}
+
+	public int getAttendanceGoal() {
+
+		if(attendanceGoal == 0) attendanceGoal = 100;
+		return attendanceGoal;
+	}
+
+	public void setAttendanceGoal(int attendanceGoal) {
+		this.attendanceGoal = attendanceGoal;
+	}
+
+	public int getAttainmentGoal() {
+
+		if(attainmentGoal == 0) attainmentGoal = 70;
+		return attainmentGoal;
+	}
+
+	public void setAttainmentGoal(int attainmentGoal) {
+		this.attainmentGoal = attainmentGoal;
 	}
 }

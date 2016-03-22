@@ -3,45 +3,91 @@
  */
 
 angular.module('SLATE.modules')
-	.controller('SLATE.module.view.controller', ['$scope', 'toastr', '$stateParams', '$state', 'SLATE.module.requestHelper',
-		function($scope, toastr, $stateParams, $state, requestHelper){
+	.controller('SLATE.module.view.controller', ['$scope', 'toastr', '$stateParams', '$state', 'SLATE.module.requestHelper', '$timeout',
+		function($scope, toastr, $stateParams, $state, requestHelper, $timeout){
 
-		function moduleViewController(){
+			function moduleViewController(){
 
-			$scope.module = {};
+				$scope.module = {};
 
-			setupScope();
-			fetchModule();
-			displayAttendanceGraph();
-			displayProgressGraph();
+				setupScope();
+				fetchModule();
+				//displayAttendanceGraph();
+				//displayProgressGraph();
 
-		}
+			}
 
-		function fetchModule(){
+			function fetchModule(){
 
-			requestHelper.getModule($stateParams.year, $stateParams.classCode)
-				.then(function(data){
+				requestHelper.getModule($stateParams.year, $stateParams.classCode)
+					.then(function(data){
 
-					if(data.data.successful === true){
+						if(data.data.successful === true){
 
-						var response = data.data;
+							var response = data.data;
 
-						$scope.module.data = response.result;
+							$scope.module.data = response.result;
 
-						displayProgressGraph();
+							$scope.module.goals = {
+								attainment: $scope.module.data.attainmentGoal,
+								attendance: $scope.module.data.attendanceGoal
+							};
 
-					}else{
-						toastr.error(data.data.message, 'Error');
+							initUserGoalSliders();
+
+							//displayProgressGraph();
+
+						}else{
+							toastr.error(data.data.message, 'Error');
+						}
+
+					})
+					.catch(function(data){
+
+						toastr.error('Couldn\'t reach server sorry about that', 'Error');
+
+					});
+
+			}
+
+			function initUserGoalSliders(){
+
+				var timeout;
+				var firstTime = true;
+				$scope.$watch('module.goals', function(){
+
+					if(firstTime){
+						firstTime = false;
+						return
 					}
 
-				})
-				.catch(function(data){
+					$timeout.cancel(timeout);
 
-					toastr.error('Couldn\'t reach server sorry about that', 'Error');
+					timeout = $timeout(function(){
 
-				});
+						requestHelper.updateUserModuleGoals($scope.module.data.year, $scope.module.data.classCode, $scope.module.goals.attendance, $scope.module.goals.attainment)
+							.then(function(data){
 
-		}
+								if(data.data.successful === true){
+
+									toastr.success('Successfully updated goals');
+
+								}else{
+									toastr.error(data.data.message, 'Error');
+								}
+
+							})
+							.catch(function(data){
+
+								toastr.error('Couldn\'t reach server sorry about that', 'Error');
+
+							});
+
+					}, 1500);
+
+				}, true)
+
+			}
 
 		function displayProgressGraph(){
 
@@ -176,8 +222,14 @@ angular.module('SLATE.modules')
 
 			$scope.module.navigateAssignment = function(name, no){
 				$state.go('frame.assignment.assignmentView', {year: $scope.module.data.year, classCode: $scope.module.data.classCode, assignmentName: name, assignmentNo: no});
-			}
+			};
 
+			$scope.updateSliders = function(){
+
+				$timeout(function(){
+					$scope.$broadcast('reCalcViewDimensions');
+				});
+			}
 		}
 
 		moduleViewController();

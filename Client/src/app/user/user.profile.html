@@ -62,14 +62,10 @@
 		<div id="user-goals" class="tile">
 			<h2>Your Goals</h2>
 			<p>This section allows you to control and specify what your attainment aims for the current year are. This allows the SLATE system to tweak its algorithms to suit you, thus generating more accurate warnings.</p>
-			<table class="slate-table">
-				<tr>
-					<td style="width: 200px">Overall Goal</td>
-					<td style="width: 40px">{{profile.goals.total}}%</td>
-					<td><rzslider rz-slider-model="profile.goals.total" rz-slider-options="{floor: 0, ceil: 100, step: 5}"></rzslider></td>
-				</tr>
-			</table>
+			<slate-user-goals-sliders attendance="profile.goals.attendance" attainment="profile.goals.attainment"></slate-user-goals-sliders>
 		</div>
+		<br>
+		<br>
 	</div>
 
 	<div ng-if="!profile.meta.own && (profile.meta.role === 'LECTURER' || profile.meta.role === 'ADMIN')">

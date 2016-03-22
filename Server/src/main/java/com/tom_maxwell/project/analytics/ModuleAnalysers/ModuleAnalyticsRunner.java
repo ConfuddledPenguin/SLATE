@@ -39,6 +39,8 @@ public class ModuleAnalyticsRunner extends AbstractAnalyser implements ModuleAna
 
 		moduleModel = moduleDAO.get(moduleModel.getId());
 
+		if(moduleModel.isAnalysed() && !ignore_analysed_bool) return;
+
 		ExecutorService executorService = Executors.newFixedThreadPool(10);
 
 		ModuleClassAverageAnalyserInterface moduleClassAverageAnalyser = (ModuleClassAverageAnalyserInterface) context.getBean("ModuleClassAverageAnalyser");
@@ -70,6 +72,9 @@ public class ModuleAnalyticsRunner extends AbstractAnalyser implements ModuleAna
 		}catch(InterruptedException e){
 			e.printStackTrace();
 		}
+
+		moduleModel.setAnalysed(true);
+		moduleDAO.save(moduleModel);
 	}
 
 	@Override

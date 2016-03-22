@@ -92,27 +92,42 @@ public class ModuleService {
 			Set<UserStudentView> users = getStudentUserViews(moduleModel.getModule(), view.getTeachingStaff());
 			view.setTeachingStaff(users);
 
-//			List<AssignmentView> assignmentStudentViews = view.getAssignments();
-//			for(AssignmentModel assignmentModel: moduleModel.getAssignments()){
-//
-//				double percentage = 0;
-//				double average = 0;
-//				for(AssignmentMarkModel assignmentMarkModel: assignmentModel.getAssignmentMarks()){
-//					if(assignmentMarkModel.getUser().getUsername().equals(username)){
-//						percentage = assignmentMarkModel.getPercentage();
-//						break;
-//					}
-//				}
-//
-//				assignmentStudentViews.add(new AssignmentView(
-//						assignmentModel.getId(),
-//						assignmentModel.getName(),
-//						assignmentModel.getAssignmentNo(),
-//						assignmentModel.getDueDate(),
-//						percentage,
-//						assignmentModel.getMarkMean().getMean()
-//				));
-//			}
+			List<AssignmentView> assignmentStudentViews = view.getAssignments();
+			for(AssignmentModel assignmentModel: moduleModel.getAssignments()){
+
+				double percentage = 0;
+				for(AssignmentMarkModel assignmentMarkModel: assignmentModel.getAssignmentMarks()){
+					if(assignmentMarkModel.getUser().getUsername().equals(username)){
+						percentage = assignmentMarkModel.getPercentage();
+						break;
+					}
+				}
+
+				assignmentStudentViews.add(new AssignmentView(
+						assignmentModel.getId(),
+						assignmentModel.getName(),
+						assignmentModel.getAssignmentNo(),
+						assignmentModel.getDueDate(),
+						percentage,
+						0
+				));
+			}
+
+			for(Enrollment enrollment: moduleModel.getEnrollments()){
+				if(enrollment.getUser().getUsername().equals(username)){
+
+					int goal = enrollment.getAttainmentGoal();
+					if(goal == 0 )
+						goal = enrollment.getUser().getAttainmentGoal();
+					view.setAttainmentGoal(goal);
+
+					goal = enrollment.getAttainmentGoal();
+					if(goal == 0 )
+						goal = enrollment.getUser().getAttainmentGoal();
+					view.setAttendanceGoal(goal);
+
+				}
+			}
 
 			view.setDataExists(true);
 			return view;
@@ -239,6 +254,9 @@ public class ModuleService {
 		Set<UserStudentView> users = getStudentUserViews(moduleModel, view.getTeachingStaff());
 		view.setTeachingStaff(users);
 
+		view.setAttainmentGoal(moduleModel.getAttainmentGoal());
+		view.setAttendanceGoal(moduleModel.getAttendanceGoal());
+
 		view.setDataExists(true);
 		return view;
 	}
@@ -264,6 +282,80 @@ public class ModuleService {
 		}
 
 		view.setDataExists(true);
+		return view;
+	}
+
+	public View setModuleGoals(String classCode, int attendanceGoal, int attainmentGoal){
+
+		UserModel.Role role = (UserModel.Role) request.getAttribute("role");
+		String username = (String) request.getAttribute("username");
+
+		View view = new GenericView();
+
+		if(role != UserModel.Role.ADMIN || role == UserModel.Role.LECTURER){
+			view.setDataExists(false);
+			view.setMessage("Lecturer Only Action");
+			return view;
+		}
+
+		ModuleModel module = moduleDAO.getModule(classCode);
+
+		module.setAttainmentGoal(attainmentGoal);
+		module.setAttendanceGoal(attendanceGoal);
+
+		module.setAnalysed(false);
+		moduleDAO.save(module);
+
+		view.setSuccessful(true);
+		view.setDataExists(true);
+
+		return view;
+	}
+
+	public View setYearGoals(String classcode, String year, int attendanceGoal, int attainmentGoal) {
+
+		UserModel.Role role = (UserModel.Role) request.getAttribute("role");
+		String username = (String) request.getAttribute("username");
+
+		View view = new GenericView();
+
+		if(role != UserModel.Role.STUDENT){
+			view.setDataExists(false);
+			view.setMessage("Student Only Action");
+			return view;
+		}
+
+		ModuleYearModel moduleYear = moduleDAO.get(classcode, year);
+
+		if(moduleYear == null){
+			view.setDataExists(false);
+			view.setMessage("Data does not exist");
+			return view;
+		}
+
+		entitlementService.canAccessModule(moduleYear);
+
+		for(Enrollment enrollment: moduleYear.getEnrollments()){
+
+			if(!enrollment.getUser().getUsername().equals(username)){
+				continue;
+			}
+
+			enrollment.setAttendanceGoal(attendanceGoal);
+			enrollment.setAttainmentGoal(attainmentGoal);
+
+			EnrollmentService enrollmentService = context.getBean(EnrollmentService.class);
+
+			enrollmentService.save(enrollment);
+		}
+
+		moduleYear.setAnalysed(false);
+		moduleYear.getModule().setAnalysed(false);
+		moduleDAO.save(moduleYear);
+
+		view.setDataExists(true);
+		view.setSuccessful(true);
+
 		return view;
 	}
 
@@ -359,4 +451,5 @@ public class ModuleService {
 
 		return messages;
 	}
+
 }

@@ -1,6 +1,7 @@
 <div id="nav">
 	<div ng-if="app.user.role === 'STUDENT'">
 		<ul id="nav-parts"  ng-click="navigate()">
+			<li ui-sref="frame.dashboard" class="clickable">Overview</li>
 			<li ng-repeat="(key, year) in app.user.enrolledModules" ng-class="{'current': nav.showSubPartList[key]}">
 				<div id="nav-parts-sub">
 					<p class="nav-parts-sub-title clickable" ng-click="nav.showSubPart(key)">{{year.year}}</p>

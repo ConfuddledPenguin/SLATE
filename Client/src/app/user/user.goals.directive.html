@@ -1,0 +1,13 @@
+<div class="tile-paddingless-borderless">
+	<h3>Achievement Goal</h3>
+	<p>This should reflect the final mark which you want to achieve from this class.</p>
+	<p>This value is inherited from your overall goals, changing it here does not change your overall settings which can be set <a ui-sref="frame.user.profile({username: app.user.username})">here</a>.</p>
+	<rzslider rz-slider-model="attainment" rz-slider-options="{floor: 0, ceil: 100, step: 5}"></rzslider>
+</div>
+<div class="tile-paddingless">
+	<h3>Attendance Goal</h3>
+	<p>This should reflect your attendance goals for this class.</p>
+	<p>This value is inherited from your overall goals, changing it here does not change your overall settings which can be set <a ui-sref="frame.user.profile({username: app.user.username})">here</a>.</p>
+	<p>You are given the option to customise this as people learn differently, some learn by attending, others by reading.</p>
+	<rzslider rz-slider-model="attendance" rz-slider-options="{floor: 0, ceil: 100, step: 5}"></rzslider>
+</div>

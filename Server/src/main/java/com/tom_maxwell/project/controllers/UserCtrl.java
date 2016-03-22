@@ -1,6 +1,7 @@
 package com.tom_maxwell.project.controllers;
 
 import com.tom_maxwell.project.Views.View;
+import com.tom_maxwell.project.modules.users.GoalsUserDTO;
 import com.tom_maxwell.project.modules.users.LoginUserDTO;
 import com.tom_maxwell.project.modules.users.UserService;
 import com.tom_maxwell.project.response.JSONResponse;
@@ -142,6 +143,20 @@ public class UserCtrl {
 		JSONResponse<View> response = new JSONResponse<>();
 
 		View view = userService.getUser(username);
+
+		response = ViewProcessor.process(response, view);
+
+		response.setResult(view);
+
+		return response;
+	}
+
+	@RequestMapping(value = "/{username}/goals", method = RequestMethod.POST)
+	public @ResponseBody JSONResponse<View> updateUserGoals(@PathVariable("username") String username, @RequestBody GoalsUserDTO goals){
+
+		JSONResponse<View> response = new JSONResponse<>();
+
+		View view = userService.updateGoals(username, goals.getAttendanceGoal(), goals.getAttainmentGoal());
 
 		response = ViewProcessor.process(response, view);
 
