@@ -38,6 +38,7 @@ angular.module('SLATE.modules')
 				});
 
 				fetchModule();
+				fetchStats();
 				setUpStatWatch();
 				buildGraphs();
 			}
@@ -64,41 +65,90 @@ angular.module('SLATE.modules')
 					})
 			}
 
+			function fetchStats(){
+
+				var stats = ['PASS_RATE','PASSMARK_MEAN','ATTENDANCE_MEAN'];
+
+				stats.push('PASSRATE_' + $scope.args.year.yearOriginal + '_' + $scope.args.moduleLevel);
+				stats.push('PASSMARK_' + $scope.args.year.yearOriginal + '_' + $scope.args.moduleLevel + '_MEAN');
+
+				statsRequestHelper.getStatistics(stats)
+					.then(function(data){
+
+						if(data.data.successful === true){
+
+							var response = data.data;
+
+							$scope.year.stats = response.result.result;
+
+							console.log(response.result.result);
+
+							setUpStatWatch();
+
+						}else{
+							toastr.error(data.data.message, 'Error');
+						}
+
+					})
+					.catch(function(data){
+
+						toastr.error('Couldn\'t reach server sorry about that', 'Error');
+
+					});
+
+			}
+
 			function setUpStatWatch(){
 
 				var checker = $interval(function(){
 
-					if(!$scope.year.data || !$scope.args.stats)
+					if(!$scope.year.data)
 						return;
 
 					$interval.cancel(checker);
-
-					$scope.year.stats = {};
 
 					var diff;
 
 					diff = $scope.year.data.passRate - $scope.args.stats.PASS_RATE;
 
 					if(diff < 0){
-						$scope.year.stats.passratephrase = Math.abs(Math.trunc(diff)) + '% points lower than average';
+						$scope.year.stats.passratephrase = Math.abs(Math.trunc(diff)) + '% points lower than the global average';
 					}else{
-						$scope.year.stats.passratephrase = Math.abs(Math.trunc(diff)) + '% points higher than average';
+						$scope.year.stats.passratephrase = Math.abs(Math.trunc(diff)) + '% points higher than the global average';
+					}
+
+					console.log('PASSRATE_' + $scope.args.year.yearOriginal + '_' + $scope.args.moduleLevel);
+					console.log($scope.year.stats);
+					diff = $scope.year.data.passRate - $scope.year.stats['PASSRATE_' + $scope.args.year.yearOriginal + '_' + $scope.args.moduleLevel];
+
+					if(diff < 0){
+						$scope.year.stats.passrateyearphrase = Math.abs(Math.trunc(diff)) + '% points lower than the years average';
+					}else{
+						$scope.year.stats.passrateyearphrase = Math.abs(Math.trunc(diff)) + '% points higher than average';
 					}
 
 					diff = $scope.year.data.classAverage.mean - $scope.args.stats.PASSMARK_MEAN;
 
 					if(diff < 0){
-						$scope.year.stats.classaveragephrase = Math.abs(Math.trunc(diff)) + '% points lower than average';
+						$scope.year.stats.classaveragephrase = Math.abs(Math.trunc(diff)) + '% points higher than the global average';
 					}else{
-						$scope.year.stats.classaveragephrase = Math.abs(Math.trunc(diff)) + '% points higher than average';
+						$scope.year.stats.classaveragephrase = Math.abs(Math.trunc(diff)) + '% points higher than the global average';
+					}
+
+					diff = $scope.year.data.classAverage.mean - $scope.year.stats['PASSMARK_' + $scope.args.year.yearOriginal + '_' + $scope.args.moduleLevel + '_MEAN'];
+
+					if(diff < 0){
+						$scope.year.stats.classaverageyearphrase = Math.abs(Math.trunc(diff)) + '% points higher than the years average';
+					}else{
+						$scope.year.stats.classaverageyearphrase = Math.abs(Math.trunc(diff)) + '% points higher than the years average';
 					}
 
 					diff = $scope.year.data.attendanceAverage.mean - $scope.args.stats.ATTENDANCE_MEAN;
 
 					if(diff < 0){
-						$scope.year.stats.attendanceaveragephrase = Math.abs(Math.trunc(diff)) + '% points lower than average';
+						$scope.year.stats.attendanceaveragephrase = Math.abs(Math.trunc(diff)) + '% points higher than the global average';
 					}else{
-						$scope.year.stats.attendanceaveragephrase = Math.abs(Math.trunc(diff)) + '% points higher than average';
+						$scope.year.stats.attendanceaveragephrase = Math.abs(Math.trunc(diff)) + '% points higher than the global average';
 					}
 
 				}, 500);

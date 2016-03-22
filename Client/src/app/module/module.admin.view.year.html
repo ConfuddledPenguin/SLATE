@@ -6,11 +6,13 @@
 				<p>{{year.data.passRate |number:0}}%</p>
 				<p>Pass Rate</p>
 				<p>{{year.stats.passratephrase}}</p>
+				<p>{{year.stats.passrateyearphrase}}</p>
 			</div>
 			<div class="col-md-3">
 				<p>{{year.data.classAverage.mean | number:0}}%</p>
 				<p>Mark Average</p>
 				<p>{{year.stats.classaveragephrase}}</p>
+				<p>{{year.stats.classaverageyearphrase}}</p>
 			</div>
 			<div class="col-md-3">
 				<p>{{year.data.attendanceAverage.mean | number:0}}%</p>
@@ -23,9 +25,6 @@
 			</div>
 		</div>
 	</div>
-</div>
-<div class="tile-paddingless">
-	<h3>Final Marks</h3>
 </div>
 <div class="tile-paddingless">
 	<h3>Grades</h3>

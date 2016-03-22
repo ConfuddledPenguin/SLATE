@@ -257,6 +257,8 @@ public class ModuleService {
 		view.setAttainmentGoal(moduleModel.getAttainmentGoal());
 		view.setAttendanceGoal(moduleModel.getAttendanceGoal());
 
+		view.setModuleLevel(moduleModel.getModuleLevel());
+
 		view.setDataExists(true);
 		return view;
 	}

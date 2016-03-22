@@ -29,6 +29,8 @@ public class ModuleAdminView extends AbstractView {
 	private int attainmentGoal;
 	private int attendanceGoal;
 
+	private int moduleLevel;
+
 	@JsonProperty("years")
 	private Map<String, ModuleYearAdminView> moduleYearAdminViews = new HashMap<>();
 
@@ -160,5 +162,13 @@ public class ModuleAdminView extends AbstractView {
 
 	public void setAttendanceGoal(int attendanceGoal) {
 		this.attendanceGoal = attendanceGoal;
+	}
+
+	public int getModuleLevel() {
+		return moduleLevel;
+	}
+
+	public void setModuleLevel(int moduleLevel) {
+		this.moduleLevel = moduleLevel;
 	}
 }

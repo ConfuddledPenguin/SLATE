@@ -18,7 +18,7 @@ angular.module('SLATE.modules')
 					$timeout(function(){
 						$scope.$broadcast('reCalcViewDimensions');
 					});
-				}
+				};
 
 				fetchModule();
 				fetchStats();
