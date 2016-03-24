@@ -69,6 +69,8 @@ public class EnrollmentModel {
 	@MapKeyEnumerated
 	private Map<SessionModel.SessionType, AttendanceGrouping> attendanceMean;
 
+	private double predictedGrade_attendance;
+
 	@Enumerated(EnumType.STRING)
 	private Result result;
 
@@ -154,5 +156,13 @@ public class EnrollmentModel {
 
 	public void setAttendanceGoal(int attendanceGoal) {
 		this.attendanceGoal = attendanceGoal;
+	}
+
+	public double getPredictedGrade_attendance() {
+		return predictedGrade_attendance;
+	}
+
+	public void setPredictedGrade_attendance(double predictedGrade_attendance) {
+		this.predictedGrade_attendance = predictedGrade_attendance;
 	}
 }

@@ -39,6 +39,8 @@ public class ModuleYearWarningGeneratorRunner extends AbstractWarningGeneratorRu
 
 		if(moduleYear.isWarningsGenerated() && !ignore_analysed_bool) return;
 
+		if(!moduleYear.isAnalysed()) return;
+
 		initExecutorService(moduleYear.getAssignments().size());
 
 		for(AssignmentModel assignment: moduleYear.getAssignments()){

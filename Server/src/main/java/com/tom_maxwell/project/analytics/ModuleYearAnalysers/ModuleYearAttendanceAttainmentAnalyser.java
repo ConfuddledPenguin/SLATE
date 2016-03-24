@@ -6,6 +6,8 @@ import com.tom_maxwell.project.modules.modules.ModuleYearModel;
 import com.tom_maxwell.project.modules.sessions.AttendanceGrouping;
 import com.tom_maxwell.project.modules.sessions.SessionModel;
 import com.tom_maxwell.project.modules.statistics.CorrelationModel;
+import com.tom_maxwell.project.modules.statistics.Mean;
+import com.tom_maxwell.project.modules.users.EnrollmentDAO;
 import com.tom_maxwell.project.modules.users.EnrollmentModel;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
@@ -30,6 +32,9 @@ public class ModuleYearAttendanceAttainmentAnalyser extends AbstractAnalyser imp
 
 	@Autowired
 	private ModuleDAO moduleDAO;
+
+	@Autowired
+	private EnrollmentDAO enrollmentDAO;
 
 	private ModuleYearModel yearModel;
 
@@ -101,10 +106,26 @@ public class ModuleYearAttendanceAttainmentAnalyser extends AbstractAnalyser imp
 			c.setLinearIntercept(regression.getIntercept());
 		}
 
-		moduleDAO.lock(yearModel);
+		CorrelationModel allCorrelation = attendanceAttainment.get(SessionModel.SessionType.ALL);
+		for(EnrollmentModel enrollment: yearModel.getEnrollments()){
+
+			enrollment = enrollmentDAO.get(enrollment.getId());
+
+			Mean attendanceMean = enrollment.getAttendanceMean().get(SessionModel.SessionType.ALL).getAttendanceAverage();
+
+			double predictedGrade = attendanceMean.getMean() - allCorrelation.getLinearIntercept() / allCorrelation.getLinearSlope();
+
+			predictedGrade = Math.round(predictedGrade * 100) /100;
+
+			enrollment.setPredictedGrade_attendance(predictedGrade);
+
+			enrollmentDAO.save(enrollment);
+		}
+
+//		moduleDAO.lock(yearModel);
 		moduleDAO.save(yearModel);
 		moduleDAO.flush();
-		moduleDAO.unlock(yearModel);
+//		moduleDAO.unlock(yearModel);
 	}
 
 	@Override

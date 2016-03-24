@@ -32,6 +32,10 @@ public class ModuleDAO {
 		return hibernateTemplate.get(ModuleModel.class, id);
 	}
 
+	public ModuleYearModel getModuleYear(long id){
+		return hibernateTemplate.get(ModuleYearModel.class, id);
+	}
+
 	public ModuleYearModel get(String classCode, String year){
 
 		String query = "SELECT m FROM ModuleYearModel m WHERE m.classCode=? AND m.year=?";
@@ -106,6 +110,15 @@ public class ModuleDAO {
 
 		hibernateTemplate.refresh(model);
 		hibernateTemplate.getSessionFactory().getCurrentSession().refresh(model);
+	}
+
+	public ModuleYearModel reload(ModuleYearModel moduleYearModel){
+
+		long id = moduleYearModel.getId();
+		hibernateTemplate.evict(moduleYearModel);
+		hibernateTemplate.clear();
+		return this.getModuleYear(id);
+
 	}
 
 	public void lock(ModuleModel model){

@@ -2,12 +2,16 @@ package com.tom_maxwell.project.modules.users;
 
 import com.tom_maxwell.project.Views.GenericView;
 import com.tom_maxwell.project.Views.View;
+import com.tom_maxwell.project.modules.auth.AccessDeniedException;
 import com.tom_maxwell.project.modules.auth.JWTvalidator;
 import com.tom_maxwell.project.modules.modules.ModuleDAO;
 import com.tom_maxwell.project.modules.modules.ModuleModel;
 import com.tom_maxwell.project.modules.modules.ModuleStudentView;
 import com.tom_maxwell.project.modules.modules.ModuleYearModel;
+import com.tom_maxwell.project.modules.warnings.WarningModel;
+import com.tom_maxwell.project.warnings.ModuleYearWarningGenerators.ModuleYearWarningGeneratorRunnerInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +33,9 @@ public class UserService {
 
 	@Autowired
 	private JWTvalidator jwTvalidator;
+
+	@Autowired
+	private ApplicationContext context;
 
 	@Autowired
 	private HttpServletRequest request;
@@ -204,4 +211,40 @@ public class UserService {
 	}
 
 
+	public View getWarnings(String username) {
+
+		UserModel.Role roleR = (UserModel.Role) request.getAttribute("role");
+		String usernameR = (String) request.getAttribute("username");
+
+		if(roleR == UserModel.Role.STUDENT && username.equals(usernameR)){
+
+			UserModel user = userDAO.get(username);
+
+			if(user == null){
+				GenericView view = new GenericView();
+				view.setDataExists(false);
+				view.setMessage("go away");
+				return view;
+			}
+
+			List<WarningModel> warnings = new ArrayList<>();
+			for(EnrollmentModel enrollment: user.getEnrollments()){
+				ModuleYearWarningGeneratorRunnerInterface moduleYearWarningGeneratorRunner = (ModuleYearWarningGeneratorRunnerInterface) context.getBean("ModuleYearWarningGeneratorRunner");
+				moduleYearWarningGeneratorRunner.setModuleYear(enrollment.getModule());
+				moduleYearWarningGeneratorRunner.setUser(username);
+				moduleYearWarningGeneratorRunner.setWarnings(warnings);
+				moduleYearWarningGeneratorRunner.generate();
+			}
+
+			GenericView<List<WarningModel>> view = new GenericView<>();
+			view.setDataExists(true);
+			view.setSuccessful(true);
+			view.setResult(warnings);
+
+			return view;
+
+		}else{
+			throw new AccessDeniedException();
+		}
+	}
 }

@@ -37,7 +37,6 @@ public class AssignmentMeanAnalyser extends AbstractAnalyser implements Assignme
 
 		for(AssignmentMarkModel mark: marks){
 
-
 			if(mark == null) continue;
 			statistics.addValue(mark.getPercentage());
 		}
@@ -51,6 +50,7 @@ public class AssignmentMeanAnalyser extends AbstractAnalyser implements Assignme
 		mean.setTotal( Math.toIntExact(statistics.getN()) );
 
 		assignmentService.saveAssignment(assignment);
+		assignmentService.flush();
 	}
 
 	@Override

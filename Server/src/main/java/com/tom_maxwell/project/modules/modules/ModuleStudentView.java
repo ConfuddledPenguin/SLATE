@@ -39,6 +39,8 @@ public class ModuleStudentView extends AbstractView {
 
 	private List<WarningModel> warnings;
 
+	private double predictedGrade_attendance;
+
 	public ModuleStudentView() {
 	}
 
@@ -147,6 +149,14 @@ public class ModuleStudentView extends AbstractView {
 		this.assignmentMean = assignmentMean;
 	}
 
+	public double getPredictedGrade_attendance() {
+		return predictedGrade_attendance;
+	}
+
+	public void setPredictedGrade_attendance(double predictedGrade_attendance) {
+		this.predictedGrade_attendance = predictedGrade_attendance;
+	}
+
 	public Map<SessionModel.SessionType, List<Mean>> getAttendanceMean() {
 
 		if (attendanceMean == null)
@@ -183,6 +193,7 @@ public class ModuleStudentView extends AbstractView {
 		List<AssignmentView> assignmentStudentViews = view.getAssignments();
 		for (AssignmentModel assignmentModel : moduleModel.getAssignments()) {
 
+			//get users mark
 			double percentage = 0;
 			for (AssignmentMarkModel assignmentMarkModel : assignmentModel.getAssignmentMarks()) {
 				if (assignmentMarkModel.getUser().getUsername().equals(username)) {
@@ -209,12 +220,12 @@ public class ModuleStudentView extends AbstractView {
 					goal = enrollment.getUser().getAttainmentGoal();
 				view.setAttainmentGoal(goal);
 
-				goal = enrollment.getAttainmentGoal();
+				goal = enrollment.getAttendanceGoal();
 				if (goal == 0)
-					goal = enrollment.getUser().getAttainmentGoal();
+					goal = enrollment.getUser().getAttendanceGoal();
 				view.setAttendanceGoal(goal);
 
-				view.setAssignmentMean(enrollment.getAssignmentMean());
+				view.setAssignmentMean(enrollment.getAssignmentMean().validate());
 
 				if (view.getAssignmentMean() == null) {
 					view.setAssignmentMean(new Mean());
@@ -224,8 +235,11 @@ public class ModuleStudentView extends AbstractView {
 				for (Map.Entry<SessionModel.SessionType, AttendanceGrouping> entry : enrollment.getAttendanceMean().entrySet()) {
 					att.put(entry.getKey(), entry.getValue().getWeeklyMeans());
 				}
+
+				view.setPredictedGrade_attendance(enrollment.getPredictedGrade_attendance());
 			}
 		}
+
 
 		view.setDataExists(true);
 

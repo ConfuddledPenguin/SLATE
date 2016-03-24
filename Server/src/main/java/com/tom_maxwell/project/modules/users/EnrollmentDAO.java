@@ -47,4 +47,9 @@ public class EnrollmentDAO {
 		return enrollements.get(0);
 
 	}
+
+	public void flush(){
+		hibernateTemplate.flush();
+		hibernateTemplate.clear();
+	}
 }

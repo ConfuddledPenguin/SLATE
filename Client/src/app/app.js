@@ -5,7 +5,7 @@
 angular.module('SLATE.dependencies', ['ui.router', 'LocalStorageModule', 'toastr', 'plotly', 'ui.bootstrap', 'rzModule', 'uiSwitch']);
 
 angular.module('SLATE.app', ['SLATE.config', 'SLATE.polyfill', 'SLATE.interceptors', 'SLATE.header', 'SLATE.nav', 'SLATE.user', 'SLATE.modules',
-								'SLATE.assignment', 'SLATE.statistics', 'SLATE.graphs']);
+								'SLATE.assignment', 'SLATE.statistics', 'SLATE.graphs', 'SLATE.dash']);
 
 app = angular.module('SLATE', ['SLATE.dependencies', 'SLATE.app']);
 
@@ -40,7 +40,8 @@ app.config(['$stateProvider', '$locationProvider', '$urlMatcherFactoryProvider',
 		})
 		.state('frame.dashboard', {
 			url: '/',
-			template: 'panel',
+			templateUrl: 'app/dashboard/dash.main.html',
+			controller: 'SLATE.dash.main.controller',
 			onEnter: function($rootScope){
 				$rootScope.app.stateTitle = 'Dashboard';
 			}

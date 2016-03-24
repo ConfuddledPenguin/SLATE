@@ -1,0 +1,35 @@
+<div class="panel" id="dashboard">
+	<div ng-if="app.user.role === 'STUDENT'">
+
+		<div class="tile-borderless">
+			<h1>Welcome to slate</h1>
+		</div>
+		<div class="tile">
+			<p>SLATE is a tool designed to help you kee track of your progress within modules. It displays both current and old data to keep you informed.</p>
+			<p>Please note that while the SLATE system aims to be as accurate as possible poor data being fed into the system while result in poor data being presented to users.</p>
+			<p>New users are encouraged to go to your profile and set your learning goals. SLATE uses this to generate more meaningful information for you. Your profile can be reached by selected user options in the top right hand corner</p>
+			<p>To get more accurate feedback, each module also presents the option the set goals. Modules can be viewed by using the navigation on the left.</p>
+			<p>Lastly an overview of your warnings are displayed below, for your stressful viewing pleasure :)</p>
+			<p class="highlight-text">TL:DR. SLATE looks at your performance at University. Now go set your learning goals</p>
+		</div>
+		<div class="tile">
+			<h2>Warnings</h2>
+		</div>
+
+	</div>
+	<div ng-if="app.user.role === 'LECTURER'">
+		lecturer
+	</div>
+	<div ng-if="app.user.role === 'ADMIN'">
+		<div class="tile-borderless">
+			<h1>Welcome to slate</h1>
+		</div>
+		<div class="tile">
+			<p>SLATE is a tool designed to help you keep track of the progress of students within modules. It displays both current and old data to keep you informed.</p>
+			<p>Please note that while the SLATE system aims to be as accurate as possible poor data being fed into the system while result in poor data being presented to users.</p>
+			<p>To get more accurate feedback, each module presents the option the set learning goals. Modules can be viewed by using the navigation on the left.</p>
+			<p class="highlight-text">TL:DR. SLATE looks at performance at University.</p>
+		</div>
+	</div>
+	{{dash}}
+</div>

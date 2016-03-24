@@ -149,12 +149,12 @@ public class ModuleAttendanceAnalyser extends AbstractAnalyser implements Module
 
 		groupings.put(SessionModel.SessionType.ALL, all);
 
-		moduleDAO.lock(module);
+//		moduleDAO.lock(module);
 		module.setAttendanceAverage(mean);
 		module.setNoStudents(noStudents());
 		moduleDAO.save(module);
 		moduleDAO.flush();
-		moduleDAO.unlock(module);
+//		moduleDAO.unlock(module);
 	}
 
 	@Override

@@ -37,10 +37,19 @@ angular.module('SLATE.modules')
 					}
 				});
 
-				fetchModule();
-				fetchStats();
-				setUpStatWatch();
-				buildGraphs();
+
+				$scope.$watch('args.year.load', function(){
+
+					if(!$scope.year.data && $scope.args.year.load){
+
+						fetchModule();
+						fetchStats();
+						setUpStatWatch();
+						buildGraphs();
+
+					}
+
+				});
 			}
 
 			function fetchModule(){

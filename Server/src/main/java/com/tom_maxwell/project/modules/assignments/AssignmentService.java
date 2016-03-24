@@ -32,6 +32,10 @@ public class AssignmentService {
 		return assignmentDAO.saveAssignment(assignment);
 	}
 
+	public void flush(){
+		assignmentDAO.flush();
+	}
+
 	public View getAssignmentDataView(long assignmentId){
 
 		UserModel.Role role = (UserModel.Role) request.getAttribute("role");

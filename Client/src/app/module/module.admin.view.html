@@ -81,7 +81,7 @@
 					</div>
 				</div>
 			</uib-tab>
-			<uib-tab ng-repeat="(key, year) in module.data.yearsAsArray" heading="{{year.year}}" active="year.active">
+			<uib-tab ng-repeat="(key, year) in module.data.yearsAsArray" heading="{{year.year}}" active="year.active" select="selectedTab(year)">
 				<slate-module-admin-view-year args="{key: key, year: year, classCode: module.data.classCode, stats: module.stats, active: year.active, moduleLevel: module.data.moduleLevel}"></slate-module-admin-view-year>
 			</uib-tab>
 			<uib-tab ng-if="module.data.years.length === 0" heading="No years to display" disable="true">

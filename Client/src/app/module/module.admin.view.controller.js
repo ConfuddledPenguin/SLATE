@@ -20,6 +20,10 @@ angular.module('SLATE.modules')
 					});
 				};
 
+				$scope.selectedTab = function(year){
+					year.load = true;
+				};
+
 				fetchModule();
 				fetchStats();
 			}

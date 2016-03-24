@@ -55,6 +55,8 @@ public class ModuleYearEnrollmentAnalyser extends AbstractAnalyser implements Mo
 		analyseAttendance();
 		analyseAssignments();
 
+		enrollmentDAO.flush();
+
 	}
 
 	private void analyseAttendance(){
@@ -120,7 +122,9 @@ public class ModuleYearEnrollmentAnalyser extends AbstractAnalyser implements Mo
 
 			Mean attendanceAv = grouping.getAttendanceAverage();
 			if(attendanceAv == null) attendanceAv = new Mean();
-			attendanceAv.setMean( (sessionAttendance.getY() / sessionAttendance.getX() )* 100);
+			double a = (sessionAttendance.getY() / sessionAttendance.getX() )* 100;
+			if(Double.isNaN(a)) a = 0;
+			attendanceAv.setMean( a);
 			attendanceAv.setTotal( (int) sessionAttendance.getX());
 			grouping.setAttendanceAverage(attendanceAv);
 

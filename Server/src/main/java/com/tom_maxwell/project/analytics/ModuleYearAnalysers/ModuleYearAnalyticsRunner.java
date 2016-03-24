@@ -84,21 +84,39 @@ public class ModuleYearAnalyticsRunner extends AbstractAnalyser implements Modul
 			e.printStackTrace();
 		}
 
+		moduleDAO.clear();
+		moduleDAO.refresh(moduleYearModel);
+
+		moduleYearModel = moduleDAO.reload(moduleYearModel);
+
 		//analyse the average marks
 		moduleYearAverageAnalyser.setModuleYearModel(moduleYearModel);
 		moduleYearAverageAnalyser.analyse();
 
+		moduleDAO.clear();
+		moduleDAO.refresh(moduleYearModel);
+
+		moduleYearModel = moduleDAO.reload(moduleYearModel);
+
 		//analyser the attendance
 		moduleYearAttendanceAnalyser.setYearModel(moduleYearModel);
 		moduleYearAttendanceAnalyser.analyse();
+
+		moduleYearModel.setAnalysed(true);
+		moduleDAO.save(moduleYearModel);
+		moduleDAO.flush();
+		moduleDAO.clear();
+		moduleDAO.refresh(moduleYearModel);
 
 		//analyse the attainment vs attendance
 		moduleYearAttendanceAttainmentAnalyser.setYearModel(moduleYearModel);
 		moduleYearAttendanceAttainmentAnalyser.analyse();
 
 		//flag as analysed
-		moduleYearModel.setAnalysed(true);
-		moduleDAO.save(moduleYearModel);
+//		moduleDAO.clear();
+//		moduleDAO.refresh(moduleYearModel);
+//		moduleYearModel.setAnalysed(true);
+//		moduleDAO.save(moduleYearModel);
 	}
 
 	@Override

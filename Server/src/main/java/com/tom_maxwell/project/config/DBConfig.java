@@ -2,6 +2,7 @@ package com.tom_maxwell.project.config;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.StatelessSession;
+import org.hibernate.stat.Statistics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -69,6 +70,10 @@ public class DBConfig {
 	public HibernateTemplate getHibernateTemplate(SessionFactory sessionFactory)
 	{
 		HibernateTemplate hibernateTemplate = new HibernateTemplate(sessionFactory);
+
+		Statistics s = hibernateTemplate.getSessionFactory().getStatistics();
+		s.setStatisticsEnabled(true);
+
 		return hibernateTemplate;
 	}
 
@@ -91,6 +96,8 @@ public class DBConfig {
 		properties.put("hibernate.hbm2ddl.auto", hibernateHbm2ddlAuto);
 		properties.put("org.hibernate.flushMode", "COMMIT");
 		properties.put("hibernate.cache.use_second_level_cache", true);
+		properties.put("hibernate.order_updates", true);
+		properties.put("hibernate.order_inserts", true);
 		properties.put("hibernate.connection.isolation", String.valueOf(Connection.TRANSACTION_READ_COMMITTED));
 
 		return properties;

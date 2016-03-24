@@ -49,4 +49,9 @@ public class AssignmentDAO {
 		return hibernateTemplate.loadAll(AssignmentModel.class);
 	}
 
+	public void flush(){
+		hibernateTemplate.flush();
+		hibernateTemplate.clear();
+	}
+
 }

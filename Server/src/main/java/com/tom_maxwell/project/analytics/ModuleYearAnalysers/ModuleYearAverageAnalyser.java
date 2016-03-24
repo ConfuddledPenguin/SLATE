@@ -59,10 +59,10 @@ public class ModuleYearAverageAnalyser extends AbstractAnalyser implements Modul
 		double passRate = noPasses / noStudents * 100;
 		moduleYearModel.setPassRate(passRate);
 
-		moduleDAO.lock(moduleYearModel);
+//		moduleDAO.lock(moduleYearModel);
 		moduleDAO.save(moduleYearModel);
 		moduleDAO.flush();
-		moduleDAO.unlock(moduleYearModel);
+//		moduleDAO.unlock(moduleYearModel);
 	}
 
 	@Override

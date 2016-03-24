@@ -57,11 +57,11 @@ public class UserModel {
 
 	private String name;
 
-	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "user")
 	private Set<EnrollmentModel> enrollments;
 
 	@MapsId("moduleCode")
-	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name="moduleTeaching", joinColumns = {
 			@JoinColumn(name = "username", nullable = false, updatable = false)},
 			inverseJoinColumns = {  @JoinColumn(name = "id", nullable = false, updatable = false)})

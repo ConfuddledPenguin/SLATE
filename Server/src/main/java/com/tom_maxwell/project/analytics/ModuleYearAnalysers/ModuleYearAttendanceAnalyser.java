@@ -145,10 +145,10 @@ public class ModuleYearAttendanceAnalyser extends AbstractAnalyser implements Mo
 		groupings.put(SessionModel.SessionType.ALL, all);
 
 		yearModel.setNoStudents(yearModel.getEnrollments().size());
-		moduleDAO.lock(yearModel);
+//		moduleDAO.lock(yearModel);
 		moduleDAO.save(yearModel);
 		moduleDAO.flush();
-		moduleDAO.unlock(yearModel);
+//		moduleDAO.unlock(yearModel);
 	}
 
 	@Override

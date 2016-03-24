@@ -26,11 +26,11 @@ public class ModuleYearModel {
 	private String classCode;
 	private String year;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne()
 	@JoinColumn(name="module")
 	private ModuleModel module;
 
-	@OneToMany(mappedBy = "module", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "module")
 	private Set<EnrollmentModel> enrollments;
 
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "teachingModules")

@@ -44,6 +44,15 @@ angular.module('SLATE.user')
 
 		};
 
+		requestHelper.getWarnings = function(username){
+
+			return $http({
+				method: 'GET',
+				url: config.API_URL + '/users/' + username+ '/warnings.json'
+			})
+
+		};
+
 		return requestHelper;
 
 	}]);

@@ -176,4 +176,19 @@ public class UserCtrl {
 		return response;
 
 	}
+
+	@RequestMapping(value = "/{username}/warnings", method = RequestMethod.GET)
+	public @ResponseBody JSONResponse<View> getUserWarnings(@PathVariable("username") String username){
+
+		JSONResponse<View> response = new JSONResponse<>();
+
+		View view = userService.getWarnings(username);
+
+		response = ViewProcessor.process(response, view);
+
+		response.setResult(view);
+
+		return response;
+
+	}
 }

@@ -1,9 +1,8 @@
 package com.tom_maxwell.project.modules.modules;
 
-import com.tom_maxwell.project.Views.*;
+import com.tom_maxwell.project.Views.GenericView;
+import com.tom_maxwell.project.Views.View;
 import com.tom_maxwell.project.analytics.ModuleAnalysers.ModuleAnalyticsRunnerInterface;
-import com.tom_maxwell.project.analytics.ModuleYearAnalysers.ModuleYearAnalyticsRunnerInterface;
-import com.tom_maxwell.project.modules.assignments.AssignmentMarkModel;
 import com.tom_maxwell.project.modules.assignments.AssignmentModel;
 import com.tom_maxwell.project.modules.assignments.AssignmentView;
 import com.tom_maxwell.project.modules.auth.AccessDeniedException;
@@ -71,10 +70,13 @@ public class ModuleService {
 
 		entitlementService.canAccessModule(moduleModel);
 
-		ModuleYearAnalyticsRunnerInterface moduleYearAnalyticsRunner = (ModuleYearAnalyticsRunnerInterface) context.getBean("ModuleYearAnalyticsRunner");
+		ModuleAnalyticsRunnerInterface moduleAnalyticsRunner = (ModuleAnalyticsRunnerInterface) context.getBean("moduleAnalyticsRunner");
 
-		moduleYearAnalyticsRunner.setModuleYearModel(moduleModel);
-		moduleYearAnalyticsRunner.analyse();
+		moduleAnalyticsRunner.setModuleModel(moduleModel.getModule());
+		moduleAnalyticsRunner.analyse();
+
+//		moduleDAO.clear();
+//		moduleDAO.refresh(moduleModel);
 
 		List<WarningModel> warningModels = new ArrayList<>();
 		ModuleYearWarningGeneratorRunnerInterface moduleYearWarningGeneratorRunner = (ModuleYearWarningGeneratorRunnerInterface) context.getBean("ModuleYearWarningGeneratorRunner");

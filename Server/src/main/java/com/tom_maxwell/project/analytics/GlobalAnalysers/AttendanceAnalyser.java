@@ -53,21 +53,11 @@ public class AttendanceAnalyser extends AbstractAnalyser {
 
 		}
 
-
-//		for(AttendanceModel attendanceModel: attendanceModels){
-//
-//			if(attendanceModel.getAttendance() == AttendanceModel.AttendanceValue.PRESENT){
-//				++noPresents;
-//			}
-//
-//		}
-
 		double attendance = noPresents / noOppertunities * 100;
 
 		StatisticInterface statistic = statisticService.get(StatisticModel.Stat_type.ATTENDANCE_MEAN);
 
 		statistic.setValue(attendance);
 		statisticService.save(statistic);
-
 	}
 }
