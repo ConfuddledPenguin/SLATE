@@ -6,7 +6,7 @@
 				<div id="nav-parts-sub">
 					<p class="nav-parts-sub-title clickable" ng-click="nav.showSubPart(key)">{{year.year}}</p>
 					<ul ng-class="{'show': nav.showSubPartList[key]}">
-						<li ng-repeat="module in year.modules">
+						<li ng-repeat="module in year.modules | orderBy: 'classCode' : reverse">
 							<a ng-click="navigateModule(module.year, module.classCode)" class="clickable">{{module.classCode}} - {{module.name}}</a>
 						</li>
 					</ul>

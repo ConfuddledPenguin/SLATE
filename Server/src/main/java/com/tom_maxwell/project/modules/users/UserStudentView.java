@@ -3,7 +3,7 @@ package com.tom_maxwell.project.modules.users;
 import com.tom_maxwell.project.Views.AbstractView;
 
 /**
- * Created by Tom on 09/02/2016.
+ * The student view of any other user
  */
 public class UserStudentView extends AbstractView{
 

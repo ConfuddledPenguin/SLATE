@@ -9,12 +9,15 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by Tom on 04/03/2016.
+ * Represents possible sessions (i.e. a lecture), maps on to the sessions table
  */
 @Entity
 @Table(name = "Session")
 public class SessionModel {
 
+	/**
+	 * Represents the possible session types
+	 */
 	public enum SessionType {
 		ALL("ALL"),
 		LECTURE("LECTURE"),

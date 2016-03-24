@@ -13,9 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Created by Tom on 21/01/2016.
- *
- * Handled the users requests, routing them to the correct place.
+ * Handles the users requests, routing them to the correct place.
  */
 @RestController
 @RequestMapping("/users")
@@ -132,10 +130,6 @@ public class UserCtrl {
 	 *
 	 * @apiParam {String} the username
 	 *
-	 * @apiSampleRequest /users/gvb12182.json
-	 *
-	 * @apiSuccessExample {json} User Response
-	 *
 	 */
 	@RequestMapping(value = "/{username}", method = RequestMethod.GET)
 	public @ResponseBody JSONResponse<View> getUser(@PathVariable("username") String username){
@@ -151,6 +145,23 @@ public class UserCtrl {
 		return response;
 	}
 
+	/**
+	 * Update a users goals
+	 *
+	 * @param username the username
+	 * @param goals the goals object
+	 *
+	 * @return a generic success
+	 *
+	 * @api {post} /users/:username/goals.json updates a users goals
+	 * @apiName Users updateGoals
+	 * @apiGroup Users
+	 *
+	 * @apiPermission ANY
+	 *
+	 * @apiParam {String} the username
+	 *
+	 */
 	@RequestMapping(value = "/{username}/goals", method = RequestMethod.POST)
 	public @ResponseBody JSONResponse<View> updateUserGoals(@PathVariable("username") String username, @RequestBody GoalsUserDTO goals){
 

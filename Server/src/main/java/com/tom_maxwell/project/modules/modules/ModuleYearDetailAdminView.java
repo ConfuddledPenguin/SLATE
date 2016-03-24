@@ -2,8 +2,9 @@ package com.tom_maxwell.project.modules.modules;
 
 import com.tom_maxwell.project.Views.AbstractView;
 import com.tom_maxwell.project.Views.View;
+import com.tom_maxwell.project.modules.assignments.AssignmentView;
 import com.tom_maxwell.project.modules.sessions.SessionModel;
-import com.tom_maxwell.project.modules.statistics.Correlation;
+import com.tom_maxwell.project.modules.statistics.CorrelationModel;
 import com.tom_maxwell.project.modules.statistics.Mean;
 
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Tom on 16/03/2016.
+ * Represents a detials admin view on a module year
  */
 public class ModuleYearDetailAdminView extends AbstractView {
 
@@ -26,7 +27,9 @@ public class ModuleYearDetailAdminView extends AbstractView {
 
 	private Map<SessionModel.SessionType, List<Mean>> attendance = new HashMap<>();
 
-	private Map<SessionModel.SessionType, Correlation> attendanceAttainmentCorrelation = new HashMap<>();
+	private Map<SessionModel.SessionType, CorrelationModel> attendanceAttainmentCorrelation = new HashMap<>();
+
+	private List<AssignmentView> assignments = new ArrayList<>();
 
 	private List<View> enrollments = new ArrayList<>();
 
@@ -78,11 +81,11 @@ public class ModuleYearDetailAdminView extends AbstractView {
 		this.attendance = attendance;
 	}
 
-	public Map<SessionModel.SessionType, Correlation> getAttendanceAttainmentCorrelation() {
+	public Map<SessionModel.SessionType, CorrelationModel> getAttendanceAttainmentCorrelation() {
 		return attendanceAttainmentCorrelation;
 	}
 
-	public void setAttendanceAttainmentCorrelation(Map<SessionModel.SessionType, Correlation> attendanceAttainmentCorrelation) {
+	public void setAttendanceAttainmentCorrelation(Map<SessionModel.SessionType, CorrelationModel> attendanceAttainmentCorrelation) {
 		this.attendanceAttainmentCorrelation = attendanceAttainmentCorrelation;
 	}
 
@@ -92,5 +95,13 @@ public class ModuleYearDetailAdminView extends AbstractView {
 
 	public void setEnrollments(List<View> enrollments) {
 		this.enrollments = enrollments;
+	}
+
+	public List<AssignmentView> getAssignments() {
+		return assignments;
+	}
+
+	public void setAssignments(List<AssignmentView> assignments) {
+		this.assignments = assignments;
 	}
 }

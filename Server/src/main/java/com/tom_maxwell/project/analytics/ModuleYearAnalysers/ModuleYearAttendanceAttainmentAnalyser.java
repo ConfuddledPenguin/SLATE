@@ -5,8 +5,8 @@ import com.tom_maxwell.project.modules.modules.ModuleDAO;
 import com.tom_maxwell.project.modules.modules.ModuleYearModel;
 import com.tom_maxwell.project.modules.sessions.AttendanceGrouping;
 import com.tom_maxwell.project.modules.sessions.SessionModel;
-import com.tom_maxwell.project.modules.statistics.Correlation;
-import com.tom_maxwell.project.modules.users.Enrollment;
+import com.tom_maxwell.project.modules.statistics.CorrelationModel;
+import com.tom_maxwell.project.modules.users.EnrollmentModel;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Tom on 17/03/2016.
+ * Compares the attendance to the attainment
  */
 @Component("ModuleYearAttendanceAttainmentAnalyser")
 @Transactional
@@ -45,7 +45,7 @@ public class ModuleYearAttendanceAttainmentAnalyser extends AbstractAnalyser imp
 
 		Map<SessionModel.SessionType, SimpleRegression> regressionByType = new HashMap<>();
 
-		for(Enrollment enrollment: yearModel.getEnrollments()){
+		for(EnrollmentModel enrollment: yearModel.getEnrollments()){
 
 			for(Map.Entry<SessionModel.SessionType, AttendanceGrouping> entry: enrollment.getAttendanceMean().entrySet()){
 
@@ -76,7 +76,7 @@ public class ModuleYearAttendanceAttainmentAnalyser extends AbstractAnalyser imp
 			}
 		}
 
-		Map<SessionModel.SessionType, Correlation> attendanceAttainment = yearModel.getAttendanceAttainmentCorrelation();
+		Map<SessionModel.SessionType, CorrelationModel> attendanceAttainment = yearModel.getAttendanceAttainmentCorrelation();
 		for(Map.Entry<SessionModel.SessionType, List<Double>> entry: attendanceByType.entrySet()){
 
 			SessionModel.SessionType type = entry.getKey();
@@ -88,9 +88,9 @@ public class ModuleYearAttendanceAttainmentAnalyser extends AbstractAnalyser imp
 			Double[] grad  = grade.toArray(new Double[grade.size()]);
 			double pearsons = new PearsonsCorrelation().correlation(ArrayUtils.toPrimitive(atte), ArrayUtils.toPrimitive(grad));
 
-			Correlation c = attendanceAttainment.get(type);
+			CorrelationModel c = attendanceAttainment.get(type);
 			if(c == null){
-				c = new Correlation();
+				c = new CorrelationModel();
 				attendanceAttainment.put(type, c);
 			}
 			c.setPearson(pearsons);

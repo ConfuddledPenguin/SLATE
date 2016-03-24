@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * Created by Tom on 08/03/2016.
+ * Analyses the global attendance
  */
 @Component("AttendanceAnalyser")
 @Transactional

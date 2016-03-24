@@ -1,14 +1,20 @@
 package com.tom_maxwell.project.analytics.ModuleYearAnalysers;
 
 import com.tom_maxwell.project.analytics.AbstractAnalyser;
+import com.tom_maxwell.project.modules.assignments.AssignmentDAO;
+import com.tom_maxwell.project.modules.assignments.AssignmentMarkModel;
+import com.tom_maxwell.project.modules.assignments.AssignmentModel;
+import com.tom_maxwell.project.modules.modules.ModuleDAO;
+import com.tom_maxwell.project.modules.modules.ModuleYearModel;
 import com.tom_maxwell.project.modules.sessions.AttendanceDAO;
 import com.tom_maxwell.project.modules.sessions.AttendanceGrouping;
 import com.tom_maxwell.project.modules.sessions.AttendanceModel;
 import com.tom_maxwell.project.modules.sessions.SessionModel;
 import com.tom_maxwell.project.modules.statistics.Mean;
-import com.tom_maxwell.project.modules.users.Enrollment;
+import com.tom_maxwell.project.modules.users.EnrollmentModel;
 import com.tom_maxwell.project.modules.users.EnrollmentDAO;
 import com.tom_maxwell.project.modules.users.UserModel;
+import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -22,14 +28,14 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Tom on 15/03/2016.
+ * Analysis's the modules enrollment
  */
 @Component("ModuleYearEnrollmentAnalyser")
 @Transactional(isolation = Isolation.READ_COMMITTED)
 @Scope("prototype")
 public class ModuleYearEnrollmentAnalyser extends AbstractAnalyser implements ModuleYearEnrollmentAnalyserInterface {
 
-	private Enrollment enrollment;
+	private EnrollmentModel enrollment;
 
 	@Autowired
 	private EnrollmentDAO enrollmentDAO;
@@ -37,10 +43,21 @@ public class ModuleYearEnrollmentAnalyser extends AbstractAnalyser implements Mo
 	@Autowired
 	private AttendanceDAO attendanceDAO;
 
+	@Autowired
+	private AssignmentDAO assignmentDAO;
+
 	@Override
 	public void analyse() {
 
 		enrollment = enrollmentDAO.get(enrollment.getId());
+
+
+		analyseAttendance();
+		analyseAssignments();
+
+	}
+
+	private void analyseAttendance(){
 
 		UserModel user = enrollment.getUser();
 		List<SessionModel> sessions = enrollment.getModule().getSessions();
@@ -146,15 +163,40 @@ public class ModuleYearEnrollmentAnalyser extends AbstractAnalyser implements Mo
 
 		enrollment.setAttendanceMean(groupings);
 		enrollmentDAO.save(enrollment);
+
+	}
+
+	private void analyseAssignments(){
+
+		ModuleYearModel year = enrollment.getModule();
+
+		SummaryStatistics statistics = new SummaryStatistics();
+		for(AssignmentModel assignment: year.getAssignments()){
+
+			AssignmentMarkModel mark = assignmentDAO.getAssignmentMark(assignment.getId(), enrollment.getUser().getUsername());
+
+			statistics.addValue(mark.getPercentage());
+		}
+
+		Mean assignmentMean = enrollment.getAssignmentMean();
+
+		assignmentMean.setMean(statistics.getMean());
+		assignmentMean.setMax(statistics.getMax());
+		assignmentMean.setTotal(Math.toIntExact(statistics.getN()));
+		assignmentMean.setStdDev(statistics.getStandardDeviation());
+		assignmentMean.setMin(statistics.getMin());
+
+		enrollmentDAO.save(enrollment);
+
 	}
 
 	@Override
-	public Enrollment getEnrollment() {
+	public EnrollmentModel getEnrollment() {
 		return enrollment;
 	}
 
 	@Override
-	public void setEnrollment(Enrollment enrollment) {
+	public void setEnrollment(EnrollmentModel enrollment) {
 		this.enrollment = enrollment;
 	}
 }

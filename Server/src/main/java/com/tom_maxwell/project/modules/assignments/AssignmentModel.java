@@ -10,7 +10,7 @@ import javax.persistence.*;
 import java.util.*;
 
 /**
- * Created by Tom on 08/02/2016.
+ * Holds informaiton on assignments. Maps onto the assignment table
  */
 @Entity
 @Table(name = "Assignment")

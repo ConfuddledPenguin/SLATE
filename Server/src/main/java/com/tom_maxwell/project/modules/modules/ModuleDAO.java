@@ -1,9 +1,7 @@
 package com.tom_maxwell.project.modules.modules;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.hibernate.LockMode;
 import org.hibernate.Query;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.orm.hibernate5.HibernateTemplate;
@@ -15,7 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Created by Tom on 08/02/2016.
+ * Performs the module operations on the database
  */
 @Repository
 @Transactional(isolation = Isolation.READ_COMMITTED)
@@ -99,6 +97,12 @@ public class ModuleDAO {
 	}
 
 	public void refresh(ModuleModel model){
+
+		hibernateTemplate.refresh(model);
+		hibernateTemplate.getSessionFactory().getCurrentSession().refresh(model);
+	}
+
+	public void refresh(ModuleYearModel model){
 
 		hibernateTemplate.refresh(model);
 		hibernateTemplate.getSessionFactory().getCurrentSession().refresh(model);

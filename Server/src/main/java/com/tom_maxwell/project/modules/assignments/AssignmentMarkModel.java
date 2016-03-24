@@ -6,7 +6,7 @@ import com.tom_maxwell.project.modules.users.UserModel;
 import javax.persistence.*;
 
 /**
- * Created by Tom on 08/02/2016.
+ * Represents a mark in an assignment. Maps onto the assignmentMark table
  */
 @Entity
 @Table(name = "AssignmentMark")

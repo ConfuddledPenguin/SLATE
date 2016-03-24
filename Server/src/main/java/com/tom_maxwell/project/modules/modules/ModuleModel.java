@@ -1,12 +1,11 @@
 package com.tom_maxwell.project.modules.modules;
 
-import com.tom_maxwell.project.modules.statistics.Correlation;
+import com.tom_maxwell.project.modules.statistics.CorrelationModel;
 import com.tom_maxwell.project.modules.statistics.Mean;
 import com.tom_maxwell.project.modules.sessions.SessionModel;
 import com.tom_maxwell.project.modules.sessions.AttendanceGrouping;
 
 import javax.persistence.*;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -68,7 +67,7 @@ public class ModuleModel{
 	)
 	@MapKey(name = "sessionType")
 	@MapKeyEnumerated
-	private Map<SessionModel.SessionType, Correlation> attendanceAttainmentCorrelation;
+	private Map<SessionModel.SessionType, CorrelationModel> attendanceAttainmentCorrelation;
 
 	private int noStudents;
 
@@ -170,11 +169,11 @@ public class ModuleModel{
 		this.analysed = analysed;
 	}
 
-	public Map<SessionModel.SessionType, Correlation> getAttendanceAttainmentCorrelation() {
+	public Map<SessionModel.SessionType, CorrelationModel> getAttendanceAttainmentCorrelation() {
 		return attendanceAttainmentCorrelation;
 	}
 
-	public void setAttendanceAttainmentCorrelation(Map<SessionModel.SessionType, Correlation> attendanceAttainmentCorrelation) {
+	public void setAttendanceAttainmentCorrelation(Map<SessionModel.SessionType, CorrelationModel> attendanceAttainmentCorrelation) {
 		this.attendanceAttainmentCorrelation = attendanceAttainmentCorrelation;
 	}
 

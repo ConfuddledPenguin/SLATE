@@ -1,4 +1,7 @@
 <div id="module-page" class="panel">
+	<div class="panel-loader" ng-if="module.data == null">
+		<ng-include src="'app/general/loader.html'"></ng-include>
+	</div>
 	<div id="info" class="tile-borderless">
 		<h1>{{module.data.classCode}} - {{module.data.name}}</h1>
 		<p>{{module.data.description}}</p>
@@ -17,40 +20,51 @@
 	<div class="tile">
 		<uib-tabset>
 			<uib-tab heading="Highlights">
-
+				<div class="tile-paddingless-borderless">
+					<h3>Overview</h3>
+				</div>
+				<div class="tile-paddingless">
+					<h3>Warnings</h3>
+					<div ng-repeat="(key, warning) in module.data.warnings" class="warning">
+						<h3>{{warning.message}}</h3>
+						<div>
+							<h4>Suggestions</h4>
+							<p ng-repeat="suggestion in warning.correctionMessages">
+								{{suggestion}}
+							</p>
+						</div>
+					</div>
+				</div>
 			</uib-tab>
 			<uib-tab heading="Module Overview">
 
 			</uib-tab>
-			<uib-tab heading="Your data">
+			<uib-tab heading="Your data" select="renderGraphs()">
 				<div id="assignments" class="tile-paddingless-borderless">
 					<h2>Assignments</h2>
 					<p>As logged in the SLATE system.</p>
-					<!--<div class="container">-->
-					<!--<div class="row slate-grid">-->
-					<!--<div class="col-md-3 slate-grid-left-side">-->
-					<!--<div id="module-grade-info-holder">-->
-					<!--<div class="module-grade-info">-->
-					<!--<p class="my-text">{{module.data.classAverage}}%</p>-->
-					<!--<p>Your Grade Average</p>-->
-					<!--</div>-->
-					<!--<div class="module-grade-info">-->
-					<!--<p class="class-text">{{module.data.classAverage}}%</p>-->
-					<!--<p>Class Grade Average</p>-->
-					<!--</div>-->
-					<!--<div class="module-grade-info">-->
-					<!--<p><a uib-tooltip="Please note: This is an estimation based on current performance. It is not 100% reliable and should not be used for anything really." tooltip-class="tooltip-override">71%</a></p>-->
-					<!--<p>Your Grade Prediction</p>-->
-					<!--</div>-->
-					<!--</div>-->
-					<!--</div>-->
-					<!--<div class="col-md-9 slate-grid-right-side" id="module-progress-graph-holder">-->
-					<!--<plotly data="module.progressGraph.data" layout="module.progressGraph.layout" options="module.progressGraph.options"></plotly>-->
-					<!--</div>-->
-					<!--</div>-->
-					<!--</div>-->
+					<div class="container">
+						<div class="row slate-grid">
+							<div class="col-md-3 slate-grid-left-side">
+								<div id="module-grade-info-holder">
+									<div class="module-grade-info">
+										<p class="my-text">{{module.data.assignmentMean.mean | number:0}}%</p>
+										<p>Your Assignment Average</p>
+									</div>
+									<div class="module-grade-info">
+										<p class="class-text">{{module.data.classAverage | number:0}}%</p>
+										<p>Class Assignment Average</p>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-9 slate-grid-right-side" id="module-progress-graph-holder">
+								<plotly data="module.progressGraph.data" layout="module.progressGraph.layout"
+								        options="module.progressGraph.options"></plotly>
+							</div>
+						</div>
+					</div>
 					<div id="module-assignment-details">
-						<h3>Assignment Details</h3>
+						<h4>Assignment Details</h4>
 						<table class="table table-hover">
 							<tr>
 								<th>#</th>
@@ -59,42 +73,26 @@
 								<th>Mark</th>
 								<th>Class Average</th>
 							</tr>
-							<tr ng-repeat="(key, assignment) in module.data.assignments | orderBy: 'assignmentNo'" ng-click="module.navigateAssignment(assignment.name, assignment.id)" class="clickable">
+							<tr ng-repeat="(key, assignment) in module.data.assignments | orderBy: 'assignmentNo'"
+							    ng-click="module.navigateAssignment(assignment.name, assignment.id)" class="clickable">
 								<td>{{assignment.assignmentNo}}</td>
 								<td>{{assignment.name}}</td>
 								<td>{{assignment.dueDate}}</td>
 								<td>{{assignment.percentage}}%</td>
-								<td>{{assignment.average}}%</td>
+								<td>{{assignment.average.mean | number:0}}%</td>
 							</tr>
 						</table>
 					</div>
 				</div>
 				<div id="attendance" class="tile-paddingless">
 					<h2>Attendance</h2>
-					<p>As logged in the SLATE system</p>
-					<!--<div class="container">-->
-					<!--<div class="row slate-grid">-->
-					<!--<div class="col-md-3 slate-grid-left-side">-->
-					<!--<div id="module-attendance-info-holder">-->
-					<!--<div class="module-grade-info">-->
-					<!--<p class="my-text">{{module.data.classAverage}}%</p>-->
-					<!--<p>Your Attendance Average</p>-->
-					<!--</div>-->
-					<!--<div class="module-grade-info">-->
-					<!--<p class="class-text">{{module.data.classAverage}}%</p>-->
-					<!--<p>Class Attendance Average</p>-->
-					<!--</div>-->
-					<!--</div>-->
-					<!--</div>-->
-					<!--<div class="col-md-9 slate-grid-right-side" id="module-attendance-graph-holder">-->
-					<!--<plotly data="module.attendanceGraph.data" layout="module.attendanceGraph.layout" options="module.attendanceGraph.options"></plotly>-->
-					<!--</div>-->
-					<!--</div>-->
-					<!--</div>-->
+					<h4>The data</h4>
+					<slate-graphs-attendance-graph data="{attendance: module.data.attendanceMean}" uniqueid="personalAttendanceGraph"></slate-graphs-attendance-graph>
 				</div>
 			</uib-tab>
 			<uib-tab heading="Your Goals" select="updateSliders()">
-				<slate-user-goals-sliders attendance="module.goals.attendance" attainment="module.goals.attainment"></slate-user-goals-sliders>
+				<slate-user-goals-sliders attendance="module.goals.attendance"
+				                          attainment="module.goals.attainment"></slate-user-goals-sliders>
 			</uib-tab>
 		</uib-tabset>
 	</div>

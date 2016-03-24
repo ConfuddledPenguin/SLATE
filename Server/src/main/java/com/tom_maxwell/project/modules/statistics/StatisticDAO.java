@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Created by Tom on 09/03/2016.
+ * Handles the statistics database operations
  */
 @Transactional
 @Repository

@@ -27,7 +27,26 @@
 	</div>
 </div>
 <div class="tile-paddingless">
-	<h3>Grades</h3>
+	<h3>Assignments</h3>
+	<div id="module-assignment-details">
+		<h4>Assignment Details</h4>
+		<table class="table table-hover">
+			<tr>
+				<th>#</th>
+				<th>Name</th>
+				<th>Due Date</th>
+				<th>Class Average</th>
+				<th>Total Submitted</th>
+			</tr>
+			<tr ng-repeat="(key, assignment) in year.data.assignments | orderBy: 'assignmentNo'">
+				<td>{{assignment.assignmentNo}}</td>
+				<td>{{assignment.name}}</td>
+				<td>{{assignment.dueDate}}</td>
+				<td>{{assignment.average.mean}}%</td>
+				<td>{{assignment.average.total}}</td>
+			</tr>
+		</table>
+	</div>
 </div>
 <div class="tile-paddingless">
 	<h3>Attendance</h3>

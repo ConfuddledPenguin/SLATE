@@ -1,9 +1,7 @@
 package com.tom_maxwell.project.modules.auth;
 
-import com.tom_maxwell.project.modules.modules.ModuleModel;
 import com.tom_maxwell.project.modules.modules.ModuleYearModel;
-import com.tom_maxwell.project.modules.users.Enrollment;
-import com.tom_maxwell.project.modules.users.UserDAO;
+import com.tom_maxwell.project.modules.users.EnrollmentModel;
 import com.tom_maxwell.project.modules.users.UserModel;
 import com.tom_maxwell.project.modules.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Set;
 
 /**
  * Created by Tom on 08/02/2016.
@@ -35,7 +32,7 @@ public class EntitlementService {
 
 			userService.getUser(username);
 
-			for (Enrollment enrollment : module.getEnrollments()) {
+			for (EnrollmentModel enrollment : module.getEnrollments()) {
 				if (enrollment.getUser().getUsername().equals(username)) {
 					return true;
 				}

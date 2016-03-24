@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * Created by Tom on 28/02/2016.
+ * The controller for the assignment endpoints
  */
 @RestController
 @RequestMapping("/assignments/")
@@ -17,6 +17,21 @@ public class AssignmentCtrl {
 	@Autowired
 	private AssignmentService assignmentService;
 
+	/**
+	 * Allows users to fetch an assignment
+	 *
+	 * @param assignmentId The assignmnets Id
+	 *
+	 * @return the assignment view wrapped in a JSONResponse
+	 *
+	 * @api {get} /assignments/:assignmentId.json Gets an assignment
+	 * @apiName Assignments getAssignment
+	 * @apiGroup Assignments
+	 *
+	 * @apiPermission ANY
+	 *
+	 * @apiParam {String} assignmentId The assignments Id
+	 */
 	@RequestMapping(value="{assignmentId}", method= RequestMethod.GET)
 	public @ResponseBody JSONResponse<View> getAssignment( @PathVariable("assignmentId") int assignmentId){
 

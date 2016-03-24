@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Tom on 12/03/2016.
+ * An attendance grouping represents, the attendance of the weeks as well as some stats about it
  */
 @Entity
 public class AttendanceGrouping {

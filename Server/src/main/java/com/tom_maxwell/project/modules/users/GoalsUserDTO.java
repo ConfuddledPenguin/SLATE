@@ -1,7 +1,7 @@
 package com.tom_maxwell.project.modules.users;
 
 /**
- * Created by Tom on 22/03/2016.
+ * A data transfer object for moving users goals around
  */
 public class GoalsUserDTO {
 

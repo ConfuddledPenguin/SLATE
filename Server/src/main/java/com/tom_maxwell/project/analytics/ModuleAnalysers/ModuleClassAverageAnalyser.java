@@ -5,7 +5,7 @@ import com.tom_maxwell.project.modules.statistics.Mean;
 import com.tom_maxwell.project.modules.modules.ModuleDAO;
 import com.tom_maxwell.project.modules.modules.ModuleModel;
 import com.tom_maxwell.project.modules.modules.ModuleYearModel;
-import com.tom_maxwell.project.modules.users.Enrollment;
+import com.tom_maxwell.project.modules.users.EnrollmentModel;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Created by Tom on 24/02/2016.
+ * analysis's the class average
  */
 @Component("ModuleClassAverageAnalyser")
 @Transactional(isolation = Isolation.READ_COMMITTED)
@@ -48,10 +48,10 @@ public class ModuleClassAverageAnalyser extends AbstractAnalyser implements Modu
 
 			if (moduleYearModel == null) continue;
 
-			for(Enrollment enrollment: moduleYearModel.getEnrollments()){
+			for(EnrollmentModel enrollment: moduleYearModel.getEnrollments()){
 				statistics.addValue(enrollment.getFinalMark());
 
-				if(enrollment.getResult() == Enrollment.Result.PASS)
+				if(enrollment.getResult() == EnrollmentModel.Result.PASS)
 					++noPasses;
 
 				++noStudents;

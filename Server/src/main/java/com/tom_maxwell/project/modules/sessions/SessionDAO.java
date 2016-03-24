@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by Tom on 04/03/2016.
+ * Performs the sessions database operations
  */
 @Repository
 @Transactional

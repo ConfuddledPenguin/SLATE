@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Tom on 07/03/2016.
+ * Represents a module years admin view
  */
 public class ModuleYearAdminView extends AbstractView{
 

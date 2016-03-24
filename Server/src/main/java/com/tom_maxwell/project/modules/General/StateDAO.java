@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Created by Tom on 09/03/2016.
+ * Performs state database operations
  */
 @Transactional
 @Repository
@@ -15,11 +15,11 @@ public class StateDAO {
 	@Autowired
 	private HibernateTemplate hibernateTemplate;
 
-	public void saveState(State state){
+	public void saveState(StateModel state){
 		hibernateTemplate.merge(state);
 	}
 
-	public State getState(String id){
-		return hibernateTemplate.get(State.class, id);
+	public StateModel getState(String id){
+		return hibernateTemplate.get(StateModel.class, id);
 	}
 }

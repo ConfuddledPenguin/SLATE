@@ -13,7 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
 /**
- * Created by Tom on 08/03/2016.
+ * Calculates basic information about analysers
+ *
+ * Measures attendance and such
  */
 @Component("SessionAnalyser")
 @Transactional

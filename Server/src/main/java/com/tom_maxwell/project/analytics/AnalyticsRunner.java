@@ -19,7 +19,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by Tom on 13/02/2016.
+ * Hey a analytics runner! go wild
  */
 @Component("AnalyticsRunner")
 @Transactional(readOnly = false)
@@ -46,6 +46,9 @@ public class AnalyticsRunner extends AbstractAnalyser implements AnalyticsRunner
 		runAll();
 	}
 
+	/**
+	 * Does as it says on the tin, runs everything!
+	 */
 	@Override
 	public void runAll(){
 
@@ -55,7 +58,7 @@ public class AnalyticsRunner extends AbstractAnalyser implements AnalyticsRunner
 
 		runGlobalAnalytics();
 
-//		runSessionAnalytics();
+		runSessionAnalytics();
 
 		logger.info("Completed Initialization of on start analytics");
 
@@ -69,17 +72,23 @@ public class AnalyticsRunner extends AbstractAnalyser implements AnalyticsRunner
 
 	}
 
+	/**
+	 * Runs the global analytics
+	 */
 	@Override
 	public void runGlobalAnalytics(){
 
 		Analyser analyser = (Analyser) context.getBean("AttendanceAnalyser");
 		executorService.execute(analyser);
 
-//		analyser = (Analyser) context.getBean("ResultAnalyser");
-//		executorService.execute(analyser);
+		analyser = (Analyser) context.getBean("ResultAnalyser");
+		executorService.execute(analyser);
 
 	}
 
+	/**
+	 * Runs session analytics
+	 */
 	public void runSessionAnalytics(){
 
 		ExecutorService executorServiceSessions = Executors.newFixedThreadPool(10);

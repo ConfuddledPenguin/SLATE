@@ -7,7 +7,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
 /**
- * Created by Tom on 22/01/2016.
+ * Loads the .properties file
  */
 @Configuration
 public class PropertiesConfig {

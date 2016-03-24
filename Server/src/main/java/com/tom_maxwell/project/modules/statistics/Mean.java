@@ -4,7 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 /**
- * Created by Tom on 08/03/2016.
+ * Represents a mean in the DB, this is embedded into other tables
  */
 @Embeddable
 public class Mean {

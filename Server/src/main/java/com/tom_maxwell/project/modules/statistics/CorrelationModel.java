@@ -6,10 +6,11 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 /**
- * Created by Tom on 16/03/2016.
+ * Represents a correction, maps to the correlation table in the DB
  */
 @Entity
-public class Correlation {
+@Table(name = "Correlation")
+public class CorrelationModel {
 
 	@javax.persistence.Id
 	@GeneratedValue

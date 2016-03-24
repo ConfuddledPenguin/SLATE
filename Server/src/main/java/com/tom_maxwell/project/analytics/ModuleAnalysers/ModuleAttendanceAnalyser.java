@@ -21,7 +21,7 @@ import java.util.*;
 import java.util.List;
 
 /**
- * Created by Tom on 07/03/2016.
+ * Analysis's the modules attendance
  */
 @Component("ModuleAttendanceAnalyser")
 @Transactional(isolation = Isolation.READ_COMMITTED)

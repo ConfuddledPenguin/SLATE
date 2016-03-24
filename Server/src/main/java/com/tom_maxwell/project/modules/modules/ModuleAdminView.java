@@ -4,14 +4,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tom_maxwell.project.Views.AbstractView;
 import com.tom_maxwell.project.Views.View;
 import com.tom_maxwell.project.modules.sessions.SessionModel;
-import com.tom_maxwell.project.modules.statistics.Correlation;
+import com.tom_maxwell.project.modules.statistics.CorrelationModel;
 import com.tom_maxwell.project.modules.statistics.Mean;
 import com.tom_maxwell.project.modules.users.UserStudentView;
 
 import java.util.*;
 
 /**
- * Created by Tom on 04/03/2016.
+ * Represents the admin view on a module
  */
 public class ModuleAdminView extends AbstractView {
 
@@ -37,7 +37,7 @@ public class ModuleAdminView extends AbstractView {
 	//map : String-Year : means per week
 	private Map<SessionModel.SessionType, List<Mean>> attendance = new HashMap<>();
 
-	private Map<SessionModel.SessionType, Correlation> attendanceAttainmentCorrelation = new HashMap<>();
+	private Map<SessionModel.SessionType, CorrelationModel> attendanceAttainmentCorrelation = new HashMap<>();
 
 	private List<View> enrollments = new ArrayList<>();
 
@@ -132,11 +132,11 @@ public class ModuleAdminView extends AbstractView {
 		this.enrollments = enrollments;
 	}
 
-	public Map<SessionModel.SessionType, Correlation> getAttendanceAttainmentCorrelation() {
+	public Map<SessionModel.SessionType, CorrelationModel> getAttendanceAttainmentCorrelation() {
 		return attendanceAttainmentCorrelation;
 	}
 
-	public void setAttendanceAttainmentCorrelation(Map<SessionModel.SessionType, Correlation> attendanceAttainmentCorrelation) {
+	public void setAttendanceAttainmentCorrelation(Map<SessionModel.SessionType, CorrelationModel> attendanceAttainmentCorrelation) {
 		this.attendanceAttainmentCorrelation = attendanceAttainmentCorrelation;
 	}
 

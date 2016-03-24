@@ -1,7 +1,7 @@
 package com.tom_maxwell.project.modules.auth;
 
 /**
- * Created by Tom on 08/02/2016.
+ * An access denied exception we can through when guess what!? The access is denied!!
  */
 public class AccessDeniedException extends RuntimeException {
 

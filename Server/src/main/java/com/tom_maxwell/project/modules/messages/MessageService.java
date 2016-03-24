@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Created by Tom on 21/03/2016.
+ * The message service
  */
 @Transactional
 @Component

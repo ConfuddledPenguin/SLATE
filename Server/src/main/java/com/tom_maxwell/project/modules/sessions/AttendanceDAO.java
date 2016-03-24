@@ -1,6 +1,5 @@
 package com.tom_maxwell.project.modules.sessions;
 
-import com.tom_maxwell.project.modules.modules.ModuleModel;
 import org.hibernate.Query;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
@@ -13,7 +12,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Created by Tom on 04/03/2016.
+ * Performs attendance operations on the database
  */
 @Repository
 @Transactional

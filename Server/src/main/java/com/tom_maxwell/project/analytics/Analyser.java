@@ -1,7 +1,9 @@
 package com.tom_maxwell.project.analytics;
 
 /**
- * Created by Tom on 13/02/2016.
+ * The analyser interface
+ *
+ * This extends Runnable to make all implementations runnable
  */
 public interface Analyser extends Runnable {
 

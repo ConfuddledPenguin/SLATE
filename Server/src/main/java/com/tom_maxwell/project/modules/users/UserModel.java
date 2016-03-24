@@ -2,9 +2,9 @@ package com.tom_maxwell.project.modules.users;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tom_maxwell.project.modules.assignments.AssignmentMarkModel;
-import com.tom_maxwell.project.modules.modules.ModuleModel;
 import com.tom_maxwell.project.modules.modules.ModuleYearModel;
 import com.tom_maxwell.project.modules.sessions.AttendanceModel;
+import com.tom_maxwell.project.modules.warnings.WarningModel;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -58,7 +58,7 @@ public class UserModel {
 	private String name;
 
 	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-	private Set<Enrollment> enrollments;
+	private Set<EnrollmentModel> enrollments;
 
 	@MapsId("moduleCode")
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -129,11 +129,11 @@ public class UserModel {
 		this.role = role;
 	}
 
-	public Set<Enrollment> getEnrollments() {
+	public Set<EnrollmentModel> getEnrollments() {
 		return enrollments;
 	}
 
-	public void setEnrollments(Set<Enrollment> enrollments) {
+	public void setEnrollments(Set<EnrollmentModel> enrollments) {
 		this.enrollments = enrollments;
 	}
 

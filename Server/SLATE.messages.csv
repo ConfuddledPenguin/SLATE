@@ -1,5 +1,19 @@
 # This file contains the messages that are to be displayed to the user. This file is loaded on startup
 #
+#
+#
+# File format:
+#
+# NAME, TYPE, TEXT
+#
+# '#' is a comment
+#
+# All leading and ending whitespace is trimmed
+#
+# variables are supported, swap them in with :variable
+#
+#
+#
 # Attendance attainment---------------------------------------------------------------------------------------
 #
 # Pearson info
@@ -21,3 +35,21 @@ ATTENDANCE_ATTAINMENT_GENTLE_SLOPE,     ATTENDANCE_ATTAINMENT,   the data sugges
 ATTENDANCE_ATTAINMENT_RECOMMEND,            ATTENDANCE_ATTAINMENT,      therefore we recommend you attend the :sessiontype as much as possible
 ATTENDANCE_ATTAINMENT_MEHRECOMMEND,         ATTENDANCE_ATTAINMENT,      therefore we advise you attend the :sessiontype
 ATTENDANCE_ATTAINMENT_DONTRECOMMEND,        ATTENDANCE_ATTAINMENT,      therefore we recommend you DON'T attend the :sessiontype
+#
+#
+#
+#
+#
+# Assignment Warnings
+#
+ASSIGNMENT_WARNING_PERSONAL_GOAL,           ASSIGNMENT_WARNING,         Your mark of :percentage  in assignment ':assignmentName' is below your personal goal
+ASSIGNMENT_WARNING_MODULE_GOAL,             ASSIGNMENT_WARNING,         Your mark of :percentage  in assignment ':assignmentName is' below the goal set by your lecturer
+#
+#
+# Recommendations
+#
+INCREASE_ATTENDANCE_RECOMMENDATION,         ATTENDANCE_RECOMMENDATION,  Within this module those that have higher attendance tend to perform better. Consider attending more.
+DECREASE_ATTENDANCE_RECOMMENDATION,         ATTENDANCE_RECOMMENDATION,  Within this module those that have lower attendance tend to perform better. Consider bunking off more.
+#
+RECOMMENDED_ATTENDANCE_LEVEL_INCREASE,               ATTENDANCE_RECOMMENDATION,  Based on the past performance of students taking this class we recommend you have an attendance of over :attendance% to achieve your goals
+RECOMMENDED_ATTENDANCE_LEVEL_DECREASE,               ATTENDANCE_RECOMMENDATION,  Based on the past performance of students taking this class we recommend you have an attendance of under :attendance% to achieve your goals

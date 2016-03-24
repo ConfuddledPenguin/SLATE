@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * Created by Tom on 21/03/2016.
+ * Performs the message database operations
  */
 @Transactional
 @Repository

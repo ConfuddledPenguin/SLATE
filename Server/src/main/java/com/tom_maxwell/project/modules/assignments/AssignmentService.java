@@ -3,7 +3,6 @@ package com.tom_maxwell.project.modules.assignments;
 import com.tom_maxwell.project.Views.GenericView;
 import com.tom_maxwell.project.Views.View;
 import com.tom_maxwell.project.modules.auth.EntitlementService;
-import com.tom_maxwell.project.modules.modules.ModuleModel;
 import com.tom_maxwell.project.modules.modules.ModuleYearModel;
 import com.tom_maxwell.project.modules.users.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
- * Created by Tom on 08/02/2016.
+ * The assignment service
  */
 @Service
 @Transactional
@@ -38,7 +37,7 @@ public class AssignmentService {
 		UserModel.Role role = (UserModel.Role) request.getAttribute("role");
 		String username = (String) request.getAttribute("username");
 
-		AssignmentModel assignmentModel = assignmentDAO.getAssignement(assignmentId);
+		AssignmentModel assignmentModel = assignmentDAO.getAssignment(assignmentId);
 
 		if(assignmentModel == null){
 			View view = new GenericView();

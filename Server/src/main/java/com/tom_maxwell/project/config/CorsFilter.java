@@ -8,7 +8,7 @@ import java.io.IOException;
 /**
  * CORS requests are so much fun.
  *
- * Long story time. Using tomcats CORS filter wasnt working, nor was using any of the build in stuff to spring.
+ * Long story time. Using tomcats CORS filter wasn't working, nor was using any of the built in stuff to spring.
  * Solution! write your own filter to do it!!!
  *
  * Im sure this kinda thing falls under don't role your own as you will break everything but yeah....

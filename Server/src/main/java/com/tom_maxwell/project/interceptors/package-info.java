@@ -3,6 +3,6 @@
  */
 
 /**
- * This package contains any interceptor
+ * This package contains any interceptors
  */
 package com.tom_maxwell.project.interceptors;

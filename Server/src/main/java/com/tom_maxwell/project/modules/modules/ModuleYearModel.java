@@ -1,21 +1,20 @@
 package com.tom_maxwell.project.modules.modules;
 
 import com.tom_maxwell.project.modules.sessions.AttendanceGrouping;
-import com.tom_maxwell.project.modules.statistics.Correlation;
+import com.tom_maxwell.project.modules.statistics.CorrelationModel;
 import com.tom_maxwell.project.modules.statistics.Mean;
 import com.tom_maxwell.project.modules.assignments.AssignmentModel;
 import com.tom_maxwell.project.modules.sessions.SessionModel;
-import com.tom_maxwell.project.modules.users.Enrollment;
+import com.tom_maxwell.project.modules.users.EnrollmentModel;
 import com.tom_maxwell.project.modules.users.UserModel;
+import com.tom_maxwell.project.modules.warnings.WarningModel;
 
 import javax.persistence.*;
 import java.util.*;
 
 /**
- * Created by Tom on 06/03/2016.
+ * The module year model. Maps onto the ModuleYear table
  */
-
-
 @Entity
 @Table(name = "ModuleYear")
 public class ModuleYearModel {
@@ -32,7 +31,7 @@ public class ModuleYearModel {
 	private ModuleModel module;
 
 	@OneToMany(mappedBy = "module", cascade = CascadeType.ALL)
-	private Set<Enrollment> enrollments;
+	private Set<EnrollmentModel> enrollments;
 
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "teachingModules")
 	private Set<UserModel> teachingStaff;
@@ -71,13 +70,14 @@ public class ModuleYearModel {
 	)
 	@MapKey(name = "sessionType")
 	@MapKeyEnumerated
-	private Map<SessionModel.SessionType, Correlation> attendanceAttainmentCorrelation;
+	private Map<SessionModel.SessionType, CorrelationModel> attendanceAttainmentCorrelation;
 
 	private double passRate = 0;
 
 	private int noStudents;
 
 	private boolean analysed = false;
+	private boolean warningsGenerated = false;
 
 	public ModuleYearModel() {
 	}
@@ -121,11 +121,11 @@ public class ModuleYearModel {
 		this.assignments = assignments;
 	}
 
-	public Set<Enrollment> getEnrollments() {
+	public Set<EnrollmentModel> getEnrollments() {
 		return enrollments;
 	}
 
-	public void setEnrollments(Set<Enrollment> enrollments) {
+	public void setEnrollments(Set<EnrollmentModel> enrollments) {
 		this.enrollments = enrollments;
 	}
 
@@ -193,11 +193,19 @@ public class ModuleYearModel {
 		this.noStudents = noStudents;
 	}
 
-	public Map<SessionModel.SessionType, Correlation> getAttendanceAttainmentCorrelation() {
+	public Map<SessionModel.SessionType, CorrelationModel> getAttendanceAttainmentCorrelation() {
 		return attendanceAttainmentCorrelation;
 	}
 
-	public void setAttendanceAttainmentCorrelation(Map<SessionModel.SessionType, Correlation> attendanceAttainmentCorrelation) {
+	public void setAttendanceAttainmentCorrelation(Map<SessionModel.SessionType, CorrelationModel> attendanceAttainmentCorrelation) {
 		this.attendanceAttainmentCorrelation = attendanceAttainmentCorrelation;
+	}
+
+	public boolean isWarningsGenerated() {
+		return warningsGenerated;
+	}
+
+	public void setWarningsGenerated(boolean warningsGenerated) {
+		this.warningsGenerated = warningsGenerated;
 	}
 }

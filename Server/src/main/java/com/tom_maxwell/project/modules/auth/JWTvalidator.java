@@ -23,9 +23,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by Tom on 22/01/2016.
- */
 
 /**
  * The JWT validator is responsible for validating JWT

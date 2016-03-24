@@ -3,7 +3,7 @@ package com.tom_maxwell.project.modules.messages;
 import com.tom_maxwell.project.Views.AbstractView;
 
 /**
- * Created by Tom on 21/03/2016.
+ * Represents a view onto a message
  */
 public class MessageView extends AbstractView {
 

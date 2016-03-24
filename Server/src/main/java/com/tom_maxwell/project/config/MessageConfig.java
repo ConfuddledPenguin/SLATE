@@ -14,7 +14,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 /**
- * Created by Tom on 21/03/2016.
+ * The message config loads the messages than can be displayed to the users and stores them in the DB
  */
 @Component
 public class MessageConfig {

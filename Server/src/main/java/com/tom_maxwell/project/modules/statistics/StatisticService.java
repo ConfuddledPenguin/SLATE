@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Tom on 09/03/2016.
+ * The statistic service
  */
 @Component
 public class StatisticService {

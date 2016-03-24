@@ -5,7 +5,7 @@ import com.tom_maxwell.project.modules.statistics.StatisticFlexibleModel;
 import com.tom_maxwell.project.modules.statistics.StatisticInterface;
 import com.tom_maxwell.project.modules.statistics.StatisticModel;
 import com.tom_maxwell.project.modules.statistics.StatisticService;
-import com.tom_maxwell.project.modules.users.Enrollment;
+import com.tom_maxwell.project.modules.users.EnrollmentModel;
 import com.tom_maxwell.project.modules.users.EnrollmentDAO;
 import org.apache.commons.collections4.MapIterator;
 import org.apache.commons.collections4.keyvalue.MultiKey;
@@ -21,7 +21,7 @@ import java.awt.*;
 import java.util.List;
 
 /**
- * Created by Tom on 09/03/2016.
+ * Analyses the final results
  */
 @Component("ResultAnalyser")
 @Transactional
@@ -37,7 +37,7 @@ public class ResultAnalyser extends AbstractAnalyser {
 	@Override
 	public void analyse() {
 
-		List<Enrollment> enrollmentList = enrollmentDAO.getAll();
+		List<EnrollmentModel> enrollmentList = enrollmentDAO.getAll();
 
 		SummaryStatistics statistics = new SummaryStatistics();
 
@@ -48,11 +48,11 @@ public class ResultAnalyser extends AbstractAnalyser {
 
 
 		double noPasses = 0;
-		for(Enrollment enrollment: enrollmentList){
+		for(EnrollmentModel enrollment: enrollmentList){
 
 			//sort global
 			statistics.addValue(enrollment.getFinalMark());
-			if(enrollment.getResult() == Enrollment.Result.PASS)
+			if(enrollment.getResult() == EnrollmentModel.Result.PASS)
 				++noPasses;
 
 
@@ -76,7 +76,7 @@ public class ResultAnalyser extends AbstractAnalyser {
 				);
 			}
 
-			if(enrollment.getResult() == Enrollment.Result.PASS){
+			if(enrollment.getResult() == EnrollmentModel.Result.PASS){
 				rate.setLocation(rate.getX() + 1, rate.getY() + 1);
 			}else{
 				rate.setLocation(rate.getX() + 1, rate.getY());

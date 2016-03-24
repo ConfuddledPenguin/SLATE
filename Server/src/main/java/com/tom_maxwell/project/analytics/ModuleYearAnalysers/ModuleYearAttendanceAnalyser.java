@@ -20,7 +20,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Tom on 12/03/2016.
+ * Analysis's the attendance
+ *
+ * calculate the mean / Standard deviation and such
  */
 @Component
 @Transactional(isolation = Isolation.READ_COMMITTED)

@@ -13,8 +13,18 @@ angular.module('SLATE.modules')
 				setupScope();
 				fetchModule();
 				//displayAttendanceGraph();
-				//displayProgressGraph();
 
+				$timeout(function(){
+					displayProgressGraph();
+				}, 2000);
+
+				$scope.renderGraphs = function(){
+
+					$timeout(function(){
+						displayProgressGraph();
+					})
+
+				}
 			}
 
 			function fetchModule(){
@@ -28,6 +38,8 @@ angular.module('SLATE.modules')
 
 							$scope.module.data = response.result;
 
+							console.log($scope.module.data);
+
 							$scope.module.goals = {
 								attainment: $scope.module.data.attainmentGoal,
 								attendance: $scope.module.data.attendanceGoal
@@ -35,7 +47,7 @@ angular.module('SLATE.modules')
 
 							initUserGoalSliders();
 
-							//displayProgressGraph();
+							displayProgressGraph();
 
 						}else{
 							toastr.error(data.data.message, 'Error');
@@ -125,7 +137,7 @@ angular.module('SLATE.modules')
 					student.x.push(item.name);
 					student.y.push(item.percentage);
 					average.x.push(item.name);
-					average.y.push(item.average);
+					average.y.push(item.average.mean);
 
 				});
 			}

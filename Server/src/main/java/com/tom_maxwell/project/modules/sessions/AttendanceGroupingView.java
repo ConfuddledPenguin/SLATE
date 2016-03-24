@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Tom on 15/03/2016.
+ * A view onto the attendanceGroupings
  */
 public class AttendanceGroupingView extends AbstractView {
 

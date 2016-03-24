@@ -5,12 +5,15 @@ import com.tom_maxwell.project.modules.users.UserModel;
 import javax.persistence.*;
 
 /**
- * Created by Tom on 04/03/2016.
+ * Represents a users attendance. Maps onto the Attendance table
  */
 @Entity
 @Table(name = "Attendance")
 public class AttendanceModel {
 
+	/**
+	 * the value of the attendance, either present or absent duh!
+	 */
 	public enum AttendanceValue {
 		PRESENT("PRESENT"),
 		ABSENT("ABSENT");

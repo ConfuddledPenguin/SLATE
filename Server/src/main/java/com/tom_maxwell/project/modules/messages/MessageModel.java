@@ -3,7 +3,7 @@ package com.tom_maxwell.project.modules.messages;
 import javax.persistence.*;
 
 /**
- * Created by Tom on 21/03/2016.
+ * The message entity, maps onto the Messages table
  */
 @Entity
 @Table(name = "Messages")

@@ -3,12 +3,17 @@ package com.tom_maxwell.project.modules.statistics;
 import javax.persistence.*;
 
 /**
- * Created by Tom on 09/03/2016.
+ * Global stats, maps onto the SLATE_Statistics table.
+ *
+ * This version uses enums to access its members, and is therefore rigid in its implementation.
  */
 @Entity
 @Table(name = "SLATE_Statistics")
 public class StatisticModel implements StatisticInterface {
 
+	/**
+	 * The enum which defined the possible statistic types you may add to the DB, fetch
+	 */
 	public enum Stat_type{
 
 		ATTENDANCE_MEAN("ATTENDANCE_MEAN", Double.NaN),

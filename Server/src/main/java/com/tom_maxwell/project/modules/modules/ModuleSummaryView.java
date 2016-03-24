@@ -1,9 +1,7 @@
 package com.tom_maxwell.project.modules.modules;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 /**
- * Created by Tom on 04/03/2016.
+ * A summary of a year
  */
 public class ModuleSummaryView {
 

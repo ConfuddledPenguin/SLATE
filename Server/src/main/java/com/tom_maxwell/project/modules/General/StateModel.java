@@ -5,17 +5,17 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * Created by Tom on 09/03/2016.
+ * Holds state information. Maps onto the SLATE_state table
  */
 @Entity
 @Table(name = "SLATE_State")
-public class State {
+public class StateModel {
 
 	@Id
 	private String state_name;
 	private String state_value;
 
-	public State() {
+	public StateModel() {
 	}
 
 	public String getState_name() {

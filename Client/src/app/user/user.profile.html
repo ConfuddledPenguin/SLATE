@@ -72,8 +72,13 @@
 		lecturer / admin viewing student
 	</div>
 
-	<div ng-if="profile.meta.own && (profile.meta.role === 'LECTURER' || profile.meta.role === 'ADMIN')">
-		lecturer / admin viewing themselves
+	<div ng-if="profile.meta.own && profile.meta.role === 'LECTURER'">
+		lecturer viewing themselves
+	</div>
+
+	<div ng-if="profile.meta.own && profile.meta.role === 'ADMIN'">
+		<h1>HIYA!!!!</h1>
+		<p>Your an unloved admin and don't get a fancy profile. Sorry.</p>
 	</div>
 
 </div>

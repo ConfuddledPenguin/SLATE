@@ -4,7 +4,9 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
- * Created by Tom on 21/03/2016.
+ * Global stats, maps onto the SLATE_Statistics table.
+ *
+ * This version uses strings to access its members, and is therefore flexible in its implementation.
  */
 @Entity
 @Table(name = "SLATE_Statistics")

@@ -16,7 +16,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by Tom on 06/03/2016.
+ * The module analytics runner
  */
 @Component("moduleAnalyticsRunner")
 @Transactional(readOnly = false)
@@ -34,6 +34,16 @@ public class ModuleAnalyticsRunner extends AbstractAnalyser implements ModuleAna
 	public ModuleAnalyticsRunner() {
 	}
 
+	/**
+	 * do the analytics thing
+	 *
+	 * do:
+	 *
+	 * every module year, using the runner
+	 * the attendance
+	 * the attainment
+	 * the attendance vs attainment
+	 */
 	@Override
 	public void analyse() {
 

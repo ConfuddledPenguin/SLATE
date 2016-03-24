@@ -1,6 +1,7 @@
 package com.tom_maxwell.project.modules.assignments;
 
 import com.tom_maxwell.project.Views.AbstractView;
+import com.tom_maxwell.project.modules.statistics.Mean;
 
 import java.util.Date;
 import java.util.List;
@@ -17,9 +18,9 @@ public class AssignmentView extends AbstractView {
 	private int assignmentNo;
 	private Date dueDate;
 	private double percentage;
-	private double average;
+	private Mean average;
 
-	public AssignmentView(long id, String name, int assignmentNo, Date dueDate, double percentage, double average) {
+	public AssignmentView(long id, String name, int assignmentNo, Date dueDate, double percentage, Mean average) {
 		Id = id;
 		this.name = name;
 		this.assignmentNo = assignmentNo;
@@ -68,11 +69,11 @@ public class AssignmentView extends AbstractView {
 		this.percentage = percentage;
 	}
 
-	public double getAverage() {
+	public Mean getAverage() {
 		return average;
 	}
 
-	public void setAverage(double average) {
+	public void setAverage(Mean average) {
 		this.average = average;
 	}
 }

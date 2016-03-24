@@ -1,7 +1,5 @@
 package com.tom_maxwell.project.analytics;
 
-import org.hibernate.Transaction;
-import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +8,11 @@ import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Created by Tom on 13/02/2016.
+ * The base of all analysers
+ *
+ * This class is the base of all analysers, it is implemented of of the analysers class
+ *
+ * This allows you to shove this in a executor, run it as a thread or just as a POJO
  */
 @Transactional
 public class AbstractAnalyser implements Analyser {
@@ -32,11 +34,22 @@ public class AbstractAnalyser implements Analyser {
 	}
 
 
+	/**
+	 * Returns the type of analyser
+	 *
+	 * @return the analyser type
+	 */
 	@Override
 	public String getAnalyserType() {
 		return this.getClass().getCanonicalName();
 	}
 
+	/**
+	 *
+	 * This method performs any analysis
+	 *
+	 * This method should be overriden.
+	 */
 	@Override
 	public void analyse() {
 		logger.warn("Analyse method not overriden in " + getAnalyserType());

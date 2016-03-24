@@ -2,7 +2,6 @@ package com.tom_maxwell.project.modules.modules;
 
 import com.tom_maxwell.project.Views.*;
 import com.tom_maxwell.project.analytics.ModuleAnalysers.ModuleAnalyticsRunnerInterface;
-import com.tom_maxwell.project.analytics.ModuleYearAnalysers.ModuleYearAnalyticsRunner;
 import com.tom_maxwell.project.analytics.ModuleYearAnalysers.ModuleYearAnalyticsRunnerInterface;
 import com.tom_maxwell.project.modules.assignments.AssignmentMarkModel;
 import com.tom_maxwell.project.modules.assignments.AssignmentModel;
@@ -13,15 +12,11 @@ import com.tom_maxwell.project.modules.messages.MessageService;
 import com.tom_maxwell.project.modules.messages.MessageView;
 import com.tom_maxwell.project.modules.sessions.AttendanceGrouping;
 import com.tom_maxwell.project.modules.sessions.SessionModel;
-import com.tom_maxwell.project.modules.statistics.Correlation;
+import com.tom_maxwell.project.modules.statistics.CorrelationModel;
 import com.tom_maxwell.project.modules.statistics.Mean;
-import com.tom_maxwell.project.modules.users.Enrollment;
-import com.tom_maxwell.project.modules.users.EnrollmentService;
-import com.tom_maxwell.project.modules.users.UserModel;
-import com.tom_maxwell.project.modules.users.UserStudentView;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
-import org.apache.commons.math3.stat.regression.SimpleRegression;
+import com.tom_maxwell.project.modules.users.*;
+import com.tom_maxwell.project.modules.warnings.WarningModel;
+import com.tom_maxwell.project.warnings.ModuleYearWarningGenerators.ModuleYearWarningGeneratorRunnerInterface;
 import org.atteo.evo.inflector.English;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -33,7 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
- * Created by Tom on 08/02/2016.
+ * The module service
  */
 @Service
 @Transactional(isolation = Isolation.READ_COMMITTED)
@@ -53,6 +48,9 @@ public class ModuleService {
 
 	@Autowired
 	private MessageService messageService;
+
+	@Autowired
+	private UserService userService;
 
 	@Autowired
 	private HttpServletRequest request;
@@ -78,58 +76,21 @@ public class ModuleService {
 		moduleYearAnalyticsRunner.setModuleYearModel(moduleModel);
 		moduleYearAnalyticsRunner.analyse();
 
+		List<WarningModel> warningModels = new ArrayList<>();
+		ModuleYearWarningGeneratorRunnerInterface moduleYearWarningGeneratorRunner = (ModuleYearWarningGeneratorRunnerInterface) context.getBean("ModuleYearWarningGeneratorRunner");
+		moduleYearWarningGeneratorRunner.setModuleYear(moduleModel);
+		moduleYearWarningGeneratorRunner.setUser(username);
+		moduleYearWarningGeneratorRunner.setWarnings(warningModels);
+		moduleYearWarningGeneratorRunner.generate();
+		warningModels = moduleYearWarningGeneratorRunner.getWarnings();
+
+		moduleDAO.refresh(moduleModel);
 
 		if(role == UserModel.Role.STUDENT){
 
-			ModuleStudentView view = new ModuleStudentView();
-			view.setClassCode(moduleModel.getClassCode());
-			view.setDescription(moduleModel.getModule().getDescription());
-			view.setId(moduleModel.getId());
-			view.setYear(moduleModel.getYear());
-			view.setName(moduleModel.getModule().getName());
-			view.setClassAverage(moduleModel.getFinalMark().getMean());
+			ModuleStudentView view = ModuleStudentView.getView(moduleModel, username, userService.getStudentUserViews(moduleModel.getModule()));
+			view.setWarnings(warningModels);
 
-			Set<UserStudentView> users = getStudentUserViews(moduleModel.getModule(), view.getTeachingStaff());
-			view.setTeachingStaff(users);
-
-			List<AssignmentView> assignmentStudentViews = view.getAssignments();
-			for(AssignmentModel assignmentModel: moduleModel.getAssignments()){
-
-				double percentage = 0;
-				for(AssignmentMarkModel assignmentMarkModel: assignmentModel.getAssignmentMarks()){
-					if(assignmentMarkModel.getUser().getUsername().equals(username)){
-						percentage = assignmentMarkModel.getPercentage();
-						break;
-					}
-				}
-
-				assignmentStudentViews.add(new AssignmentView(
-						assignmentModel.getId(),
-						assignmentModel.getName(),
-						assignmentModel.getAssignmentNo(),
-						assignmentModel.getDueDate(),
-						percentage,
-						0
-				));
-			}
-
-			for(Enrollment enrollment: moduleModel.getEnrollments()){
-				if(enrollment.getUser().getUsername().equals(username)){
-
-					int goal = enrollment.getAttainmentGoal();
-					if(goal == 0 )
-						goal = enrollment.getUser().getAttainmentGoal();
-					view.setAttainmentGoal(goal);
-
-					goal = enrollment.getAttainmentGoal();
-					if(goal == 0 )
-						goal = enrollment.getUser().getAttainmentGoal();
-					view.setAttendanceGoal(goal);
-
-				}
-			}
-
-			view.setDataExists(true);
 			return view;
 
 		}else if( role == UserModel.Role.ADMIN){
@@ -152,10 +113,22 @@ public class ModuleService {
 
 			List<View> enrollments = view.getEnrollments();
 
-			for(Enrollment enrollment: moduleModel.getEnrollments()){
+			for(EnrollmentModel enrollment: moduleModel.getEnrollments()){
 				enrollments.add(enrollmentService.getEnrollmentView(enrollment));
 			}
 
+			List<AssignmentView> assignmentViews = view.getAssignments();
+			for(AssignmentModel assignment: moduleModel.getAssignments()){
+
+				assignmentViews.add(new AssignmentView(
+						assignment.getId(),
+						assignment.getName(),
+						assignment.getAssignmentNo(),
+						assignment.getDueDate(),
+						0,
+						assignment.getMarkMean()
+				));
+			}
 
 			view.setDataExists(true);
 			return view;
@@ -240,7 +213,7 @@ public class ModuleService {
 
 			if(yearModel == null) continue;
 
-			for(Enrollment enrollment: yearModel.getEnrollments()){
+			for(EnrollmentModel enrollment: yearModel.getEnrollments()){
 				enrollments.add(enrollmentService.getEnrollmentView(enrollment));
 			}
 		}
@@ -337,7 +310,7 @@ public class ModuleService {
 
 		entitlementService.canAccessModule(moduleYear);
 
-		for(Enrollment enrollment: moduleYear.getEnrollments()){
+		for(EnrollmentModel enrollment: moduleYear.getEnrollments()){
 
 			if(!enrollment.getUser().getUsername().equals(username)){
 				continue;
@@ -379,15 +352,19 @@ public class ModuleService {
 		return usersViews;
 	}
 
+	private void fillAssignmentViews(){
+
+	}
+
 	private Set<View> getMessages(ModuleModel module){
 
 		Set<View> messages = new HashSet<>();
 
-		Map<SessionModel.SessionType, Correlation> groupings = module.getAttendanceAttainmentCorrelation();
+		Map<SessionModel.SessionType, CorrelationModel> groupings = module.getAttendanceAttainmentCorrelation();
 
-		for(Map.Entry<SessionModel.SessionType, Correlation> entry: groupings.entrySet()){
+		for(Map.Entry<SessionModel.SessionType, CorrelationModel> entry: groupings.entrySet()){
 
-			Correlation c = entry.getValue();
+			CorrelationModel c = entry.getValue();
 
 			double pearson = c.getPearson();
 

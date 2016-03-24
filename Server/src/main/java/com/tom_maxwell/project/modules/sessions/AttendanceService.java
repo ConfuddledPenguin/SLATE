@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Created by Tom on 15/03/2016.
+ * The attendance Service
  */
 @Service
 @Transactional

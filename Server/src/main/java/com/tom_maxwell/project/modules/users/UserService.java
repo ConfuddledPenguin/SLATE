@@ -12,9 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * the user service is responsible for handling user information
@@ -78,7 +76,7 @@ public class UserService {
 
 			List<ModuleStudentView> moduleViews = view.getEnrolledModules();
 
-			for(Enrollment enrollment: userModel.getEnrollments()){
+			for(EnrollmentModel enrollment: userModel.getEnrollments()){
 
 				ModuleYearModel moduleYearModel = enrollment.getModule();
 				ModuleModel moduleModel = moduleYearModel.getModule();
@@ -139,7 +137,7 @@ public class UserService {
 			user.setAttainmentGoal(attainmentGoal);
 			user.setAttendanceGoal(attendanceGoal);
 
-			for(Enrollment enrollment: user.getEnrollments()){
+			for(EnrollmentModel enrollment: user.getEnrollments()){
 
 				ModuleYearModel year = enrollment.getModule();
 				year.setAnalysed(false);
@@ -188,6 +186,21 @@ public class UserService {
 
 		return jwTvalidator.generate(claims);
 
+	}
+
+	public Set<UserStudentView> getStudentUserViews(ModuleModel model){
+
+		Set<UserStudentView> usersViews = new HashSet<>();
+		for(ModuleYearModel moduleYearModel: model.getModuleList()){
+
+			if(moduleYearModel == null) continue;
+
+			for(UserModel userModel: moduleYearModel.getTeachingStaff()){
+				usersViews.add(new UserStudentView(userModel.getUsername(), userModel.getName(), userModel.getEmail()));
+			}
+		}
+
+		return usersViews;
 	}
 
 

@@ -4,7 +4,7 @@ import com.tom_maxwell.project.analytics.AbstractAnalyser;
 import com.tom_maxwell.project.modules.statistics.Mean;
 import com.tom_maxwell.project.modules.modules.ModuleDAO;
 import com.tom_maxwell.project.modules.modules.ModuleYearModel;
-import com.tom_maxwell.project.modules.users.Enrollment;
+import com.tom_maxwell.project.modules.users.EnrollmentModel;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -12,7 +12,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Created by Tom on 07/03/2016.
+ * Analysis's the final marks average
+ *
+ * calculate the mean / Standard deviation and such
  */
 @Component()
 @Transactional
@@ -36,10 +38,10 @@ public class ModuleYearAverageAnalyser extends AbstractAnalyser implements Modul
 
 		double noStudents = 0;
 		double noPasses = 0;
-		for(Enrollment enrollment: moduleYearModel.getEnrollments()){
+		for(EnrollmentModel enrollment: moduleYearModel.getEnrollments()){
 			statistics.addValue(enrollment.getFinalMark());
 
-			if(enrollment.getResult() == Enrollment.Result.PASS)
+			if(enrollment.getResult() == EnrollmentModel.Result.PASS)
 				++noPasses;
 
 			++noStudents;

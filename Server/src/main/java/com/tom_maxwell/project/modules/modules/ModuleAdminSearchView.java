@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Tom on 03/03/2016.
+ * Represents a search on the database for modules
  */
 public class ModuleAdminSearchView extends AbstractView{
 

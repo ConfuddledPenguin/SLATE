@@ -1,7 +1,7 @@
 package com.tom_maxwell.project.modules.statistics;
 
 /**
- * Created by Tom on 21/03/2016.
+ * The interface from which all statistics derive
  */
 public interface StatisticInterface {
 

@@ -1,6 +1,5 @@
 package com.tom_maxwell.project.modules.users;
 
-import com.tom_maxwell.project.modules.modules.ModuleModel;
 import com.tom_maxwell.project.modules.modules.ModuleYearModel;
 import com.tom_maxwell.project.modules.sessions.AttendanceGrouping;
 import com.tom_maxwell.project.modules.sessions.SessionModel;
@@ -10,11 +9,11 @@ import javax.persistence.*;
 import java.util.Map;
 
 /**
- * Created by Tom on 24/02/2016.
+ * Maps to the enrollment table of the database
  */
 @Entity
 @Table(name = "Enrollment")
-public class Enrollment {
+public class EnrollmentModel {
 
 	public enum Result {
 		PASS("PASS"),
@@ -47,7 +46,15 @@ public class Enrollment {
 
 	private double finalMark;
 
-	private double average;
+	@Embedded
+	@AttributeOverrides({
+			@AttributeOverride(name="mean", column = @Column(name = "assignmentMean")),
+			@AttributeOverride(name="min", column = @Column(name="assignmentMin")),
+			@AttributeOverride(name="max", column = @Column(name="assignmentMax")),
+			@AttributeOverride(name="stdDev", column = @Column(name="assignmentStdDev")),
+			@AttributeOverride(name="total", column = @Column(name="assignmentTotal", columnDefinition = "int default 0"))
+	})
+	private Mean assignmentMean;
 
 	private int attainmentGoal;
 	private int attendanceGoal;
@@ -65,10 +72,10 @@ public class Enrollment {
 	@Enumerated(EnumType.STRING)
 	private Result result;
 
-	public Enrollment() {
+	public EnrollmentModel() {
 	}
 
-	public Enrollment(UserModel user, ModuleYearModel module) {
+	public EnrollmentModel(UserModel user, ModuleYearModel module) {
 		this.user = user;
 		this.module = module;
 	}
@@ -89,12 +96,16 @@ public class Enrollment {
 		this.module = module;
 	}
 
-	public double getAverage() {
-		return average;
+	public Mean getAssignmentMean() {
+
+		if(assignmentMean == null){
+			assignmentMean = new Mean();
+		}
+		return assignmentMean;
 	}
 
-	public void setAverage(double average) {
-		this.average = average;
+	public void setAssignmentMean(Mean assignmentMean) {
+		this.assignmentMean = assignmentMean;
 	}
 
 	public int getId() {
