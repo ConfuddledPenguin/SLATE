@@ -55,6 +55,8 @@ public class MessageConfig {
 
 			}
 
+			br.close();
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
