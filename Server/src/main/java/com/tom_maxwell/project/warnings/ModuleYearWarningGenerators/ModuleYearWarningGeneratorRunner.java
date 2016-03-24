@@ -3,7 +3,6 @@ package com.tom_maxwell.project.warnings.ModuleYearWarningGenerators;
 import com.tom_maxwell.project.modules.assignments.AssignmentModel;
 import com.tom_maxwell.project.modules.modules.ModuleDAO;
 import com.tom_maxwell.project.modules.modules.ModuleYearModel;
-import com.tom_maxwell.project.modules.users.UserModel;
 import com.tom_maxwell.project.warnings.AbstractWarningGeneratorRunner;
 import com.tom_maxwell.project.warnings.AssignmentWarningGenerators.AssignmentWarningGeneratorInterface;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +39,7 @@ public class ModuleYearWarningGeneratorRunner extends AbstractWarningGeneratorRu
 
 		if(moduleYear.isWarningsGenerated() && !ignore_analysed_bool) return;
 
-		getExecutorService(moduleYear.getAssignments().size());
+		initExecutorService(moduleYear.getAssignments().size());
 
 		for(AssignmentModel assignment: moduleYear.getAssignments()){
 

@@ -7,6 +7,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PreDestroy;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 /**
  * The base of all analysers
  *
@@ -26,6 +30,8 @@ public class AbstractAnalyser implements Analyser {
 	protected HibernateTemplate hibernateTemplate;
 
 	protected boolean calledThroughRun = false;
+
+	protected ExecutorService executorService;
 
 	@Override
 	public void run() {
@@ -53,5 +59,18 @@ public class AbstractAnalyser implements Analyser {
 	@Override
 	public void analyse() {
 		logger.warn("Analyse method not overriden in " + getAnalyserType());
+	}
+
+	protected ExecutorService initExecutorService(int size){
+		executorService = Executors.newFixedThreadPool(size);
+
+		return executorService;
+	}
+
+	@PreDestroy
+	public void destroy(){
+
+		if(executorService != null)
+			executorService.shutdown();
 	}
 }

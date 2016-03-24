@@ -6,15 +6,12 @@ import com.tom_maxwell.project.modules.assignments.AssignmentModel;
 import com.tom_maxwell.project.modules.modules.ModuleDAO;
 import com.tom_maxwell.project.modules.modules.ModuleYearModel;
 import com.tom_maxwell.project.modules.users.EnrollmentModel;
-import com.tom_maxwell.project.warnings.ModuleYearWarningGenerators.ModuleYearWarningGeneratorRunnerInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -63,7 +60,7 @@ public class ModuleYearAnalyticsRunner extends AbstractAnalyser implements Modul
 		//don't run if its already been analysed
 		if(moduleYearModel.isAnalysed() && !ignore_analysed_bool) return;
 
-		ExecutorService executorService = Executors.newFixedThreadPool(1);
+		initExecutorService(10);
 
 		//analyse enrollment
 		for(EnrollmentModel enrollment: moduleYearModel.getEnrollments()){

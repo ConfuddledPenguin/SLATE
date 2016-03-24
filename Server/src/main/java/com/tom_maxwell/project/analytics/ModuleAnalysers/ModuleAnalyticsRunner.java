@@ -11,8 +11,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -36,9 +34,9 @@ public class ModuleAnalyticsRunner extends AbstractAnalyser implements ModuleAna
 
 	/**
 	 * do the analytics thing
-	 *
+	 * <p>
 	 * do:
-	 *
+	 * <p>
 	 * every module year, using the runner
 	 * the attendance
 	 * the attainment
@@ -49,9 +47,9 @@ public class ModuleAnalyticsRunner extends AbstractAnalyser implements ModuleAna
 
 		moduleModel = moduleDAO.get(moduleModel.getId());
 
-		if(moduleModel.isAnalysed() && !ignore_analysed_bool) return;
+		if (moduleModel.isAnalysed() && !ignore_analysed_bool) return;
 
-		ExecutorService executorService = Executors.newFixedThreadPool(10);
+		initExecutorService(10);
 
 		ModuleClassAverageAnalyserInterface moduleClassAverageAnalyser = (ModuleClassAverageAnalyserInterface) context.getBean("ModuleClassAverageAnalyser");
 		ModuleAttendanceAnalyserInterface moduleAttendanceAnalyser = (ModuleAttendanceAnalyserInterface) context.getBean("ModuleAttendanceAnalyser");
@@ -59,10 +57,10 @@ public class ModuleAnalyticsRunner extends AbstractAnalyser implements ModuleAna
 		moduleClassAverageAnalyser.setModule(moduleModel);
 		moduleAttendanceAnalyser.setModule(moduleModel);
 
-		try{
+		try {
 
-			for(ModuleYearModel moduleYearModel: moduleModel.getModuleList()){
-				if(moduleYearModel == null) continue;
+			for (ModuleYearModel moduleYearModel : moduleModel.getModuleList()) {
+				if (moduleYearModel == null) continue;
 
 				ModuleYearAnalyticsRunnerInterface runner = (ModuleYearAnalyticsRunnerInterface) context.getBean("ModuleYearAnalyticsRunner");
 				runner.setModuleYearModel(moduleYearModel);
@@ -79,7 +77,7 @@ public class ModuleAnalyticsRunner extends AbstractAnalyser implements ModuleAna
 			moduleEnrollmentAnalyser.setModuleModel(moduleModel);
 			moduleEnrollmentAnalyser.analyse();
 
-		}catch(InterruptedException e){
+		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 

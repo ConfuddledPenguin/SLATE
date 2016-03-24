@@ -59,7 +59,7 @@ public abstract class AbstractWarningGenerator implements WarningGenerator {
 		generate();
 	}
 
-	protected ExecutorService getExecutorService(int size){
+	protected ExecutorService initExecutorService(int size){
 		executorService = Executors.newFixedThreadPool(size);
 
 		return executorService;
