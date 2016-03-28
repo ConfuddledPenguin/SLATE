@@ -40,7 +40,8 @@ angular.module('SLATE.user', [])
 			.state('frame.user', {
 				url: '/user',
 				abstract: true,
-				template: '<div ng-class="{\'full-height\': !app.showNav}" ui-view></div>'
+				//template: '<div ng-class="{\'full-height\': !app.showNav}" ui-view></div>'
+				template: '<div ui-view style="height: 100%"></div>'
 			})
 			.state('frame.user.profile',{
 				url: '/profile/:username',

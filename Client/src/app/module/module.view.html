@@ -27,11 +27,41 @@
 					<h3>Warnings</h3>
 					<div ng-repeat="(key, warning) in module.data.warnings" class="warning">
 						<h3>{{warning.message}}</h3>
-						<div>
+						<div ng-if="warning.correctionMessages.length == 0">
 							<h4>Suggestions</h4>
 							<p ng-repeat="suggestion in warning.correctionMessages">
 								{{suggestion}}
 							</p>
+						</div>
+					</div>
+				</div>
+				<div class="tile-paddingless">
+					<h3>Predictions</h3>
+					<div>
+						<h4>Based on this modules historical attendance data</h4>
+						<div class="container">
+							<div class="row">
+								<div class="col-md-3 prediction-container">
+									<p class="type">Using Linear Regression</p>
+									<p class="value">{{module.data.predictionGrade_attendance.LINEAR.predicted_value | number:2}}%</p>
+									<p>Common Error Range: &#177;{{module.data.predictionGrade_attendance.LINEAR.meanAbsError | number:2}}%</p>
+								</div>
+								<div class="col-md-3 prediction-container">
+									<p class="type">Using SMO Regression</p>
+									<p class="value">{{module.data.predictionGrade_attendance.SMO.predicted_value | number:2}}%</p>
+									<p>Common Error Range: &#177;{{module.data.predictionGrade_attendance.SMO.meanAbsError | number:2}}%</p>
+								</div>
+								<div class="col-md-3 prediction-container">
+									<p class="type">Using Gaussian Processes</p>
+									<p class="value">{{module.data.predictionGrade_attendance.GAUSSIAN.predicted_value | number:2}}%</p>
+									<p>Common Error Range: &#177;{{module.data.predictionGrade_attendance.GAUSSIAN.meanAbsError | number:2}}%</p>
+								</div>
+								<div class="col-md-3 prediction-container">
+									<p class="type">Using Multilayer Perceptron</p>
+									<p class="value">{{module.data.predictionGrade_attendance.MULTI.predicted_value | number:2}}%</p>
+									<p>Common Error Range: &#177;{{module.data.predictionGrade_attendance.MULTI.meanAbsError | number:2}}%</p>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -86,8 +116,18 @@
 				</div>
 				<div id="attendance" class="tile-paddingless">
 					<h2>Attendance</h2>
-					<h4>The data</h4>
-					<slate-graphs-attendance-graph data="{attendance: module.data.attendanceMean}" uniqueid="personalAttendanceGraph"></slate-graphs-attendance-graph>
+					<br>
+					<div class="container-full-width">
+						<div class="row">
+							<div class="col-md-3 prediction-container" ng-repeat="(key, mean) in module.data.overallAttendanceMean">
+								<p class="type">{{key}}</p>
+								<p class="value">{{mean.mean | number:2}}%</p>
+							</div>
+						</div>
+					</div>
+					<br>
+					<br>
+					<slate-graphs-attendance-graph data="{attendance: module.data.attendanceMean}"uniqueid="personalAttendanceGraph"></slate-graphs-attendance-graph>
 				</div>
 			</uib-tab>
 			<uib-tab heading="Your Goals" select="updateSliders()">

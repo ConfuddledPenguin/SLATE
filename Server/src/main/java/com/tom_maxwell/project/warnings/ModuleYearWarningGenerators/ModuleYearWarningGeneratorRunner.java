@@ -3,8 +3,11 @@ package com.tom_maxwell.project.warnings.ModuleYearWarningGenerators;
 import com.tom_maxwell.project.modules.assignments.AssignmentModel;
 import com.tom_maxwell.project.modules.modules.ModuleDAO;
 import com.tom_maxwell.project.modules.modules.ModuleYearModel;
+import com.tom_maxwell.project.modules.users.EnrollmentModel;
 import com.tom_maxwell.project.warnings.AbstractWarningGeneratorRunner;
 import com.tom_maxwell.project.warnings.AssignmentWarningGenerators.AssignmentWarningGeneratorInterface;
+import com.tom_maxwell.project.warnings.AttainmentWarningGenerators.AttainmentWarningGenerator;
+import com.tom_maxwell.project.warnings.AttainmentWarningGenerators.AttainmentWarningGeneratorInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
@@ -33,13 +36,11 @@ public class ModuleYearWarningGeneratorRunner extends AbstractWarningGeneratorRu
 	@Override
 	public void generate() {
 
-		if(calledThroughRun){
+//		if(calledThroughRun){
 			moduleYear = moduleDAO.get(moduleYear.getClassCode(), moduleYear.getYear());
-		}
+//		}
 
-		if(moduleYear.isWarningsGenerated() && !ignore_analysed_bool) return;
-
-		if(!moduleYear.isAnalysed()) return;
+		if(!moduleYear.getModule().isAnalysed()) return;
 
 		initExecutorService(moduleYear.getAssignments().size());
 
@@ -52,6 +53,14 @@ public class ModuleYearWarningGeneratorRunner extends AbstractWarningGeneratorRu
 			warningGenerator.generate();
 		}
 
+		for(EnrollmentModel enrollment: moduleYear.getEnrollments()){
+			AttainmentWarningGeneratorInterface warningGenerator = (AttainmentWarningGeneratorInterface) context.getBean("AttainmentWarningGenerator");
+			warningGenerator.setEnrollment(enrollment);
+			warningGenerator.setWarnings(warnings);
+			warningGenerator.setUser(user);
+			warningGenerator.generate();
+		}
+
 		executorService.shutdown();
 
 		try {
@@ -60,8 +69,8 @@ public class ModuleYearWarningGeneratorRunner extends AbstractWarningGeneratorRu
 			e.printStackTrace();
 		}
 
-		moduleYear.setWarningsGenerated(true);
-		moduleDAO.save(moduleYear);
+//		moduleYear.setWarningsGenerated(true);
+//		moduleDAO.save(moduleYear);
 	}
 
 

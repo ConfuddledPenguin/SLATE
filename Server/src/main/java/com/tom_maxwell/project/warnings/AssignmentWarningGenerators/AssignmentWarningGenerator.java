@@ -9,6 +9,7 @@ import com.tom_maxwell.project.modules.statistics.CorrelationModel;
 import com.tom_maxwell.project.modules.users.EnrollmentModel;
 import com.tom_maxwell.project.modules.users.EnrollmentService;
 import com.tom_maxwell.project.modules.users.UserModel;
+import com.tom_maxwell.project.modules.users.UserSimpleView;
 import com.tom_maxwell.project.modules.warnings.WarningModel;
 import com.tom_maxwell.project.warnings.AbstractWarningGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -115,7 +116,7 @@ public class AssignmentWarningGenerator extends AbstractWarningGenerator impleme
 				}
 
 
-
+				warning.setUser(UserSimpleView.createView(mark.getUser()));
 				warning.setCorrectionMessages(correctionMessages);
 				warnings.add(warning);
 			}

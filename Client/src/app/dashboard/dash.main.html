@@ -12,9 +12,18 @@
 			<p>Lastly an overview of your warnings are displayed below, for your stressful viewing pleasure :)</p>
 			<p class="highlight-text">TL:DR. SLATE looks at your performance at University. Now go set your learning goals</p>
 		</div>
-		<div class="tile">
-			<h2>Warnings</h2>
-		</div>
+        <div class="tile">
+            <h3>Warnings</h3>
+            <div ng-repeat="(key, warning) in dash.warnings" class="warning">
+                <h3>{{warning.message}}</h3>
+	            <div ng-if="warning.correctionMessages.length == 0">
+		            <h4>Suggestions</h4>
+		            <p ng-repeat="suggestion in warning.correctionMessages">
+			            {{suggestion}}
+		            </p>
+	            </div>
+            </div>
+        </div>
 
 	</div>
 	<div ng-if="app.user.role === 'LECTURER'">
@@ -31,5 +40,4 @@
 			<p class="highlight-text">TL:DR. SLATE looks at performance at University.</p>
 		</div>
 	</div>
-	{{dash}}
 </div>

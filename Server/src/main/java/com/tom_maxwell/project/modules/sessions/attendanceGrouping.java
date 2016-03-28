@@ -1,8 +1,11 @@
 package com.tom_maxwell.project.modules.sessions;
 
 import com.tom_maxwell.project.modules.statistics.Mean;
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,8 @@
 package com.tom_maxwell.project.modules.users;
 
 import org.hibernate.Query;
+import org.hibernate.ScrollMode;
+import org.hibernate.ScrollableResults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.stereotype.Repository;
@@ -24,6 +26,16 @@ public class EnrollmentDAO {
 
 	public List<EnrollmentModel> getAll(){
 		return hibernateTemplate.loadAll(EnrollmentModel.class);
+	}
+
+	public ScrollableResults getAllScrollable(){
+
+		Query query = hibernateTemplate.getSessionFactory().getCurrentSession().createQuery("FROM EnrollmentModel");
+		query.setReadOnly(true);
+
+		ScrollableResults results = query.scroll(ScrollMode.FORWARD_ONLY);
+
+		return results;
 	}
 
 	public EnrollmentModel get(int id) {

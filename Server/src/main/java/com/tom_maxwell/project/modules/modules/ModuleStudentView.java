@@ -1,12 +1,15 @@
 package com.tom_maxwell.project.modules.modules;
 
 import com.tom_maxwell.project.Views.AbstractView;
+import com.tom_maxwell.project.Views.View;
 import com.tom_maxwell.project.modules.assignments.AssignmentMarkModel;
 import com.tom_maxwell.project.modules.assignments.AssignmentModel;
 import com.tom_maxwell.project.modules.assignments.AssignmentView;
 import com.tom_maxwell.project.modules.sessions.AttendanceGrouping;
 import com.tom_maxwell.project.modules.sessions.SessionModel;
 import com.tom_maxwell.project.modules.statistics.Mean;
+import com.tom_maxwell.project.modules.statistics.PredictionModel;
+import com.tom_maxwell.project.modules.statistics.PredictionView;
 import com.tom_maxwell.project.modules.users.EnrollmentModel;
 import com.tom_maxwell.project.modules.users.UserStudentView;
 import com.tom_maxwell.project.modules.warnings.WarningModel;
@@ -36,10 +39,11 @@ public class ModuleStudentView extends AbstractView {
 	private int attendanceGoal;
 
 	private Map<SessionModel.SessionType, List<Mean>> attendanceMean;
+	private Map<SessionModel.SessionType, Mean> overallAttendanceMean;
 
 	private List<WarningModel> warnings;
 
-	private double predictedGrade_attendance;
+	private Map<PredictionModel.PredictionType, View> predictionGrade_attendance;
 
 	public ModuleStudentView() {
 	}
@@ -149,12 +153,14 @@ public class ModuleStudentView extends AbstractView {
 		this.assignmentMean = assignmentMean;
 	}
 
-	public double getPredictedGrade_attendance() {
-		return predictedGrade_attendance;
+	public Map<PredictionModel.PredictionType, View> getPredictionGrade_attendance() {
+
+		if(predictionGrade_attendance == null) predictionGrade_attendance = new HashMap<>();
+		return predictionGrade_attendance;
 	}
 
-	public void setPredictedGrade_attendance(double predictedGrade_attendance) {
-		this.predictedGrade_attendance = predictedGrade_attendance;
+	public void setPredictionGrade_attendance(Map<PredictionModel.PredictionType, View> predictionGrade_attendance) {
+		this.predictionGrade_attendance = predictionGrade_attendance;
 	}
 
 	public Map<SessionModel.SessionType, List<Mean>> getAttendanceMean() {
@@ -168,6 +174,16 @@ public class ModuleStudentView extends AbstractView {
 		this.attendanceMean = attendanceMean;
 	}
 
+	public Map<SessionModel.SessionType, Mean> getOverallAttendanceMean() {
+
+		if(overallAttendanceMean == null) overallAttendanceMean = new HashMap<>();
+		return overallAttendanceMean;
+	}
+
+	public void setOverallAttendanceMean(Map<SessionModel.SessionType, Mean> overallAttendanceMean) {
+		this.overallAttendanceMean = overallAttendanceMean;
+	}
+
 	public List<WarningModel> getWarnings() {
 		return warnings;
 	}
@@ -176,7 +192,7 @@ public class ModuleStudentView extends AbstractView {
 		this.warnings = warnings;
 	}
 
-	public static ModuleStudentView getView(ModuleYearModel moduleModel, String username, Set<UserStudentView> teachingStaff) {
+	public static ModuleStudentView createView(ModuleYearModel moduleModel, String username, Set<UserStudentView> teachingStaff) {
 
 		ModuleStudentView view = new ModuleStudentView();
 		view.setClassCode(moduleModel.getClassCode());
@@ -232,11 +248,16 @@ public class ModuleStudentView extends AbstractView {
 				}
 
 				Map<SessionModel.SessionType, List<Mean>> att = view.getAttendanceMean();
+				Map<SessionModel.SessionType, Mean> OverallAtt = view.getOverallAttendanceMean();
 				for (Map.Entry<SessionModel.SessionType, AttendanceGrouping> entry : enrollment.getAttendanceMean().entrySet()) {
 					att.put(entry.getKey(), entry.getValue().getWeeklyMeans());
+					OverallAtt.put(entry.getKey(), entry.getValue().getAttendanceAverage());
 				}
 
-				view.setPredictedGrade_attendance(enrollment.getPredictedGrade_attendance());
+				Map<PredictionModel.PredictionType, View> predictions = view.getPredictionGrade_attendance();
+				for(Map.Entry<PredictionModel.PredictionType, PredictionModel> prediction: enrollment.getPredictedGrade_attendance().entrySet()){
+					predictions.put(prediction.getKey(), PredictionView.createView(prediction.getValue()));
+				}
 			}
 		}
 

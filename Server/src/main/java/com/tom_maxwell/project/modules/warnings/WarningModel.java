@@ -1,5 +1,8 @@
 package com.tom_maxwell.project.modules.warnings;
 
+import com.tom_maxwell.project.modules.users.UserModel;
+import com.tom_maxwell.project.modules.users.UserSimpleView;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +37,8 @@ public class WarningModel {
 		return warning_type;
 	}
 
+	public UserSimpleView user;
+
 	public void setWarning_type(Warning_Type warning_type) {
 		this.warning_type = warning_type;
 	}
@@ -52,5 +57,13 @@ public class WarningModel {
 
 	public void setCorrectionMessages(List<String> correctionMessages) {
 		this.correctionMessages = correctionMessages;
+	}
+
+	public UserSimpleView getUser() {
+		return user;
+	}
+
+	public void setUser(UserSimpleView user) {
+		this.user = user;
 	}
 }

@@ -7,6 +7,9 @@ import com.tom_maxwell.project.modules.modules.ModuleYearModel;
 import com.tom_maxwell.project.modules.sessions.AttendanceGrouping;
 import com.tom_maxwell.project.modules.sessions.SessionModel;
 import com.tom_maxwell.project.modules.statistics.CorrelationModel;
+import com.tom_maxwell.project.modules.statistics.PredictionModel;
+import com.tom_maxwell.project.modules.statistics.PredictionService;
+import com.tom_maxwell.project.modules.users.EnrollmentDAO;
 import com.tom_maxwell.project.modules.users.EnrollmentModel;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
@@ -15,11 +18,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import weka.classifiers.Classifier;
+import weka.classifiers.Evaluation;
+import weka.classifiers.functions.GaussianProcesses;
+import weka.classifiers.functions.LinearRegression;
+import weka.classifiers.functions.MultilayerPerceptron;
+import weka.classifiers.functions.SMOreg;
+import weka.core.Attribute;
+import weka.core.FastVector;
+import weka.core.Instance;
+import weka.core.Instances;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Compares the attendance vs the attainment
@@ -32,10 +42,31 @@ public class ModuleAttendanceAttainmentAnalyser extends AbstractAnalyser impleme
 	@Autowired
 	private ModuleDAO moduleDAO;
 
+	@Autowired
+	private EnrollmentDAO enrollmentDAO;
+
 	private ModuleModel moduleModel;
 
 	@Override
 	public void analyse() {
+
+		//weka attributes quick
+		Attribute attribute = new Attribute("attendance");
+		Attribute attribute1 = new Attribute("attainment");
+
+		FastVector fastVector = new FastVector(2);
+		fastVector.addElement(attribute);
+		fastVector.addElement(attribute1);
+
+
+		//weka attributes by week
+		FastVector fastVectorWeeks = new FastVector(2);
+		for(int i = 1; i < 25; i++){
+			Attribute a = new Attribute("attendance - week" + i);
+			fastVectorWeeks.addElement(a);
+		}
+		Attribute attainmentWeeks = new Attribute("attainment");
+		fastVectorWeeks.addElement(attainmentWeeks);
 
 		moduleModel = moduleDAO.get(moduleModel.getId());
 
@@ -43,6 +74,9 @@ public class ModuleAttendanceAttainmentAnalyser extends AbstractAnalyser impleme
 		Map<SessionModel.SessionType, List<Double>> gradeByType = new HashMap<>();
 
 		Map<SessionModel.SessionType, SimpleRegression> regressionByType = new HashMap<>();
+
+		Instances instances = new Instances("data", fastVector, 0);
+		Instances instancesWeeks = new Instances("data", fastVectorWeeks, 0);
 
 		for(ModuleYearModel year: moduleModel.getModuleList() ){
 
@@ -76,6 +110,21 @@ public class ModuleAttendanceAttainmentAnalyser extends AbstractAnalyser impleme
 					attendance.add(entry.getValue().getAttendanceAverage().getMean());
 
 					regression.addData(enrollment.getFinalMark(), entry.getValue().getAttendanceAverage().getMean());
+
+					if(entry.getKey() == SessionModel.SessionType.ALL){
+
+						double[] data = {entry.getValue().getAttendanceAverage().getMean(), enrollment.getFinalMark()};
+						Instance instance = new Instance(1, data);
+						instances.add(instance);
+
+						double[] dataWeek = new double[25];
+						for(int i = 0; i < 24; i++){
+							dataWeek[i] = entry.getValue().getWeeklyMeans().get(i).getMean();
+						}
+						dataWeek[24] =  enrollment.getFinalMark();
+						instance = new Instance(1, dataWeek);
+						instancesWeeks.add(instance);
+					}
 				}
 			}
 		}
@@ -109,6 +158,110 @@ public class ModuleAttendanceAttainmentAnalyser extends AbstractAnalyser impleme
 		moduleDAO.save(moduleModel);
 		moduleDAO.flush();
 		moduleDAO.unlock(moduleModel);
+
+		//weka - total
+		LinearRegression linearRegression = null;
+		MultilayerPerceptron multilayerPerceptron = null;
+		SMOreg smOreg = null;
+		GaussianProcesses gaussianProcesses = null;
+		try {
+			instances.setClassIndex(instances.numAttributes() - 1);
+
+
+			linearRegression = new LinearRegression();
+			linearRegression.setRidge(1);
+			linearRegression.buildClassifier(instances);
+
+			smOreg = new SMOreg();
+			smOreg.buildClassifier(instances);
+
+			multilayerPerceptron = new MultilayerPerceptron();
+			multilayerPerceptron.buildClassifier(instances);
+
+			gaussianProcesses = new GaussianProcesses();
+			gaussianProcesses.buildClassifier(instances);
+
+			Evaluation evaluation = evaluateClassifier(linearRegression, instances);
+			Evaluation evaluationSMO = evaluateClassifier(smOreg, instances);
+			Evaluation evaluationmulti = evaluateClassifier(multilayerPerceptron, instances);
+			Evaluation evaluationGaus = evaluateClassifier(gaussianProcesses, instances);
+
+			for(ModuleYearModel moduleYear: moduleModel.getModuleList()){
+				if(moduleYear == null) continue;
+
+				for(EnrollmentModel enrollment: moduleYear.getEnrollments()){
+
+					enrollment = enrollmentDAO.get(enrollment.getId());
+					Map<PredictionModel.PredictionType, PredictionModel> predictions = enrollment.getPredictedGrade_attendance();
+
+					double[] data = {enrollment.getAttendanceMean().get(SessionModel.SessionType.ALL).getAttendanceAverage().getMean(), enrollment.getFinalMark()};
+					Instance instance = new Instance(1, data);
+					PredictionModel prediction = generatePrediction(linearRegression, instance, evaluation );
+					prediction.setPredictionType(PredictionModel.PredictionType.LINEAR);
+					predictions.put(PredictionModel.PredictionType.LINEAR, prediction);
+
+					prediction = generatePrediction(multilayerPerceptron, instance, evaluationmulti );
+					prediction.setPredictionType(PredictionModel.PredictionType.MULTI);
+					predictions.put(PredictionModel.PredictionType.MULTI, prediction);
+
+					prediction = generatePrediction(smOreg, instance, evaluationSMO );
+					prediction.setPredictionType(PredictionModel.PredictionType.SMO);
+					predictions.put(PredictionModel.PredictionType.SMO, prediction);
+
+					prediction = generatePrediction(gaussianProcesses, instance, evaluationGaus );
+					prediction.setPredictionType(PredictionModel.PredictionType.GAUSSIAN);
+					predictions.put(PredictionModel.PredictionType.GAUSSIAN, prediction);
+
+					enrollment.setPredictedGrade_attendance(predictions);
+					enrollmentDAO.save(enrollment);
+					enrollmentDAO.flush();
+				}
+			}
+
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+
+//		System.out.println("By week");
+//		for(Map.Entry<SessionModel.SessionType, Instances> entry: instancesByTypeOverWeek.entrySet()){
+//
+//			System.out.println(entry.getKey());
+//
+//			Instances instances = entry.getValue();
+//
+//			LinearRegression linearRegression = null;
+//			MultilayerPerceptron multilayerPerceptron = null;
+//			SMOreg smOreg = null;
+//			GaussianProcesses gaussianProcesses = null;
+//			try {
+//				instances.setClassIndex(instances.numAttributes() - 1);
+//
+//				linearRegression = new LinearRegression();
+//				linearRegression.setRidge(1);
+//				linearRegression.buildClassifier(instances);
+//
+//				smOreg = new SMOreg();
+//				smOreg.buildClassifier(instances);
+//
+//				multilayerPerceptron = new MultilayerPerceptron();
+//				multilayerPerceptron.buildClassifier(instances);
+//
+//				gaussianProcesses = new GaussianProcesses();
+//				gaussianProcesses.buildClassifier(instances);
+//
+//				Evaluation evaluation = evaluateClassifier(linearRegression, instances);
+//				Evaluation evaluationSMO = evaluateClassifier(smOreg, instances);
+//				Evaluation evaluationmulti = evaluateClassifier(multilayerPerceptron, instances);
+//				Evaluation evaluationGaus = evaluateClassifier(gaussianProcesses, instances);
+//
+//
+//			}catch(Exception e){
+//				e.printStackTrace();
+//			}
+//
+//		}
+
+
 	}
 
 	@Override
@@ -120,4 +273,49 @@ public class ModuleAttendanceAttainmentAnalyser extends AbstractAnalyser impleme
 	public void setModuleModel(ModuleModel moduleModel) {
 		this.moduleModel = moduleModel;
 	}
+
+
+	private Evaluation evaluateClassifier(Classifier classifier, Instances instances){
+
+		try{
+			Evaluation evaluation = new Evaluation(instances);
+			evaluation.crossValidateModel(classifier, instances, instances.numInstances(), new Random(0));
+			return evaluation;
+		}catch(Exception e){
+			throw new RuntimeException("Weka Exception", e);
+		}
+	}
+
+	private PredictionModel generatePrediction(Classifier classifier, Instance instance, Evaluation evaluation){
+
+		PredictionModel prediction = new PredictionModel();
+
+		try{
+			prediction.setPredicted_value( classifier.classifyInstance(instance) );
+
+			prediction.setMeanAbsError(evaluation.meanAbsoluteError());
+			prediction.setRootMeanAbsError(evaluation.rootMeanSquaredError());
+			prediction.setRelativeAbsError(evaluation.relativeAbsoluteError());
+			prediction.setRootRelativeAbsError(evaluation.rootRelativeSquaredError());
+			prediction.setTotal( (int) evaluation.numInstances());
+
+		}catch(Exception e){
+			throw new RuntimeException("Weka Exception", e);
+		}
+
+
+
+		return prediction;
+	}
+
+	/*
+	PredictionModel predictionModel = new PredictionModel();
+				predictionModel.setPredictionType(PredictionModel.PredictionType.LINEAR);
+				predictionModel.setCoefficients(PredictionService.wrapCoefficients(linearRegression.coefficients()));
+				predictionModel.setCorrelationCoefficient(evaluation.correlationCoefficient());
+				predictionModel.setMeanAbsError(evaluation.meanAbsoluteError());
+				predictionModel.setRelativeAbsError(evaluation.relativeAbsoluteError());
+				predictionModel.setRootMeanAbsError(evaluation.rootMeanSquaredError());
+				predictionModel.setRootRelativeAbsError(evaluation.rootRelativeSquaredError());
+	 */
 }

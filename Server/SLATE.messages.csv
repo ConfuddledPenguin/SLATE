@@ -53,3 +53,10 @@ DECREASE_ATTENDANCE_RECOMMENDATION,         ATTENDANCE_RECOMMENDATION,  Within t
 #
 RECOMMENDED_ATTENDANCE_LEVEL_INCREASE,               ATTENDANCE_RECOMMENDATION,  Based on the past performance of students taking this class we recommend you have an attendance of over :attendance% to achieve your goals
 RECOMMENDED_ATTENDANCE_LEVEL_DECREASE,               ATTENDANCE_RECOMMENDATION,  Based on the past performance of students taking this class we recommend you have an attendance of under :attendance% to achieve your goals
+#
+#
+# Attainment Warning----------------------------------------------------------------------------------------------------
+#
+#
+ATTAINMENT_PREDICTION_WARNING_PERSONAL,      ATTAINMENT_PREDICTION_WARNING,      Your predicted grade (based on historical module attendance) is lower than your personal goal
+ATTAINMENT_PREDICTION_WARNING_MODULE,        ATTAINMENT_PREDICTION_WARNING,      Your predicted grade (based on historical module attendance) is lower than the goal set by your lecturer

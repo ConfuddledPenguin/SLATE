@@ -86,11 +86,11 @@ public class ModuleService {
 		moduleYearWarningGeneratorRunner.generate();
 		warningModels = moduleYearWarningGeneratorRunner.getWarnings();
 
-		moduleDAO.refresh(moduleModel);
+		moduleModel = moduleDAO.getModuleYear(moduleModel.getId());
 
 		if(role == UserModel.Role.STUDENT){
 
-			ModuleStudentView view = ModuleStudentView.getView(moduleModel, username, userService.getStudentUserViews(moduleModel.getModule()));
+			ModuleStudentView view = ModuleStudentView.createView(moduleModel, username, userService.getStudentUserViews(moduleModel.getModule()));
 			view.setWarnings(warningModels);
 
 			return view;

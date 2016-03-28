@@ -47,5 +47,4 @@ public interface View {
 	 * @return the message
 	 */
 	String getMessage();
-
 }

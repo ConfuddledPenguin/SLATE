@@ -92,6 +92,11 @@
 			<artifactId>commons-math3</artifactId>
 			<version>3.6</version>
 		</dependency>
+		<dependency>
+			<groupId>nz.ac.waikato.cms.weka</groupId>
+			<artifactId>weka-stable</artifactId>
+			<version>3.6.13</version>
+		</dependency>
 
 	</dependencies>
 

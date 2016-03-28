@@ -4,6 +4,7 @@ import com.tom_maxwell.project.modules.modules.ModuleYearModel;
 import com.tom_maxwell.project.modules.sessions.AttendanceGrouping;
 import com.tom_maxwell.project.modules.sessions.SessionModel;
 import com.tom_maxwell.project.modules.statistics.Mean;
+import com.tom_maxwell.project.modules.statistics.PredictionModel;
 
 import javax.persistence.*;
 import java.util.Map;
@@ -59,7 +60,7 @@ public class EnrollmentModel {
 	private int attainmentGoal;
 	private int attendanceGoal;
 
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinTable(
 			name="EnrollmentAttendanceGroupings",
 			joinColumns = @JoinColumn(name="attendanceGroupingId"),
@@ -69,7 +70,15 @@ public class EnrollmentModel {
 	@MapKeyEnumerated
 	private Map<SessionModel.SessionType, AttendanceGrouping> attendanceMean;
 
-	private double predictedGrade_attendance;
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinTable(
+			name="EnrollmentPredictedGradeAttendance",
+			joinColumns = @JoinColumn(name="enrollmentId"),
+			inverseJoinColumns = @JoinColumn(name="predictionId")
+	)
+	@MapKey(name="predictionType")
+	@MapKeyEnumerated
+	private Map<com.tom_maxwell.project.modules.statistics.PredictionModel.PredictionType, PredictionModel> predictedGrade_attendance;
 
 	@Enumerated(EnumType.STRING)
 	private Result result;
@@ -158,11 +167,11 @@ public class EnrollmentModel {
 		this.attendanceGoal = attendanceGoal;
 	}
 
-	public double getPredictedGrade_attendance() {
+	public Map<PredictionModel.PredictionType, PredictionModel> getPredictedGrade_attendance() {
 		return predictedGrade_attendance;
 	}
 
-	public void setPredictedGrade_attendance(double predictedGrade_attendance) {
+	public void setPredictedGrade_attendance(Map<PredictionModel.PredictionType, PredictionModel> predictedGrade_attendance) {
 		this.predictedGrade_attendance = predictedGrade_attendance;
 	}
 }

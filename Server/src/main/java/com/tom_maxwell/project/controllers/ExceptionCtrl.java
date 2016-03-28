@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
+import java.io.IOException;
+
 
 /**
  *  Handles the catching of any exceptions thrown
@@ -74,6 +76,17 @@ public class ExceptionCtrl {
 		JSONResponse.setMessage("Access Forbidden");
 
 		return JSONResponse;
+	}
+
+	@ExceptionHandler(IOException.class)
+	public void handleIO(Exception e){
+
+		if(e.getClass().getSimpleName().equals("ClientAbortException")){
+			logger.info("user canceled request");
+		}else{
+			throw new RuntimeException(e);
+		}
+
 	}
 
 	/**
