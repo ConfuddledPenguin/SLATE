@@ -46,6 +46,10 @@ public class AttainmentWarningGenerator extends AbstractWarningGenerator impleme
 
 		Map<PredictionModel.PredictionType, PredictionModel> predictions = enrollment.getPredictedGrade_attendance();
 
+		if(predictions.size() == 0){
+			return;
+		}
+
 		//get most accurate prediction model
 		PredictionModel bestPrediction = null;
 		for(Map.Entry<PredictionModel.PredictionType, PredictionModel> entry: predictions.entrySet()){

@@ -167,7 +167,6 @@ public class ModuleYearEnrollmentAnalyser extends AbstractAnalyser implements Mo
 
 		enrollment.setAttendanceMean(groupings);
 		enrollmentDAO.save(enrollment);
-
 	}
 
 	private void analyseAssignments(){

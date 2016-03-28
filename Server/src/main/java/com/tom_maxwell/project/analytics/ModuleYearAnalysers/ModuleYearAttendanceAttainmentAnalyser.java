@@ -174,21 +174,6 @@ public class ModuleYearAttendanceAttainmentAnalyser extends AbstractAnalyser imp
 //			System.out.println(evaluationmulti.toSummaryString("\n Summary String\n\n", false));
 
 
-
-//			for (int i = 0; i < instances.numInstances(); i++) {
-//				//get class double value for current instance
-//				double actualValue = instances.instance(i).classValue();
-//
-//				//get Instance object of current instance
-//				Instance newInst = instances.instance(i);
-//				//call classifyInstance, which returns a double value for the class
-//				double predLinear = linearRegression.classifyInstance(newInst);
-//				double predMulti = multilayerPerceptron.classifyInstance(newInst);
-//				double predSMO = smOreg.classifyInstance(newInst);
-//
-//				System.out.println(actualValue + " : " + predLinear + " : " + predMulti + " : " + predSMO);
-//			}
-
 		}catch(Exception e){
 			e.printStackTrace();
 		}

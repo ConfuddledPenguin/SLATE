@@ -42,6 +42,11 @@
 						<div class="container">
 							<div class="row">
 								<div class="col-md-3 prediction-container">
+									<p class="type">Using Simple Linear Regression</p>
+									<p class="value">{{module.data.predictionGrade_attendance.SIMPLE_LINEAR.predicted_value | number:2}}%</p>
+									<p>Common Error Range: &#177;{{module.data.predictionGrade_attendance.SIMPLE_LINEAR.meanAbsError | number:2}}%</p>
+								</div>
+								<div class="col-md-3 prediction-container">
 									<p class="type">Using Linear Regression</p>
 									<p class="value">{{module.data.predictionGrade_attendance.LINEAR.predicted_value | number:2}}%</p>
 									<p>Common Error Range: &#177;{{module.data.predictionGrade_attendance.LINEAR.meanAbsError | number:2}}%</p>
@@ -50,11 +55,6 @@
 									<p class="type">Using SMO Regression</p>
 									<p class="value">{{module.data.predictionGrade_attendance.SMO.predicted_value | number:2}}%</p>
 									<p>Common Error Range: &#177;{{module.data.predictionGrade_attendance.SMO.meanAbsError | number:2}}%</p>
-								</div>
-								<div class="col-md-3 prediction-container">
-									<p class="type">Using Gaussian Processes</p>
-									<p class="value">{{module.data.predictionGrade_attendance.GAUSSIAN.predicted_value | number:2}}%</p>
-									<p>Common Error Range: &#177;{{module.data.predictionGrade_attendance.GAUSSIAN.meanAbsError | number:2}}%</p>
 								</div>
 								<div class="col-md-3 prediction-container">
 									<p class="type">Using Multilayer Perceptron</p>

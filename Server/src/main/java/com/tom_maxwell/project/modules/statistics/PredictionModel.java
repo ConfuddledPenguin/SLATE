@@ -14,6 +14,7 @@ public class PredictionModel {
 		LINEAR,
 		SMO,
 		MULTI,
+		SIMPLE_LINEAR,
 		GAUSSIAN
 	}
 

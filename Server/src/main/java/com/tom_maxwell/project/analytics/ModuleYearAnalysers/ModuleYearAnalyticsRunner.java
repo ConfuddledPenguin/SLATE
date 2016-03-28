@@ -66,7 +66,8 @@ public class ModuleYearAnalyticsRunner extends AbstractAnalyser implements Modul
 		for(EnrollmentModel enrollment: moduleYearModel.getEnrollments()){
 			ModuleYearEnrollmentAnalyserInterface enrollmentAnalyser = (ModuleYearEnrollmentAnalyserInterface) context.getBean("ModuleYearEnrollmentAnalyser");
 			enrollmentAnalyser.setEnrollment(enrollment);
-			executorService.execute(enrollmentAnalyser);
+			enrollmentAnalyser.analyse();
+//			executorService.execute(enrollmentAnalyser);
 		}
 
 		//analyse assignments

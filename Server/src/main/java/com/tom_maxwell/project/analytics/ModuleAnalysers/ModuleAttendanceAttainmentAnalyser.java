@@ -20,10 +20,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
-import weka.classifiers.functions.GaussianProcesses;
-import weka.classifiers.functions.LinearRegression;
-import weka.classifiers.functions.MultilayerPerceptron;
-import weka.classifiers.functions.SMOreg;
+import weka.classifiers.functions.*;
 import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instance;
@@ -163,10 +160,11 @@ public class ModuleAttendanceAttainmentAnalyser extends AbstractAnalyser impleme
 		LinearRegression linearRegression = null;
 		MultilayerPerceptron multilayerPerceptron = null;
 		SMOreg smOreg = null;
-		GaussianProcesses gaussianProcesses = null;
 		try {
 			instances.setClassIndex(instances.numAttributes() - 1);
 
+			SimpleLinearRegression simpleLinearRegression = new SimpleLinearRegression();
+			simpleLinearRegression.buildClassifier(instances);
 
 			linearRegression = new LinearRegression();
 			linearRegression.setRidge(1);
@@ -178,13 +176,10 @@ public class ModuleAttendanceAttainmentAnalyser extends AbstractAnalyser impleme
 			multilayerPerceptron = new MultilayerPerceptron();
 			multilayerPerceptron.buildClassifier(instances);
 
-			gaussianProcesses = new GaussianProcesses();
-			gaussianProcesses.buildClassifier(instances);
-
-			Evaluation evaluation = evaluateClassifier(linearRegression, instances);
+			Evaluation evaluationSimple = evaluateClassifier(simpleLinearRegression, instances);
+			Evaluation evaluationLinear = evaluateClassifier(linearRegression, instances);
 			Evaluation evaluationSMO = evaluateClassifier(smOreg, instances);
 			Evaluation evaluationmulti = evaluateClassifier(multilayerPerceptron, instances);
-			Evaluation evaluationGaus = evaluateClassifier(gaussianProcesses, instances);
 
 			for(ModuleYearModel moduleYear: moduleModel.getModuleList()){
 				if(moduleYear == null) continue;
@@ -196,7 +191,7 @@ public class ModuleAttendanceAttainmentAnalyser extends AbstractAnalyser impleme
 
 					double[] data = {enrollment.getAttendanceMean().get(SessionModel.SessionType.ALL).getAttendanceAverage().getMean(), enrollment.getFinalMark()};
 					Instance instance = new Instance(1, data);
-					PredictionModel prediction = generatePrediction(linearRegression, instance, evaluation );
+					PredictionModel prediction = generatePrediction(linearRegression, instance, evaluationLinear );
 					prediction.setPredictionType(PredictionModel.PredictionType.LINEAR);
 					predictions.put(PredictionModel.PredictionType.LINEAR, prediction);
 
@@ -208,9 +203,9 @@ public class ModuleAttendanceAttainmentAnalyser extends AbstractAnalyser impleme
 					prediction.setPredictionType(PredictionModel.PredictionType.SMO);
 					predictions.put(PredictionModel.PredictionType.SMO, prediction);
 
-					prediction = generatePrediction(gaussianProcesses, instance, evaluationGaus );
-					prediction.setPredictionType(PredictionModel.PredictionType.GAUSSIAN);
-					predictions.put(PredictionModel.PredictionType.GAUSSIAN, prediction);
+					prediction = generatePrediction(simpleLinearRegression, instance, evaluationSimple );
+					prediction.setPredictionType(PredictionModel.PredictionType.SIMPLE_LINEAR);
+					predictions.put(PredictionModel.PredictionType.SIMPLE_LINEAR, prediction);
 
 					enrollment.setPredictedGrade_attendance(predictions);
 					enrollmentDAO.save(enrollment);
