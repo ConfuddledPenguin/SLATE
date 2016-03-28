@@ -221,47 +221,6 @@ public class ModuleAttendanceAttainmentAnalyser extends AbstractAnalyser impleme
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-
-//		System.out.println("By week");
-//		for(Map.Entry<SessionModel.SessionType, Instances> entry: instancesByTypeOverWeek.entrySet()){
-//
-//			System.out.println(entry.getKey());
-//
-//			Instances instances = entry.getValue();
-//
-//			LinearRegression linearRegression = null;
-//			MultilayerPerceptron multilayerPerceptron = null;
-//			SMOreg smOreg = null;
-//			GaussianProcesses gaussianProcesses = null;
-//			try {
-//				instances.setClassIndex(instances.numAttributes() - 1);
-//
-//				linearRegression = new LinearRegression();
-//				linearRegression.setRidge(1);
-//				linearRegression.buildClassifier(instances);
-//
-//				smOreg = new SMOreg();
-//				smOreg.buildClassifier(instances);
-//
-//				multilayerPerceptron = new MultilayerPerceptron();
-//				multilayerPerceptron.buildClassifier(instances);
-//
-//				gaussianProcesses = new GaussianProcesses();
-//				gaussianProcesses.buildClassifier(instances);
-//
-//				Evaluation evaluation = evaluateClassifier(linearRegression, instances);
-//				Evaluation evaluationSMO = evaluateClassifier(smOreg, instances);
-//				Evaluation evaluationmulti = evaluateClassifier(multilayerPerceptron, instances);
-//				Evaluation evaluationGaus = evaluateClassifier(gaussianProcesses, instances);
-//
-//
-//			}catch(Exception e){
-//				e.printStackTrace();
-//			}
-//
-//		}
-
-
 	}
 
 	@Override
@@ -308,14 +267,4 @@ public class ModuleAttendanceAttainmentAnalyser extends AbstractAnalyser impleme
 		return prediction;
 	}
 
-	/*
-	PredictionModel predictionModel = new PredictionModel();
-				predictionModel.setPredictionType(PredictionModel.PredictionType.LINEAR);
-				predictionModel.setCoefficients(PredictionService.wrapCoefficients(linearRegression.coefficients()));
-				predictionModel.setCorrelationCoefficient(evaluation.correlationCoefficient());
-				predictionModel.setMeanAbsError(evaluation.meanAbsoluteError());
-				predictionModel.setRelativeAbsError(evaluation.relativeAbsoluteError());
-				predictionModel.setRootMeanAbsError(evaluation.rootMeanSquaredError());
-				predictionModel.setRootRelativeAbsError(evaluation.rootRelativeSquaredError());
-	 */
 }
