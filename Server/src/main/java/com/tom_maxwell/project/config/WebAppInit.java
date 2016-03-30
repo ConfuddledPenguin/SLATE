@@ -1,6 +1,5 @@
 package com.tom_maxwell.project.config;
 
-import com.tom_maxwell.project.analytics.AnalyticsRunner;
 import com.tom_maxwell.project.analytics.AnalyticsRunnerInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -8,13 +8,14 @@ import com.tom_maxwell.project.modules.sessions.AttendanceGrouping;
 import com.tom_maxwell.project.modules.sessions.SessionModel;
 import com.tom_maxwell.project.modules.statistics.CorrelationModel;
 import com.tom_maxwell.project.modules.statistics.PredictionModel;
-import com.tom_maxwell.project.modules.statistics.PredictionService;
 import com.tom_maxwell.project.modules.users.EnrollmentDAO;
 import com.tom_maxwell.project.modules.users.EnrollmentModel;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +44,12 @@ public class ModuleAttendanceAttainmentAnalyser extends AbstractAnalyser impleme
 	private EnrollmentDAO enrollmentDAO;
 
 	private ModuleModel moduleModel;
+
+	@Autowired
+	private ApplicationContext context;
+
+	@Value("${SLATE.analytics.evaluate_regression}")
+	private boolean eval_regression;
 
 	@Override
 	public void analyse() {
@@ -156,7 +163,27 @@ public class ModuleAttendanceAttainmentAnalyser extends AbstractAnalyser impleme
 		moduleDAO.flush();
 		moduleDAO.unlock(moduleModel);
 
-		//weka - total
+		preformPrediction(instances);
+
+		if(eval_regression){
+			ModuleAttendanceAttainmentEvalAnalyserInterface analyser = (ModuleAttendanceAttainmentEvalAnalyserInterface) context.getBean("ModuleAttendanceAttainmentEvalAnalyser");
+			analyser.setModuleModel(moduleModel);
+			analyser.analyse();
+		}
+
+	}
+
+	@Override
+	public ModuleModel getModuleModel() {
+		return moduleModel;
+	}
+
+	@Override
+	public void setModuleModel(ModuleModel moduleModel) {
+		this.moduleModel = moduleModel;
+	}
+
+	private void preformPrediction(Instances instances){
 		LinearRegression linearRegression = null;
 		MultilayerPerceptron multilayerPerceptron = null;
 		SMOreg smOreg = null;
@@ -180,6 +207,17 @@ public class ModuleAttendanceAttainmentAnalyser extends AbstractAnalyser impleme
 			Evaluation evaluationLinear = evaluateClassifier(linearRegression, instances);
 			Evaluation evaluationSMO = evaluateClassifier(smOreg, instances);
 			Evaluation evaluationmulti = evaluateClassifier(multilayerPerceptron, instances);
+
+			if(eval_regression){
+				System.out.println("\n\nSimple\n");
+				System.out.println(evaluationSimple.toSummaryString());
+				System.out.println("\n\nLinear\n");
+				System.out.println(evaluationLinear.toSummaryString());
+				System.out.println("\n\nMulti\n");
+				System.out.println(evaluationmulti.toSummaryString());
+				System.out.println("\n\nSMO\n");
+				System.out.println(evaluationSMO.toSummaryString());
+			}
 
 			for(ModuleYearModel moduleYear: moduleModel.getModuleList()){
 				if(moduleYear == null) continue;
@@ -214,20 +252,9 @@ public class ModuleAttendanceAttainmentAnalyser extends AbstractAnalyser impleme
 			}
 
 		}catch(Exception e){
-			e.printStackTrace();
+			throw new RuntimeException("Weka Exception", e);
 		}
 	}
-
-	@Override
-	public ModuleModel getModuleModel() {
-		return moduleModel;
-	}
-
-	@Override
-	public void setModuleModel(ModuleModel moduleModel) {
-		this.moduleModel = moduleModel;
-	}
-
 
 	private Evaluation evaluateClassifier(Classifier classifier, Instances instances){
 
